@@ -9,7 +9,8 @@ const cellSize = 18;
 
 let currentScene = "build";
 
-let totalCredits = 12;
+let availableCredits = 2;
+let totalCredits = 2;
 
 const fortStats = {
     kineticFirepower: {name:"Kinetic Firepower", stat: 0},
@@ -132,6 +133,7 @@ for (let key in allBuildings) {
             }
         }
     }
+    allBuildings[key].keyName = key;
 }
 
 let selectedPlacedBuilding = null;
@@ -282,7 +284,7 @@ function drawCardGraphics(card) {
     // Restore the context to its original state
     ctx.restore();
 }
-
+let battleLoopInterval;
 let buttons = [];
 createBuildInterface();
 function createBuildInterface(){
@@ -297,14 +299,16 @@ function createBuildInterface(){
         circularizeGrids();
         createBattleInterface();
 
-        setInterval(function(){
+        countDownNumber = 4;
+        let countDownInterval = setInterval(function(){
             countDownNumber--;
             if(countDownNumber === 0){
                 currentScene = "battle";
-                setInterval(function(){
+                battleLoopInterval = setInterval(function(){
                     battleLoop();
                     circularizeGrids();
                 },100);
+                clearInterval(countDownInterval);
             }
         },500);
     }));
@@ -326,21 +330,22 @@ function placeAIFort(AIfortIndex) {
 
 const AIforts = [
 
-    // {name:"Yuan Lee", description:"My little fortress.",layout:
-    //     [{building:allBuildings.core, x:0, y:0, rotation:"N"},
-    //     {building:allBuildings.miniArty, x:0, y:-2, rotation:"R"},
-    //     {building:allBuildings.protector, x:-2, y:-1, rotation:"N"},
-    //     {building:allBuildings.radar, x:1, y:1, rotation:"N"},
-    //     {building:allBuildings.damageBooster, x:-2, y:-2, rotation:"N"},
-    // ]},
-
-    {name:"Sir Biggles", description:"A fortress with a lot of firepower.",layout:
+    {name:"Yuan Lee", description:"My little fortress.",layout:
         [{building:allBuildings.core, x:0, y:0, rotation:"N"},
         {building:allBuildings.miniArty, x:0, y:-2, rotation:"R"},
-        {building:allBuildings.miniArty, x:0, y:2, rotation:"RR"},
-        {building:allBuildings.miniArty, x:-2, y:0, rotation:"L"},
-        {building:allBuildings.miniArty, x:2, y:0, rotation:"N"},
+        {building:allBuildings.protector, x:-2, y:-1, rotation:"N"},
+        {building:allBuildings.radar, x:1, y:1, rotation:"N"},
+        {building:allBuildings.damageBooster, x:-2, y:-2, rotation:"N"},
+        {building:allBuildings.basicLaser, x:-3, y:-2, rotation:"N"},
     ]},
+
+    // {name:"Sir Biggles", description:"A fortress with a lot of firepower.",layout:
+    //     [{building:allBuildings.core, x:0, y:0, rotation:"N"},
+    //     {building:allBuildings.miniArty, x:0, y:-2, rotation:"R"},
+    //     {building:allBuildings.miniArty, x:0, y:2, rotation:"RR"},
+    //     {building:allBuildings.miniArty, x:-2, y:0, rotation:"L"},
+    //     {building:allBuildings.miniArty, x:2, y:0, rotation:"N"},
+    // ]},
 
 ];
 
@@ -371,6 +376,44 @@ function battleLoop(){
                 fireEnergyTurret(building, board, building.target, enemy);
             }
         });
+
+        //if all buildings are destroyed, end game
+        let allBuildingsDestroyed = true;
+        board.allPlacedBuildings.forEach((building) =>{
+            if(building.destroyed === false){
+                allBuildingsDestroyed = false;
+            }
+        });
+
+        if(allBuildingsDestroyed){
+            currentScene = "build";
+            playerBoard.targetPosition = {x:(canvas.width-(gridWidth*cellSize))/2,y:playerBoard.yGridOffset};
+            availableCredits += 1;
+            totalCredits = availableCredits;
+
+            setCardPositions();
+            createBuildInterface();
+
+            //revive all buildings
+            allBoards.forEach((board) => {
+                
+                board.allPlacedBuildings.forEach((building) =>{
+                    building.destroyed = false;
+                    building.stats.health = allBuildings[building.keyName].stats.health;
+                    if(building.stats.hasOwnProperty("ammoStorage")){
+                        building.stats.ammoStorage = allBuildings[building.keyName].stats.ammoStorage;
+                    }
+                    if(building.stats.hasOwnProperty("powerStorage")){
+                        building.stats.powerStorage = allBuildings[building.keyName].stats.powerStorage;
+                    }
+                });
+            });
+
+            if(allBoards.indexOf(enemyBoard) !== -1){
+                allBoards.splice(allBoards.indexOf(enemyBoard),1);
+            }
+            clearInterval(battleLoopInterval);
+        }
     }
 }
 
@@ -399,7 +442,7 @@ function fireKineticTurret(building, board, target, enemy) {
             if(Math.random() * 100 < building.stats.critChance){
                 damage = damage*(1+(100/building.stats.critDamageBonus));
             }
-            if (damage < 0){
+            if (damage < 1){
                 damage = 1;
             }
   
@@ -409,8 +452,10 @@ function fireKineticTurret(building, board, target, enemy) {
                     if(x >= 0 && x < gridWidth && y >= 0 && y < gridHeight){
                         const cell = enemy.grid[x + y * gridWidth];
                         if(cell.occupied && cell.building !== undefined){
-                            cell.building.stats.health -= damage/(building.stats.blastRadius*building.stats.blastRadius);
-                            cell.building.stats.health = parseFloat(cell.building.stats.health.toFixed(2));
+                            if(currentScene === "battle"){
+                                cell.building.stats.health -= damage/(building.stats.blastRadius*building.stats.blastRadius);
+                                cell.building.stats.health = parseFloat(cell.building.stats.health.toFixed(2));
+                            }
                             blasts.push({
                                 x:(target.x * cellSize) + enemy.xGridOffset + (cellSize / 2), 
                                 y:(target.y * cellSize) + enemy.yGridOffset + (cellSize / 2), 
@@ -418,14 +463,14 @@ function fireKineticTurret(building, board, target, enemy) {
                                 alpha:1,
                                 size:1,
                             });
+                            if (target.building.stats.health <= 0) {
+                                target.building.destroyed = true;
+                            }
                         }
                     }
                 }
             }
         }, 750);
-        if (target.building.stats.health <= 0) {
-            target.building.destroyed = true;
-        }
     }
 }
 
@@ -460,11 +505,13 @@ function fireEnergyTurret(building, board, target, enemy) {
         });
 
         let damage = (building.stats.energyFirepower-target.building.stats.energyShield)/10;
-        if (damage < 0){
+        if (damage < .1){
             damage = .1;
         }
 
-        target.building.stats.health -= damage;
+        if(currentScene === "battle"){
+            target.building.stats.health -= damage;
+        }
         const blastRadius = building.stats.blastRadius;
         blasts.push({
             x:(target.x * cellSize) + enemy.xGridOffset + (cellSize / 2), 
