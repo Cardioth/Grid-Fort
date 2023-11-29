@@ -1,0 +1,25 @@
+body {
+    display: flex;
+    flex-direction: column; /* This line is added */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: rgb(41, 39, 49);
+}
+
+canvas {
+    border: 1px solid #000;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+h2 {
+    color: white;
+    font-family: 'Roboto', sans-serif; /* Replace 'Roboto' with your chosen font */
+    font-size: 2em;
+    text-align: center;
+    margin-top: 20px;
+}
