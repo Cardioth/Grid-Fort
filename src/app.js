@@ -398,6 +398,7 @@ function battleLoop(){
             allBoards.forEach((board) => {
                 
                 board.allPlacedBuildings.forEach((building) =>{
+                    building.target = undefined;
                     building.destroyed = false;
                     building.stats.health = allBuildings[building.keyName].stats.health;
                     if(building.stats.hasOwnProperty("ammoStorage")){
@@ -407,6 +408,7 @@ function battleLoop(){
                         building.stats.powerStorage = allBuildings[building.keyName].stats.powerStorage;
                     }
                 });
+
             });
 
             if(allBoards.indexOf(enemyBoard) !== -1){
@@ -1092,6 +1094,7 @@ function placeBuilding(building, mouseX, mouseY, board) {
     const gridY = Math.floor((mouseY - board.yGridOffset) / cellSize) - Math.floor(building.height/2);
    
     if (canPlaceBuilding(building, gridX, gridY, board)) {
+        console.log(building);
         const newBuilding = JSON.parse(JSON.stringify(building));
         newBuilding.uid = Math.random().toString(36).substring(7);
         newBuilding.x = gridX;
