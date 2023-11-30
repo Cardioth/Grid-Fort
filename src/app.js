@@ -102,7 +102,7 @@ const allBuildings = {
     ammoStation:{name:"Ammo\nStation", class:"Booster",cost:3, width:4,height:4,shape:[0,5,5,0,5,2,1,5,5,1,1,5,0,5,5,0], color:"#35608a", 
         stats:{kineticFirepower:1, ammoStorage:30, fireRate:12, ammoStorage:50}, effects:{ammoStorage:100}},
     protector:{name:"Protector", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
-        stats:{kineticFirepower:1}, 
+        stats:{kineticFirepower:1, ammoStorage:15}, 
         effects:{armor:1,energyShield:1}},
     energyShield:{name:"Energy\nShield", class:"Shield",cost:2, width:6,height:3,shape:[0,5,5,5,5,0,5,5,1,1,5,5,5,1,1,1,1,5], color:"#546572", 
         effects:{energyShield:1}},
@@ -326,8 +326,7 @@ function placeAIFort(AIfortIndex) {
 
 const AIforts = [
 
-    {name:"Yuan Lee", description:"My little fortress.",layout:
-        [{building:allBuildings.core, x:0, y:0, rotation:"N"},
+    {name:"Yuan Lee", description:"My little fortress.",layout:[
         {building:allBuildings.miniArty, x:0, y:-2, rotation:"R"},
         {building:allBuildings.protector, x:-2, y:-1, rotation:"N"},
         {building:allBuildings.radar, x:1, y:1, rotation:"N"},
@@ -336,13 +335,20 @@ const AIforts = [
         {building:allBuildings.ammoStation, x:1, y:-3, rotation:"N"},
     ]},
 
-    // {name:"Sir Biggles", description:"A fortress with a lot of firepower.",layout:
-    //     [{building:allBuildings.core, x:0, y:0, rotation:"N"},
-    //     {building:allBuildings.miniArty, x:0, y:-2, rotation:"R"},
-    //     {building:allBuildings.miniArty, x:0, y:2, rotation:"RR"},
-    //     {building:allBuildings.miniArty, x:-2, y:0, rotation:"L"},
-    //     {building:allBuildings.miniArty, x:2, y:0, rotation:"N"},
-    // ]},
+    {name:"Sir Biggles", description:"A fortress with a lot of firepower.",layout:[
+        {building:allBuildings.miniArty, x:1, y:-1, rotation:"N"},
+        {building:allBuildings.miniArty, x:-1, y:2, rotation:"RR"},
+        {building:allBuildings.miniArty, x:-1, y:-1, rotation:"L"},
+        {building:allBuildings.miniArty, x:2, y:1, rotation:"R"},
+        {building:allBuildings.basicLaser, x:1, y:-2, rotation:"N"},
+        {building:allBuildings.basicLaser, x:3, y:1, rotation:"R"},
+        {building:allBuildings.basicLaser, x:0, y:3, rotation:"RR"},
+        {building:allBuildings.basicLaser, x:-2, y:0, rotation:"L"},
+        {building:allBuildings.radar, x:-2, y:-3, rotation:"N"},
+        {building:allBuildings.radar, x:3, y:-2, rotation:"N"},
+        {building:allBuildings.radar, x:-3, y:2, rotation:"N"},
+        {building:allBuildings.radar, x:2, y:3, rotation:"N"},
+    ]},
 
 ];
 
@@ -1161,6 +1167,9 @@ function placeBuilding(building, mouseX, mouseY, board) {
             }
         }
         updateBoardStats(board);
+    } else {
+        console.log(building);
+        return false;
     }
 }
 
