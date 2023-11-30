@@ -108,10 +108,10 @@ const allBuildings = {
         effects:{energyShield:1}},
     radar:{name:"Radar", class:"Radar",cost:2, width:3,height:3,shape:[0,1,0,1,1,1,0,1,0], color:"#546572", 
         stats:{radarRange:2}, effects:{radarRange:2}},
-    core:{name:"Core", class:"Core",cost:9, width:1,height:1,shape:[2], color:"#a9bcdb", moveable:false, returnable:false, 
-        stats:{kineticFirepower:1,health:30, ammoStorage:1000}},
     powerRing:{name:"Power\nRing", class:"Booster", cost:9, width:6, height:6, shape:[0,1,0,0,1,0,1,1,1,1,1,1,0,1,5,5,1,0,0,1,5,5,1,0,1,1,1,1,1,1,0,1,0,0,1,0], color:"#fcc15b", 
         effects:{energyFirepower:5, powerStorage:10}},
+    core:{name:"Core", class:"Core",cost:9, width:1,height:1,shape:[2], color:"#a9bcdb", moveable:false, returnable:false, 
+        stats:{kineticFirepower:1,health:30, ammoStorage:1000}},
 }
 
 //Add default stats to all buildings if stat is not specified
@@ -144,11 +144,7 @@ let selectedCard = null;
 //Deal cards to hand for testing
 let hand = [];
 for(let i = 0; i < 1; i++){
-    for(let key in allBuildings){
-        if(key != "core"){
-            hand.push({...allBuildings[key]});
-        }
-    }
+    hand.push(getRandomBuilding());
 }
 
 function getRandomBuilding() {
@@ -337,6 +333,7 @@ const AIforts = [
         {building:allBuildings.radar, x:1, y:1, rotation:"N"},
         {building:allBuildings.damageBooster, x:-2, y:-2, rotation:"N"},
         {building:allBuildings.basicLaser, x:-3, y:-2, rotation:"N"},
+        {building:allBuildings.ammoStation, x:1, y:-3, rotation:"N"},
     ]},
 
     // {name:"Sir Biggles", description:"A fortress with a lot of firepower.",layout:
@@ -387,6 +384,8 @@ function battleLoop(){
 
         if(allBuildingsDestroyed){
             currentScene = "build";
+            hand.push(getRandomBuilding());
+            hand.push(getRandomBuilding());
             playerBoard.targetPosition = {x:(canvas.width-(gridWidth*cellSize))/2,y:playerBoard.yGridOffset};
             availableCredits += 1;
             totalCredits = availableCredits;
@@ -1094,7 +1093,6 @@ function placeBuilding(building, mouseX, mouseY, board) {
     const gridY = Math.floor((mouseY - board.yGridOffset) / cellSize) - Math.floor(building.height/2);
    
     if (canPlaceBuilding(building, gridX, gridY, board)) {
-        console.log(building);
         const newBuilding = JSON.parse(JSON.stringify(building));
         newBuilding.uid = Math.random().toString(36).substring(7);
         newBuilding.x = gridX;
