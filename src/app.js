@@ -1,11 +1,8 @@
 import { hitTest, wrapText, camelCaseToTitleCase } from "./utils";
+import { gridWidth, gridHeight, cellSize } from "./config";
 
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
-
-const gridWidth = 17;
-const gridHeight = 17;
-const cellSize = 18;
 
 let currentScene = "build";
 
@@ -51,15 +48,6 @@ const allBoards = [playerBoard];
 
 circularizeGrids();
 
-const shapeKey = {
-    0: {name:"Empty", highLightColor:"#FF0"},
-    1: {name:"Building", highLightColor:"#FF0"},
-    2: {name:"TurretArty",highLightColor:"#FF0"},
-    3: {name:"TurretEnergy",highLightColor:"#0F0"},
-    4: {name:"TurretMissile",highLightColor:"#0FF"},
-    5: {name:"Effect",highLightColor:"#F0F"},
-}
-
 const defaultStats = {
     armor:0,
     energyShield:0,
@@ -69,7 +57,7 @@ const defaultStats = {
 const defaultAttackingStats = {
     critChance:10,
     critDamageBonus:50,
-    blastRadius:1,
+    blastRadius:0,
     fireRate:10,
     windUpTime:0,
     ammoDraw:1,
@@ -92,7 +80,7 @@ const defaultQualities = {
 
 const allBuildings = { 
     miniArty:{name:"Artillery", class:"Artillery", description:" ",cost:1, width:3, height:2, shape:[0,1,0,1,2,1], color:"#3ca9c8", 
-        stats:{kineticFirepower:1, blastRadius:2, ammoStorage:10, fireRate:8}},
+        stats:{kineticFirepower:1, blastRadius:1, ammoStorage:10, fireRate:8}},
     basicLaser:{name:"Basic\nLaser", class:"Laser", cost:1, width:2, height:2, shape:[1,3,1,0], color:"#5497e3", 
         stats:{energyFirepower:2, powerStorage:15, powerDraw:0.2, fireRate:2}},
     damageBooster:{name:"Damage\nBooster", class:"Booster",cost:2, width:3,height:3,shape:[5,1,5,5,1,5,5,1,5], color:"#487fb6", 
@@ -110,7 +98,7 @@ const allBuildings = {
         stats:{radarRange:2}, effects:{radarRange:2}},
     powerRing:{name:"Power\nRing", class:"Booster", cost:9, width:6, height:6, shape:[0,1,0,0,1,0,1,1,1,1,1,1,0,1,5,5,1,0,0,1,5,5,1,0,1,1,1,1,1,1,0,1,0,0,1,0], color:"#fcc15b", 
         effects:{energyFirepower:5, powerStorage:10}},
-    core:{name:"Core", class:"Core",cost:9, width:1,height:1,shape:[2], color:"#a9bcdb", moveable:false, returnable:false, 
+    core:{name:"Core", class:"Core",cost:9, width:3,height:3,shape:[1,1,1,1,2,1,1,1,1], color:"#a9bcdb", moveable:false, returnable:false, 
         stats:{kineticFirepower:1,health:30, ammoStorage:1000}},
 }
 
@@ -327,28 +315,28 @@ function placeAIFort(AIfortIndex) {
 const AIforts = [
 
     {name:"Yuan Lee", description:"My little fortress.",layout:[
-        {building:allBuildings.miniArty, x:0, y:-2, rotation:"R"},
+        {building:allBuildings.miniArty, x:0, y:-3, rotation:"R"},
         {building:allBuildings.protector, x:-2, y:-1, rotation:"N"},
-        {building:allBuildings.radar, x:1, y:1, rotation:"N"},
+        {building:allBuildings.radar, x:2, y:2, rotation:"N"},
         {building:allBuildings.damageBooster, x:-2, y:-2, rotation:"N"},
         {building:allBuildings.basicLaser, x:-3, y:-2, rotation:"N"},
-        {building:allBuildings.ammoStation, x:1, y:-3, rotation:"N"},
+        {building:allBuildings.ammoStation, x:1, y:-4, rotation:"N"},
     ]},
 
-    {name:"Sir Biggles", description:"A fortress with a lot of firepower.",layout:[
-        {building:allBuildings.miniArty, x:1, y:-1, rotation:"N"},
-        {building:allBuildings.miniArty, x:-1, y:2, rotation:"RR"},
-        {building:allBuildings.miniArty, x:-1, y:-1, rotation:"L"},
-        {building:allBuildings.miniArty, x:2, y:1, rotation:"R"},
-        {building:allBuildings.basicLaser, x:1, y:-2, rotation:"N"},
-        {building:allBuildings.basicLaser, x:3, y:1, rotation:"R"},
-        {building:allBuildings.basicLaser, x:0, y:3, rotation:"RR"},
-        {building:allBuildings.basicLaser, x:-2, y:0, rotation:"L"},
-        {building:allBuildings.radar, x:-2, y:-3, rotation:"N"},
-        {building:allBuildings.radar, x:3, y:-2, rotation:"N"},
-        {building:allBuildings.radar, x:-3, y:2, rotation:"N"},
-        {building:allBuildings.radar, x:2, y:3, rotation:"N"},
-    ]},
+    // {name:"Sir Biggles", description:"A fortress with a lot of firepower.",layout:[
+    //     {building:allBuildings.miniArty, x:1, y:-1, rotation:"N"},
+    //     {building:allBuildings.miniArty, x:-1, y:2, rotation:"RR"},
+    //     {building:allBuildings.miniArty, x:-1, y:-1, rotation:"L"},
+    //     {building:allBuildings.miniArty, x:2, y:1, rotation:"R"},
+    //     {building:allBuildings.basicLaser, x:1, y:-2, rotation:"N"},
+    //     {building:allBuildings.basicLaser, x:3, y:1, rotation:"R"},
+    //     {building:allBuildings.basicLaser, x:0, y:3, rotation:"RR"},
+    //     {building:allBuildings.basicLaser, x:-2, y:0, rotation:"L"},
+    //     {building:allBuildings.radar, x:-2, y:-3, rotation:"N"},
+    //     {building:allBuildings.radar, x:3, y:-2, rotation:"N"},
+    //     {building:allBuildings.radar, x:-3, y:2, rotation:"N"},
+    //     {building:allBuildings.radar, x:2, y:3, rotation:"N"},
+    // ]},
 
 ];
 
@@ -447,7 +435,7 @@ function fireKineticTurret(building, board, target, enemy) {
             //Adjust damage for crits
             let damage = building.stats.kineticFirepower-target.building.stats.armor;
             if(Math.random() * 100 < building.stats.critChance){
-                damage = damage*(1+(100/building.stats.critDamageBonus));
+                damage = damage*(1+(building.stats.critDamageBonus/100));
             }
             if (damage < 1){
                 damage = 1;
@@ -460,13 +448,13 @@ function fireKineticTurret(building, board, target, enemy) {
                         const cell = enemy.grid[x + y * gridWidth];
                         if(cell.occupied && cell.building !== undefined){
                             if(currentScene === "battle"){
-                                cell.building.stats.health -= damage/(building.stats.blastRadius*building.stats.blastRadius);
+                                cell.building.stats.health -= damage/Math.pow((2 * building.stats.blastRadius + 1), 2);
                                 cell.building.stats.health = parseFloat(cell.building.stats.health.toFixed(2));
                             }
                             blasts.push({
                                 x:(target.x * cellSize) + enemy.xGridOffset + (cellSize / 2), 
                                 y:(target.y * cellSize) + enemy.yGridOffset + (cellSize / 2), 
-                                radius:blastRadius, 
+                                radius:blastRadius+1, 
                                 alpha:1,
                                 size:1,
                             });
@@ -523,7 +511,7 @@ function fireEnergyTurret(building, board, target, enemy) {
         blasts.push({
             x:(target.x * cellSize) + enemy.xGridOffset + (cellSize / 2), 
             y:(target.y * cellSize) + enemy.yGridOffset + (cellSize / 2), 
-            radius:blastRadius, 
+            radius:blastRadius+1, 
             alpha:1,
             size:1,
         });
@@ -543,7 +531,7 @@ function drawBlast(blast){
     ctx.arc(blast.x, blast.y, (blast.radius*cellSize/2)*blast.size, 0, 2 * Math.PI);
     ctx.fillStyle = "#fff";
     ctx.fill();
-    blast.size += 0.001;
+    blast.size += 0.005;
     blast.alpha /= 1.05;
 
     if(blast.alpha <= 0.01){  
@@ -764,7 +752,9 @@ function updateGraphics(){
             }
         });
 
-        drawFortStats(board);
+        if (board !== null){
+            drawFortStats(board);
+        }
     }
 
     //draw cards
@@ -1168,7 +1158,6 @@ function placeBuilding(building, mouseX, mouseY, board) {
         }
         updateBoardStats(board);
     } else {
-        console.log(building);
         return false;
     }
 }
