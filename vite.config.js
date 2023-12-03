@@ -4,4 +4,7 @@ export default {
     outDir: "../dist",
     emptyOutDir: true,
   },
+  server: {
+    hmr: false,
+  },
 };

@@ -1,37 +1,18 @@
-import { canvas, currentScene, allBoards, placeBuildingToBoard, placeAIFort, AIforts, updateBoardStats, circularizeGrids, countDownNumber, hand, getRandomBuilding, availableCredits, totalCredits, setCardPositions } from "./app";
+import { allBoards, currentScene, updateCurrentScene } from "./app";
+import { updateAvailableCredits, getAvailableCredits, setTotalCredits } from "./credits";
+import { setCardPositions, hand, getRandomBuilding } from "./cards";
 import allBuildings from "./buildings";
 import { gridWidth, gridHeight, cellSize } from "./config";
-import { spawnProjectile, blasts, createButton, createBattleInterface } from "./graphics";
+import { spawnProjectile, blasts, createBuildInterface } from "./graphics";
+import { playerBoard, enemyBoard, canvas } from "./setup";
 
 let battleLoopInterval;
-export let buttons = [];
-createBuildInterface();
-function createBuildInterface() {
-    buttons = [];
-    buttons.push(createButton("End Turn", canvas.width - 100, canvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {
-        currentScene = "battleCountdown";
-        playerBoard.targetPosition = { x: playerBoard.xGridOffset - 200, y: playerBoard.yGridOffset };
-        allBoards.push(enemyBoard);
-        placeBuildingToBoard(allBuildings.core, enemyBoard, 0, 0);
-        placeAIFort(Math.floor(Math.random() * AIforts.length));
-        updateBoardStats(enemyBoard);
-        circularizeGrids();
-        createBattleInterface();
-
-        countDownNumber = 4;
-        let countDownInterval = setInterval(function () {
-            countDownNumber--;
-            if (countDownNumber === 0) {
-                currentScene = "battle";
-                battleLoopInterval = setInterval(function () {
-                    battleLoop();
-                    circularizeGrids();
-                }, 100);
-                clearInterval(countDownInterval);
-            }
-        }, 500);
-    }));
+export function startBattleLoop(){
+    battleLoopInterval = setInterval(function () {
+        battleLoop();
+    }, 100);
 }
+
 function battleLoop() {
     for (let board of allBoards) {
         const enemy = board === playerBoard ? enemyBoard : playerBoard;
@@ -66,21 +47,21 @@ function battleLoop() {
         });
 
         if (allBuildingsDestroyed) {
-            currentScene = "build";
+            updateCurrentScene("build");
             hand.push(getRandomBuilding());
             hand.push(getRandomBuilding());
             playerBoard.targetPosition = { x: (canvas.width - (gridWidth * cellSize)) / 2, y: playerBoard.yGridOffset };
-            availableCredits += 1;
-            totalCredits = availableCredits;
+            updateAvailableCredits(1);
+            setTotalCredits(getAvailableCredits());
 
             setCardPositions();
             createBuildInterface();
 
             //revive all buildings
             allBoards.forEach((board) => {
-
                 board.allPlacedBuildings.forEach((building) => {
                     building.target = undefined;
+                    building.possibleCellTargets = [];
                     building.destroyed = false;
                     building.stats.health = allBuildings[building.keyName].stats.health;
                     if (building.stats.hasOwnProperty("ammoStorage")) {
@@ -90,7 +71,6 @@ function battleLoop() {
                         building.stats.powerStorage = allBuildings[building.keyName].stats.powerStorage;
                     }
                 });
-
             });
 
             if (allBoards.indexOf(enemyBoard) !== -1) {
@@ -100,6 +80,7 @@ function battleLoop() {
         }
     }
 }
+
 function fireKineticTurret(building, board, target, enemy) {
     if (building.stats.windUpTime > building.windUpCounter) {
         building.windUpCounter++;
@@ -210,6 +191,7 @@ function fireEnergyTurret(building, board, target, enemy) {
         }
     }
 }
+
 function getPossibleCellTargets(board, building) {
     building.possibleCellTargets = [];
     if (building.preferredTarget.length === 0) {
@@ -226,12 +208,11 @@ function getPossibleCellTargets(board, building) {
                     building.possibleCellTargets.push(cell);
                 }
             }
-            // Exit loop if a target is found
             if (building.possibleCellTargets.length > 0) {
                 break;
             }
         }
-
         return null;
     }
 }
+

@@ -1,15 +1,24 @@
-import { ctx, countDownNumber, canvas, allBoards, convertGridToScreen, selectedPlacedBuilding, hoveredBuilding, hand, updateCardAnimation, selectedBuilding, currentMouseX, currentMouseY, totalCredits, currentScene, canPlaceBuildingNearest } from "./app";
-import { buttons, lasers } from "./battle";
-
+import { ctx, canvas, playerBoard, enemyBoard } from "./setup";
+import { allBoards, currentScene, updateCurrentScene, updateBoardStats } from "./app";
+import { totalCredits } from "./credits";
+import { currentMouseX, currentMouseY } from "./controls";
+import { selectedPlacedBuilding, hoveredBuilding, selectedBuilding } from "./controls";
+import { canPlaceBuildingNearest, placeBuildingToBoard, placeAIFort, circularizeGrids} from "./buildingPlacement";
+import { lasers, startBattleLoop } from "./battle";
+import { AIforts } from "./AIforts";
+import allBuildings from "./buildings";
+import { updateCardAnimation, hand } from "./cards";
 import { cellSize, gridWidth, gridHeight } from "./config";
 import { wrapText, camelCaseToTitleCase } from "./utils";
 
+let countDownNumber = 4;
 
 function drawBattleCountdown() {
     ctx.fillStyle = "#fff";
     ctx.font = "bold 50px Arial";
     ctx.fillText(countDownNumber, canvas.width / 2 - 25, canvas.height / 2 - 25);
 }
+
 function drawCardGraphics(card) {
     ctx.save();
     ctx.translate(card.currentPosition.x, card.currentPosition.y);
@@ -564,3 +573,32 @@ function boostedAnimation() {
     });
     ctx.globalAlpha = 1;
 }
+export let buttons = [];
+
+createBuildInterface();
+export function createBuildInterface() {
+    buttons = [];
+    buttons.push(createButton("End Turn", canvas.width - 100, canvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {
+        updateCurrentScene("battleCountdown");
+        playerBoard.targetPosition = { x: playerBoard.xGridOffset - 200, y: playerBoard.yGridOffset };
+        allBoards.push(enemyBoard);
+        placeBuildingToBoard(allBuildings.core, enemyBoard, 0, 0);
+        placeAIFort(Math.floor(Math.random() * AIforts.length));
+        updateBoardStats(enemyBoard);
+        circularizeGrids();
+        createBattleInterface();
+        countDownNumber = 4;
+        let countDownInterval = setInterval(function () {
+            countDownNumber--;
+            if (countDownNumber === 0) {
+                updateCurrentScene("battle");
+                startBattleLoop();
+                clearInterval(countDownInterval);
+            }
+        }, 500);
+    }));
+}
+export function convertGridToScreen(x, y, board) {
+    return { x: x * cellSize + board.xGridOffset, y: y * cellSize + board.yGridOffset };
+}
+

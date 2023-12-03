@@ -1,7 +1,8 @@
 import { cellSize, gridHeight, gridWidth } from "./config.js";
+export const canvas = document.getElementById('gridCanvas');
+export const ctx = canvas.getContext('2d');
 
-export default function initializeSetup(canvas){
-    const fortStats = {
+export const fortStats = {
         kineticFirepower: {name:"Kinetic Firepower", stat: 0},
         energyFirepower: {name:"Energy Firepower", stat: 0},
         armor: {name:"Kinetic Damage Reduction", stat: 0},
@@ -14,27 +15,27 @@ export default function initializeSetup(canvas){
         radarRange: {name:"Radar Range", stat: 4.5},
     };
     
-    const playerBoard = {
-        name:"Player",
-        grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
-        xGridOffset:(canvas.width-(gridWidth*cellSize))/2,
-        yGridOffset:(canvas.height-(gridHeight*cellSize))/2-50,
-        targetPosition:{x:(canvas.width-(gridWidth*cellSize))/2,y:(canvas.height-(gridHeight*cellSize))/2-50},
-        stats:JSON.parse(JSON.stringify(fortStats)),
-        allPlacedBuildings:[],
-        id:0,
-    };
-    
-    const enemyBoard = {
-        name:"Enemy",
-        grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
-        xGridOffset:(canvas.width-(gridWidth*cellSize))/2+200,
-        yGridOffset:(canvas.height-(gridHeight*cellSize))/2-50,
-        targetPosition:{x:(canvas.width-(gridWidth*cellSize))/2+200,y:(canvas.height-(gridHeight*cellSize))/2-50},
-        stats:JSON.parse(JSON.stringify(fortStats)),
-        allPlacedBuildings:[],
-        id:1,
-    };
+export const playerBoard = {
+    name:"Player",
+    grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
+    xGridOffset:(canvas.width-(gridWidth*cellSize))/2,
+    yGridOffset:(canvas.height-(gridHeight*cellSize))/2-50,
+    targetPosition:{x:(canvas.width-(gridWidth*cellSize))/2,y:(canvas.height-(gridHeight*cellSize))/2-50},
+    stats:JSON.parse(JSON.stringify(fortStats)),
+    allPlacedBuildings:[],
+    id:0,
+};
+
+export const enemyBoard = {
+    name:"Enemy",
+    grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
+    xGridOffset:(canvas.width-(gridWidth*cellSize))/2+200,
+    yGridOffset:(canvas.height-(gridHeight*cellSize))/2-50,
+    targetPosition:{x:(canvas.width-(gridWidth*cellSize))/2+200,y:(canvas.height-(gridHeight*cellSize))/2-50},
+    stats:JSON.parse(JSON.stringify(fortStats)),
+    allPlacedBuildings:[],
+    id:1,
+};
     
     function createGridWithStructuredNeighbors(width, height) {
         const grid = [];
@@ -78,6 +79,3 @@ export default function initializeSetup(canvas){
     
         return neighbors;
     }
-
-    return {playerBoard, enemyBoard, fortStats};
-}

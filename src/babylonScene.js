@@ -43,8 +43,6 @@ const createScene = () => {
     return scene;
 };
 
-console.log('sphere');
-
 // call the createScene function
 const scene = createScene();
 
