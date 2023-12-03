@@ -1,6 +1,6 @@
 import { allBoards } from "./app";
 import { updateBoardStats } from "./utils";
-import { totalCredits, updateTotalCredits } from "./credits";
+import { updateTotalCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedCard } from "./controls";
 import { setCardPositions, hand } from "./cards";
 import { cellSize, gridHeight, gridWidth} from "./config";
@@ -207,7 +207,7 @@ export function circularizeGrids() {
                     setCardPositions();
                     cell.building.currentPosition.x = canvas.width / 2;
                     cell.building.currentPosition.y = canvas.height / 2;
-                    totalCredits += cell.building.cost;
+                    updateTotalCredits(cell.building.cost);
                     cell.building.placed = false;
                     unplaceBuilding(cell.building);
                 }
