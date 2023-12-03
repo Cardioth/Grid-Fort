@@ -1,7 +1,7 @@
 import { currentScene } from "./sceneControl";
 import { canvas } from "./setup";
 import allBuildings from "./buildings";
-import { setTotalCredits } from "./credits";
+import { updateTotalCredits } from "./credits";
 import { circularizeGrids } from "./buildingPlacement";
 import { currentMouseX, selectedCard, selectedBuilding, currentMouseY, setSelectedCard } from "./controls";
 
@@ -108,7 +108,7 @@ export function returnBuildingToDeck() {
     selectedCard.currentPosition.y = currentMouseY;
 
     if (selectedBuilding.placed === true) {
-        setTotalCredits(selectedCard.cost);
+        updateTotalCredits(selectedCard.cost);
         circularizeGrids();
         selectedBuilding.placed = false;
     }

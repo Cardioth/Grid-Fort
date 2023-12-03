@@ -92,3 +92,5 @@ function getStructuredNeighbors(x, y, width, height, grid) {
 export const allBoards = [playerBoard];
 
 placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
+
+console.log("Why does this run");

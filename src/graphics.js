@@ -13,6 +13,8 @@ import { updateCardAnimation, hand } from "./cards";
 import { cellSize, gridWidth, gridHeight } from "./config";
 import { wrapText, camelCaseToTitleCase } from "./utils";
 
+console.log("before this runs?");
+
 let countDownNumber = 4;
 
 function drawBattleCountdown() {
@@ -600,7 +602,7 @@ export function createBuildInterface() {
         }, 500);
     }));
 }
+
 export function convertGridToScreen(x, y, board) {
     return { x: x * cellSize + board.xGridOffset, y: y * cellSize + board.yGridOffset };
 }
-
