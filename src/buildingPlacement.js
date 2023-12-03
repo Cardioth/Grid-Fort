@@ -1,4 +1,4 @@
-import { allBoards } from "./app";
+import { allBoards } from "./setup";
 import { updateBoardStats } from "./utils";
 import { updateTotalCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedCard } from "./controls";

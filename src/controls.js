@@ -1,4 +1,4 @@
-import { currentScene } from "./app";
+import { currentScene } from "./sceneControl";
 import { totalCredits } from "./credits";
 import { returnBuildingToDeck } from "./cards";
 import { unplaceBuilding, getHoveredBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "./buildingPlacement";

@@ -1,4 +1,5 @@
-import { allBoards, currentScene, updateCurrentScene } from "./app";
+import { currentScene, updateCurrentScene } from "./sceneControl";
+import { allBoards } from "./setup";
 import { updateAvailableCredits, getAvailableCredits, setTotalCredits } from "./credits";
 import { setCardPositions, hand, getRandomBuilding } from "./cards";
 import allBuildings from "./buildings";

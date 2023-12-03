@@ -1,7 +1,7 @@
-import { currentScene } from "./app";
+import { currentScene } from "./sceneControl";
 import { canvas } from "./setup";
 import allBuildings from "./buildings";
-import { totalCredits, setTotalCredits } from "./credits";
+import { setTotalCredits } from "./credits";
 import { circularizeGrids } from "./buildingPlacement";
 import { currentMouseX, selectedCard, selectedBuilding, currentMouseY, setSelectedCard } from "./controls";
 
@@ -70,7 +70,6 @@ export function updateCardAnimation(card) {
         buildingCard.isDragged = false;
     });
 }
-setCardPositions();
 
 export function getHoveredCard(mouseX, mouseY) {
     const hoverWidthPercentage = 0.5; // Adjust this value to change the width of the hovered card area
