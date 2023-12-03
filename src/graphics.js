@@ -1,5 +1,6 @@
 import { ctx, canvas, playerBoard, enemyBoard } from "./setup";
-import { allBoards, currentScene, updateCurrentScene, updateBoardStats } from "./app";
+import { allBoards, currentScene, updateCurrentScene } from "./app";
+import { updateBoardStats } from "./utils";
 import { totalCredits } from "./credits";
 import { currentMouseX, currentMouseY } from "./controls";
 import { selectedPlacedBuilding, hoveredBuilding, selectedBuilding } from "./controls";

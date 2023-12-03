@@ -1,3 +1,5 @@
+import { fortStats } from "./setup";
+
 export function wrapText(context, text, x, y, lineHeight) {
     const lines = text.split("\n");
 
@@ -20,4 +22,14 @@ export function camelCaseToTitleCase(input) {
         .replace(/([a-z])([A-Z])/g, '$1 $2')
         // Capitalize the first letter of each word.
         .replace(/\b\w/g, char => char.toUpperCase());
+}
+export function updateBoardStats(board) {
+    board.stats = JSON.parse(JSON.stringify(fortStats));
+    board.allPlacedBuildings.forEach((building) => {
+        for (let key in building.stats) {
+            if (board.stats.hasOwnProperty(key)) {
+                board.stats[key].stat += building.stats[key];
+            }
+        } 5;
+    });
 }

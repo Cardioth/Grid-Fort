@@ -17,6 +17,10 @@ export let currentMouseY = 0;
 
 let hoveredCard = undefined;
 
+export function setSelectedCard(card) {
+    selectedCard = card;
+}
+
 export function initializeControls(canvas) {
     canvas.addEventListener('mousemove', function (e) {
         const rect = canvas.getBoundingClientRect();
@@ -72,7 +76,6 @@ export function initializeControls(canvas) {
             }
         });
     });
-    let startDragBuilding = false;
     let startDrag = false;
     let startDragLocation = { x: 0, y: 0 };
     let distanceDragged = 0;

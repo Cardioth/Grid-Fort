@@ -1,9 +1,9 @@
 import { currentScene } from "./app";
 import { canvas } from "./setup";
 import allBuildings from "./buildings";
-import { totalCredits } from "./credits";
+import { totalCredits, setTotalCredits } from "./credits";
 import { circularizeGrids } from "./buildingPlacement";
-import { currentMouseX, selectedCard, selectedBuilding, currentMouseY } from "./controls";
+import { currentMouseX, selectedCard, selectedBuilding, currentMouseY, setSelectedCard } from "./controls";
 
 export let hand = [];
 
@@ -101,7 +101,7 @@ export function getHoveredCard(mouseX, mouseY) {
 export function returnBuildingToDeck() {
     const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length);
     if (selectedCard === null) {
-        selectedCard = selectedBuilding;
+        setSelectedCard(selectedBuilding);
     }
     hand.splice(arrayIndex, 0, selectedCard);
     setCardPositions();
@@ -109,7 +109,7 @@ export function returnBuildingToDeck() {
     selectedCard.currentPosition.y = currentMouseY;
 
     if (selectedBuilding.placed === true) {
-        totalCredits += selectedCard.cost;
+        setTotalCredits(selectedCard.cost);
         circularizeGrids();
         selectedBuilding.placed = false;
     }

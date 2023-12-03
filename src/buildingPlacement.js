@@ -1,7 +1,7 @@
-import { allBoards, updateBoardStats } from "./app";
+import { allBoards } from "./app";
+import { updateBoardStats } from "./utils";
 import { totalCredits, updateTotalCredits } from "./credits";
-import { currentMouseX, currentMouseY } from "./controls";
-import { selectedCard } from "./controls";
+import { currentMouseX, currentMouseY, selectedCard } from "./controls";
 import { setCardPositions, hand } from "./cards";
 import { cellSize, gridHeight, gridWidth} from "./config";
 import { boostArrow, arrowGraphics } from "./graphics";
