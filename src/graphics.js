@@ -1,19 +1,14 @@
-import { ctx, canvas, playerBoard, enemyBoard } from "./setup";
-import { currentScene, updateCurrentScene } from "./sceneControl";
-import { allBoards } from "./setup";
-import { updateBoardStats } from "./utils";
-import { totalCredits } from "./credits";
-import { currentMouseX, currentMouseY } from "./controls";
-import { selectedPlacedBuilding, hoveredBuilding, selectedBuilding } from "./controls";
-import { canPlaceBuildingNearest, placeBuildingToBoard, placeAIFort, circularizeGrids} from "./buildingPlacement";
-import { lasers, startBattleLoop } from "./battle";
 import { AIforts } from "./AIforts";
+import { lasers, startBattleLoop } from "./battle";
+import { canPlaceBuildingNearest, circularizeGrids, placeAIFort, placeBuildingToBoard } from "./buildingPlacement";
 import allBuildings from "./buildings";
-import { updateCardAnimation, hand } from "./cards";
-import { cellSize, gridWidth, gridHeight } from "./config";
-import { wrapText, camelCaseToTitleCase } from "./utils";
-
-console.log("before this runs?");
+import { hand, updateCardAnimation } from "./cards";
+import { cellSize, gridHeight, gridWidth } from "./config";
+import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "./controls";
+import { totalCredits } from "./credits";
+import { currentScene, updateCurrentScene } from "./sceneControl";
+import { allBoards, canvas, ctx, enemyBoard, playerBoard } from "./setup";
+import { camelCaseToTitleCase, updateBoardStats, wrapText } from "./utils";
 
 let countDownNumber = 4;
 

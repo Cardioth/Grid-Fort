@@ -139,6 +139,7 @@ export function unplaceBuilding(building) {
             }
         }
     }
+    circularizeGrids();
 }
 function canPlaceBuilding(building, gridX, gridY, board) {
     for (let x = 0; x < building.width; x++) {

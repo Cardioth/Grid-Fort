@@ -12,17 +12,17 @@ setCardPositions();
 initializeControls(canvas);
 
 export const fortStats = {
-        kineticFirepower: {name:"Kinetic Firepower", stat: 0},
-        energyFirepower: {name:"Energy Firepower", stat: 0},
-        armor: {name:"Kinetic Damage Reduction", stat: 0},
-        energyResistance: {name:"Energy Damage Reduction", stat: 0},
-        kineticDamageBoost: {name:"Kinetic Damage Boost", stat: 0},
-        energyDamageBoost: {name:"Energy Damage Boost", stat: 0},
-        powerDraw: {name:"Power Draw", stat: 0},
-        ammoStorage: {name:"Ammo Storage", stat: 0},
-        powerStorage: {name:"Power Storage", stat: 0},
-        radarRange: {name:"Radar Range", stat: 4.5},
-    };
+    kineticFirepower: {name:"Kinetic Firepower", stat: 0},
+    energyFirepower: {name:"Energy Firepower", stat: 0},
+    armor: {name:"Kinetic Damage Reduction", stat: 0},
+    energyResistance: {name:"Energy Damage Reduction", stat: 0},
+    kineticDamageBoost: {name:"Kinetic Damage Boost", stat: 0},
+    energyDamageBoost: {name:"Energy Damage Boost", stat: 0},
+    powerDraw: {name:"Power Draw", stat: 0},
+    ammoStorage: {name:"Ammo Storage", stat: 0},
+    powerStorage: {name:"Power Storage", stat: 0},
+    radarRange: {name:"Radar Range", stat: 4.5},
+};
     
 export const playerBoard = {
     name:"Player",
@@ -92,5 +92,3 @@ function getStructuredNeighbors(x, y, width, height, grid) {
 export const allBoards = [playerBoard];
 
 placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
-
-console.log("Why does this run");
