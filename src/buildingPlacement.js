@@ -139,7 +139,6 @@ export function unplaceBuilding(building) {
             }
         }
     }
-    circularizeGrids();
 }
 function canPlaceBuilding(building, gridX, gridY, board) {
     for (let x = 0; x < building.width; x++) {
@@ -197,7 +196,10 @@ export function circularizeGrids() {
     const centerX = (gridWidth - 1) / 2;
     const centerY = (gridHeight - 1) / 2;
 
+    
+
     allBoards.forEach((board) => {
+        updateBoardStats(board);
         const radius = board.stats.radarRange.stat;
         board.grid.forEach(cell => {
             const distanceFromCenter = Math.sqrt(Math.pow(cell.x - centerX, 2) + Math.pow(cell.y - centerY, 2));
@@ -223,8 +225,9 @@ export function circularizeGrids() {
             }
         });
     });
+}
 
-}export function placeBuildingToBoard(building, board, xLoc, yLoc) {
+export function placeBuildingToBoard(building, board, xLoc, yLoc) {
     placeBuilding(JSON.parse(JSON.stringify(building)), board.xGridOffset + (gridWidth * cellSize) / 2 + (xLoc * cellSize), board.yGridOffset + (gridHeight * cellSize) / 2 + (yLoc * cellSize), board);
 }
 export function placeAIFort(AIfortIndex) {

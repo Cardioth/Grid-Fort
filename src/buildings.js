@@ -52,9 +52,9 @@ const allBuildings = {
         effects:{energyFirepower:5, powerStorage:10}},
     core:{name:"Core", class:"Core",cost:9, width:3,height:3,shape:[1,1,1,1,2,1,1,1,1], color:"#a9bcdb", moveable:false, returnable:false, 
         stats:{kineticFirepower:1,health:30, ammoStorage:1000, fireRate:3}},
-    bubbleShield:{name:"Bubble\nShield", class:"Shield",cost:3, width:6,height:6,shape:[0,1,1,1,1,0,1,1,5,5,5,1,1,5,5,5,5,5,5,5,5,5,5,5,1,1,5,5,5,1,1,1,1,1,0,1,1,1,1,0], color:"#546572"
-        ,effects:{energyResistance:2}
-    },
+    Matador:{name:"Matador", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
+        stats:{kineticFirepower:1, ammoStorage:15, radarRange:2}, 
+        effects:{armor:1,energyResistance:1, radarRange:2}},
 }
 
 //Add default stats to all buildings if stat is not specified

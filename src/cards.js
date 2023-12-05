@@ -9,6 +9,7 @@ export let hand = [];
 
 for(let i = 0; i < 1; i++){
     hand.push(getRandomBuilding());
+    hand.push(allBuildings.Matador)
 }
 const cardWidth = 60;
 const cardHeight = 90;
