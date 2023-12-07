@@ -98,11 +98,11 @@ export function placeBuilding(building, mouseX, mouseY, board) {
         return false;
     }
 }
-export function unplaceBuilding(building) {
+export function unplaceBuilding(building, board) {
     const gridX = building.x;
     const gridY = building.y;
 
-    playerBoard.allPlacedBuildings = playerBoard.allPlacedBuildings.filter(obj => obj !== building);
+    board.allPlacedBuildings = board.allPlacedBuildings.filter(obj => obj !== building);
     //Update grid
     for (let x = 0; x < building.width; x++) {
         for (let y = 0; y < building.height; y++) {
@@ -110,29 +110,29 @@ export function unplaceBuilding(building) {
             const shapeKey = building.shape[x + y * building.width];
 
             if (shapeKey >= 1 && shapeKey <= 4) {
-                playerBoard.grid[cellIndex].occupied = false;
-                playerBoard.grid[cellIndex].building = null;
+                board.grid[cellIndex].occupied = false;
+                board.grid[cellIndex].building = null;
                 for (let key in building.stats) {
-                    if (playerBoard.grid[cellIndex].effects.hasOwnProperty(key)) {
-                        building.stats[key] -= playerBoard.grid[cellIndex].effects[key];
+                    if (board.grid[cellIndex].effects.hasOwnProperty(key)) {
+                        building.stats[key] -= board.grid[cellIndex].effects[key];
                     }
                 }
-                playerBoard.grid[cellIndex].shapeKey = 0;
+                board.grid[cellIndex].shapeKey = 0;
             }
             if (shapeKey > 4) {
-                if (playerBoard.grid[cellIndex]) {
-                    if (playerBoard.grid[cellIndex].occupied && playerBoard.grid[cellIndex].building !== undefined) {
+                if (board.grid[cellIndex]) {
+                    if (board.grid[cellIndex].occupied && board.grid[cellIndex].building !== undefined) {
                         for (let key in building.effects) {
-                            for (let key2 in playerBoard.grid[cellIndex].building.stats) {
+                            for (let key2 in board.grid[cellIndex].building.stats) {
                                 if (key2 === key) {
-                                    playerBoard.grid[cellIndex].building.stats[key] -= building.effects[key];
+                                    board.grid[cellIndex].building.stats[key] -= building.effects[key];
                                 }
                             }
                         }
                     }
                     for (let key in building.effects) {
-                        if (playerBoard.grid[cellIndex].effects.hasOwnProperty(key)) {
-                            playerBoard.grid[cellIndex].effects[key] -= building.effects[key];
+                        if (board.grid[cellIndex].effects.hasOwnProperty(key)) {
+                            board.grid[cellIndex].effects[key] -= building.effects[key];
                         }
                     }
                 }
@@ -212,7 +212,7 @@ export function circularizeGrids() {
                     cell.building.currentPosition.y = canvas.height / 2;
                     updateTotalCredits(cell.building.cost);
                     cell.building.placed = false;
-                    unplaceBuilding(cell.building);
+                    unplaceBuilding(cell.building, board);
                 }
                 cell.occupied = true;
                 cell.visible = false;

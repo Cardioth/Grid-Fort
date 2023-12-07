@@ -10,6 +10,7 @@ export let hand = [];
 for(let i = 0; i < 1; i++){
     hand.push(getRandomBuilding());
     hand.push(allBuildings.Matador)
+    hand.push(allBuildings.Salvador)
 }
 const cardWidth = 60;
 const cardHeight = 90;
@@ -17,6 +18,10 @@ const cardHeight = 90;
 export function getRandomBuilding() {
     const cards = Object.values(allBuildings);
     const randomNumber = Math.floor(Math.random() * cards.length);
+    // exclude core building from random selection
+    if (cards[randomNumber].name === "Core") {
+        return getRandomBuilding();
+    }
     return {...cards[randomNumber]};
 }
 
@@ -45,7 +50,9 @@ export function updateCardAnimation(card) {
     card.currentPosition.x += (card.targetPosition.x - card.currentPosition.x) * 0.06;
     card.currentPosition.y += (card.targetPosition.y - card.currentPosition.y) * 0.06;
 
-}export function setCardPositions() {
+}
+
+export function setCardPositions() {
     let xCardOffset = canvas.width / 2; // Initial offset from left
     let yCardOffset = -30; // Initial offset from top
     const gap = 50 - hand.length * 2; // Gap between cards
@@ -98,6 +105,7 @@ export function getHoveredCard(mouseX, mouseY) {
     }
     return undefined;
 }
+
 export function returnBuildingToDeck() {
     const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length);
     if (selectedCard === null) {

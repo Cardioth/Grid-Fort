@@ -47,7 +47,7 @@ const allBuildings = {
     energyResistance:{name:"Energy\nShield", class:"Shield",cost:2, width:6,height:3,shape:[0,5,5,5,5,0,5,5,1,1,5,5,5,1,1,1,1,5], color:"#546572", 
         effects:{energyResistance:1}},
     radar:{name:"Radar", class:"Radar",cost:2, width:3,height:3,shape:[0,1,0,1,1,1,0,1,0], color:"#546572", 
-        stats:{radarRange:2}, effects:{radarRange:2}},
+        stats:{radarRange:2, health:10}, effects:{radarRange:2}},
     powerRing:{name:"Power\nRing", class:"Booster", cost:9, width:6, height:6, shape:[0,1,0,0,1,0,1,1,1,1,1,1,0,1,5,5,1,0,0,1,5,5,1,0,1,1,1,1,1,1,0,1,0,0,1,0], color:"#fcc15b", 
         effects:{energyFirepower:5, powerStorage:10}},
     core:{name:"Core", class:"Core",cost:9, width:3,height:3,shape:[1,1,1,1,2,1,1,1,1], color:"#a9bcdb", moveable:false, returnable:false, 
@@ -55,6 +55,9 @@ const allBuildings = {
     Matador:{name:"Matador", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
         stats:{kineticFirepower:1, ammoStorage:15, radarRange:2}, 
         effects:{armor:1,energyResistance:1, radarRange:2}},
+    Salvador:{name:"Salvador", class:"Weapon",cost:5,  width:4,height:3,shape:[0,1,1,1,2,1], color:"#324d62",
+        stats:{kineticFirepower:1, ammoStorage:20, fireRate:1, blastRadius:2, health:30},
+    }
 }
 
 //Add default stats to all buildings if stat is not specified

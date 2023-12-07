@@ -35,7 +35,7 @@ export function initializeControls(canvas) {
         //Drags a placed building
         if (currentScene === "build") {
             if (hoveredBuilding !== null && distanceDragged > 5 && selectedBuilding === null && hoveredBuilding.moveable === true) {
-                unplaceBuilding(hoveredBuilding);
+                unplaceBuilding(hoveredBuilding, playerBoard);
                 selectedBuilding = hoveredBuilding;
                 hoveredBuilding = null;
                 selectedPlacedBuilding = null;
