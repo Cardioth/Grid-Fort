@@ -1,7 +1,8 @@
 import { currentScene, updateCurrentScene } from "./sceneControl";
 import { allBoards } from "./setup";
 import { updateAvailableCredits, getAvailableCredits, setTotalCredits } from "./credits";
-import { setCardPositions, hand, getRandomBuilding } from "./cards";
+import { setCardPositions, hand } from "./cards";
+import { getRandomBuilding } from "./buildings";
 import allBuildings from "./buildings";
 import { gridWidth, gridHeight, cellSize } from "./config";
 import { spawnProjectile, blasts, createBuildInterface } from "./graphics";

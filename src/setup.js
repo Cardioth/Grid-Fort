@@ -3,9 +3,12 @@ import allBuildings from "./buildings";
 import { cellSize, gridHeight, gridWidth } from "./config.js";
 import { setCardPositions } from "./cards.js";
 import { initializeControls } from "./controls.js";
+import { buildRandomDeck } from "./deck.js";
 
 export const canvas = document.getElementById('gridCanvas');
 export const ctx = canvas.getContext('2d');
+
+buildRandomDeck();
 
 setCardPositions();
 

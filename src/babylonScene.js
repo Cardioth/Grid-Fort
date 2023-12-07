@@ -26,18 +26,22 @@ const createScene = () => {
     camera.orthoLeft = orthoLeft;
     camera.orthoRight = orthoRight;
     camera.setTarget(BABYLON.Vector3.Zero());
-    camera.attachControl(canvas, true);
-    
 
+    BABYLON.SceneLoader.ImportMesh(
+        undefined, // Name of meshes to load, undefined to load all meshes
+        "./KhronosGroup/", // Path to the folder where your GLTF file is located
+        "DamagedHelmet.gltf", // Name of your GLTF file
+        scene, // Your Babylon.js scene
+        function (meshes, particleSystems, skeletons, animationGroups) {
+            meshes[0].rotation.y = Math.PI;
+            meshes.forEach(mesh => {
+                mesh.scaling = new BABYLON.Vector3(2,2,2);
+            });
+        }
+    );
+    
     // Create a basic light, aiming 0, 1, 0 - meaning, to the sky
     const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
-
-    // Create a built-in "sphere" shape; its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation 
-    const sphere = BABYLON.MeshBuilder.CreateSphere('sphere1', {diameter: 2, segments: 16}, scene);
-
-
-    // Move the sphere upward 1/2 of its height
-    sphere.position.y = 1;
 
     // Return the created scene
     return scene;

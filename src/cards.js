@@ -1,29 +1,13 @@
 import { currentScene } from "./sceneControl";
 import { canvas } from "./setup";
-import allBuildings from "./buildings";
 import { updateTotalCredits } from "./credits";
 import { circularizeGrids } from "./buildingPlacement";
 import { currentMouseX, selectedCard, selectedBuilding, currentMouseY, setSelectedCard } from "./controls";
 
 export let hand = [];
 
-for(let i = 0; i < 1; i++){
-    hand.push(getRandomBuilding());
-    hand.push(allBuildings.Matador)
-    hand.push(allBuildings.Salvador)
-}
 const cardWidth = 60;
 const cardHeight = 90;
-
-export function getRandomBuilding() {
-    const cards = Object.values(allBuildings);
-    const randomNumber = Math.floor(Math.random() * cards.length);
-    // exclude core building from random selection
-    if (cards[randomNumber].name === "Core") {
-        return getRandomBuilding();
-    }
-    return {...cards[randomNumber]};
-}
 
 export function removeCardFromHand(selectedCard) {
     hand = hand.filter(card => card !== selectedCard);

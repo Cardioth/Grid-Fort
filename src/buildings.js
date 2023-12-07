@@ -83,3 +83,13 @@ for (let key in allBuildings) {
 }
 
 export default allBuildings;
+
+export function getRandomBuilding() {
+    const cards = Object.values(allBuildings);
+    const randomNumber = Math.floor(Math.random() * cards.length);
+    // exclude core building from random selection
+    if (cards[randomNumber].name === "Core") {
+        return getRandomBuilding();
+    }
+    return { ...cards[randomNumber] };
+}
