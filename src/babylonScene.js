@@ -29,7 +29,7 @@ const createScene = () => {
 
     BABYLON.SceneLoader.ImportMesh(
         undefined, // Name of meshes to load, undefined to load all meshes
-        "./KhronosGroup/", // Path to the folder where your GLTF file is located
+        "./models/", // Path to the folder where your GLTF file is located
         "DamagedHelmet.gltf", // Name of your GLTF file
         scene, // Your Babylon.js scene
         function (meshes, particleSystems, skeletons, animationGroups) {

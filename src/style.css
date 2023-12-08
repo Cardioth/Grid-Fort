@@ -16,6 +16,11 @@ canvas {
     -ms-user-select: none;
     user-select: none;
 }
+
+canvas:focus {
+    outline: none;
+}
+
 h2 {
     color: white;
     font-family: 'Roboto', sans-serif; /* Replace 'Roboto' with your chosen font */
