@@ -37,11 +37,50 @@ const createScene = () => {
         scene, // Your Babylon.js scene
         function (meshes, particleSystems, skeletons, animationGroups) {
             helmetMesh = meshes;
+            console.log(helmetMesh);
             meshes.forEach(mesh => {
                 mesh.scaling = new BABYLON.Vector3(2,2,2);
+                mesh.rotation = new BABYLON.Vector3(0, 0, 0);
             });
         }
     );
+
+    //beforeRender
+    scene.registerBeforeRender(function () {
+        //if key is down add rotation
+        if (keyPresses.includes("w")) {
+            rotationSpeedP += 0.001;
+        }
+        if (keyPresses.includes("s")) {
+            rotationSpeedP -= 0.001;
+        }
+        if (keyPresses.includes("a")) {
+            rotationSpeedY += 0.001;
+        }
+        if (keyPresses.includes("d")) {
+            rotationSpeedY -= 0.001;
+        }
+        if (keyPresses.includes("q")) {
+            rotationSpeedR += 0.001;
+        }
+        if (keyPresses.includes("e")) {
+            rotationSpeedR -= 0.001;
+        }
+
+
+        rotationSpeedP /= 1.01;
+        rotationSpeedY /= 1.01;
+        rotationSpeedR /= 1.01;
+        if (helmetMesh) {
+            helmetMesh[0].rotation.x += rotationSpeedP;
+            helmetMesh[0].rotation.y += rotationSpeedY;
+            helmetMesh[0].rotation.z += rotationSpeedR;
+            box.rotation.x += rotationSpeedP;
+            box.rotation.y += rotationSpeedY;
+            box.rotation.z += rotationSpeedR;
+        }
+    });
+    
 
     //Create a cube
     box = BABYLON.MeshBuilder.CreateBox('box', { size:  8 }, scene);
@@ -64,44 +103,22 @@ const createScene = () => {
     return scene;
 };
 
-let rotationSpeed = 0.05; // Adjust rotation speed as needed
+let rotationSpeedP = 0;
+let rotationSpeedY = 0;
+let rotationSpeedR = 0;
+let keyPresses = [];
 
 window.addEventListener("keydown", (e) => {
-        if (!box.rotationQuaternion) {
-            box.rotationQuaternion = BABYLON.Quaternion.Identity();
-        }
-
-        // PITCH (Nose Up/Down)
-        if (e.key === "w" || e.key === "s") {
-            let pitchDirection = e.key === "w" ? -1 : 1;
-            box.addRotation(pitchDirection * rotationSpeed, 0, 0);
-            //rotate the helmet
-            helmetMesh.forEach(mesh => {
-                mesh.addRotation(pitchDirection * rotationSpeed, 0, 0);
-            });
-        }
-
-        // YAW (Turn Left/Right)
-        if (e.key === "a" || e.key === "d") {
-            let yawDirection = e.key === "a" ? -1 : 1;
-            box.addRotation(0, yawDirection * rotationSpeed, 0);
-            //rotate helmet
-            helmetMesh.forEach(mesh => {
-                mesh.addRotation(0, yawDirection * rotationSpeed, 0);
-            });
-        }
-
-        // ROLL (Tilt Left/Right)
-        if (e.key === "q" || e.key === "e") {
-            let rollDirection = e.key === "q" ? -1 : 1;
-            box.addRotation(0, 0, rollDirection * rotationSpeed);
-            //rotate helmet
-            helmetMesh.forEach(mesh => {
-                mesh.addRotation(0, 0, rollDirection * rotationSpeed);
-            });
+        //add key to keyPresses if it isn't already added
+        if (!keyPresses.includes(e.key)){
+            keyPresses.push(e.key);
         }
 });
 
+window.addEventListener("keyup", (e) => {
+    //remove key from keyPresses
+    keyPresses = keyPresses.filter(key => key !== e.key);
+});
 
 
 const scene = createScene();
