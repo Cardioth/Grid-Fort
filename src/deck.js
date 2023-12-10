@@ -8,7 +8,6 @@ export function buildRandomDeck() {
     for(let i = 0; i < 30; i++){
         deck.push(getRandomBuilding());
     }
-    console.log(deck);
 }
 
 export function pickFromCards(){

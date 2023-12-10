@@ -12,7 +12,7 @@
     "vite-plugin-copy": "^0.1.6"
   },
   "dependencies": {
-    "@babylonjs/core": "^6.32.1",
+    "@babylonjs/core": "^6.33.1",
     "@babylonjs/gui": "^6.33.0",
     "@babylonjs/loaders": "^6.32.1"
   }

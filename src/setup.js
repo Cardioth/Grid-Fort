@@ -48,6 +48,10 @@ export const enemyBoard = {
     allPlacedBuildings:[],
     id:1,
 };
+
+export const allBoards = [playerBoard];
+
+placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
     
 function createGridWithStructuredNeighbors(width, height) {
     const grid = [];
@@ -91,7 +95,3 @@ function getStructuredNeighbors(x, y, width, height, grid) {
 
     return neighbors;
 }
-
-export const allBoards = [playerBoard];
-
-placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
