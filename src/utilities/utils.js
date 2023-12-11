@@ -1,4 +1,4 @@
-import { fortStats } from "./setup";
+import { fortStats } from "../managers/setup";
 
 export function wrapText(context, text, x, y, lineHeight) {
     const lines = text.split("\n");

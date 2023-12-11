@@ -1,12 +1,12 @@
-import { currentScene } from "./sceneControl";
-import { totalCredits } from "./credits";
-import { returnBuildingToDeck } from "./cards";
-import { unplaceBuilding, getHoveredBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "./buildingPlacement";
-import { getHoveredCard, setCardPositions, removeCardFromHand } from "./cards";
-import { cellSize } from "./config";
-import { buttons } from "./graphics";
-import { playerBoard } from "./setup";
-import { hitTest } from "./utils";
+import { currentScene } from "../managers/sceneControl";
+import { totalCredits } from "../gameplay/credits";
+import { returnBuildingToDeck } from "../components/cards";
+import { unplaceBuilding, getHoveredBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
+import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
+import { cellSize } from "../data/config";
+import { buttons } from "../graphics/testGraphics";
+import { playerBoard } from "../managers/setup";
+import { hitTest } from "../utilities/utils";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;

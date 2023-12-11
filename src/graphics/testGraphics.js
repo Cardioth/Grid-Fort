@@ -1,14 +1,14 @@
-import { AIforts } from "./AIforts";
-import { lasers, startBattleLoop } from "./battle";
-import { canPlaceBuildingNearest, circularizeGrids, placeAIFort, placeBuildingToBoard } from "./buildingPlacement";
-import allBuildings from "./buildings";
-import { hand, updateCardAnimation } from "./cards";
-import { cellSize, gridHeight, gridWidth } from "./config";
-import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "./controls";
-import { totalCredits } from "./credits";
-import { currentScene, updateCurrentScene } from "./sceneControl";
-import { allBoards, canvas, ctx, enemyBoard, playerBoard } from "./setup";
-import { camelCaseToTitleCase, updateBoardStats, wrapText } from "./utils";
+import { AIforts } from "../components/AIforts";
+import { lasers, startBattleLoop } from "../gameplay/battle";
+import { canPlaceBuildingNearest, circularizeGrids, placeAIFort, placeBuildingToBoard } from "../gameplay/buildingPlacement";
+import allBuildings from "../components/buildings";
+import { hand, updateCardAnimation } from "../components/cards";
+import { cellSize, gridHeight, gridWidth } from "../data/config";
+import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "../ui/controls";
+import { totalCredits } from "../gameplay/credits";
+import { currentScene, updateCurrentScene } from "../managers/sceneControl";
+import { allBoards, canvas, ctx, enemyBoard, playerBoard } from "../managers/setup";
+import { camelCaseToTitleCase, updateBoardStats, wrapText } from "../utilities/utils";
 
 let countDownNumber = 4;
 

@@ -1,12 +1,12 @@
-import { currentScene, updateCurrentScene } from "./sceneControl";
-import { allBoards } from "./setup";
+import { currentScene, updateCurrentScene } from "../managers/sceneControl";
+import { allBoards } from "../managers/setup";
 import { updateAvailableCredits, getAvailableCredits, setTotalCredits } from "./credits";
-import { setCardPositions, hand } from "./cards";
-import { getRandomBuilding } from "./buildings";
-import allBuildings from "./buildings";
-import { gridWidth, gridHeight, cellSize } from "./config";
-import { spawnProjectile, blasts, createBuildInterface } from "./graphics";
-import { playerBoard, enemyBoard, canvas } from "./setup";
+import { setCardPositions, hand } from "../components/cards";
+import { getRandomBuilding } from "../components/buildings";
+import allBuildings from "../components/buildings";
+import { gridWidth, gridHeight, cellSize } from "../data/config";
+import { spawnProjectile, blasts, createBuildInterface } from "../graphics/testGraphics";
+import { playerBoard, enemyBoard, canvas } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
 
 let battleLoopInterval;

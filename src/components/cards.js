@@ -1,8 +1,8 @@
-import { currentScene } from "./sceneControl";
-import { canvas } from "./setup";
-import { updateTotalCredits } from "./credits";
-import { circularizeGrids } from "./buildingPlacement";
-import { currentMouseX, selectedCard, selectedBuilding, currentMouseY, setSelectedCard } from "./controls";
+import { currentScene } from "../managers/sceneControl";
+import { canvas } from "../managers/setup";
+import { updateTotalCredits } from "../gameplay/credits";
+import { circularizeGrids } from "../gameplay/buildingPlacement";
+import { currentMouseX, selectedCard, selectedBuilding, currentMouseY, setSelectedCard } from "../ui/controls";
 
 export let hand = [];
 

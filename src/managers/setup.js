@@ -1,9 +1,9 @@
-import { placeBuildingToBoard } from "./buildingPlacement";
-import allBuildings from "./buildings";
-import { cellSize, gridHeight, gridWidth } from "./config.js";
-import { setCardPositions } from "./cards.js";
-import { initializeControls } from "./controls.js";
-import { buildRandomDeck } from "./deck.js";
+import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
+import allBuildings from "../components/buildings.js";
+import { cellSize, gridHeight, gridWidth } from "../data/config.js";
+import { setCardPositions } from "../components/cards.js";
+import { initializeControls } from "../ui/controls.js";
+import { buildRandomDeck } from "../components/deck.js";
 
 export const canvas = document.getElementById('gridCanvas');
 export const ctx = canvas.getContext('2d');

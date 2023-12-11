@@ -1,4 +1,4 @@
-import { updateGraphics } from "./graphics";
+import { updateGraphics } from "./graphics/testGraphics";
 
 function gameLoop() {
     updateGraphics();

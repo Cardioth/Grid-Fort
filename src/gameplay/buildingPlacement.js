@@ -1,12 +1,12 @@
-import { allBoards } from "./setup";
-import { updateBoardStats } from "./utils";
+import { allBoards } from "../managers/setup";
+import { updateBoardStats } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
-import { currentMouseX, currentMouseY, selectedCard } from "./controls";
-import { setCardPositions, hand } from "./cards";
-import { cellSize, gridHeight, gridWidth} from "./config";
-import { boostArrow, arrowGraphics } from "./graphics";
-import { playerBoard, canvas, enemyBoard } from "./setup";
-import { AIforts } from "./AIforts";
+import { currentMouseX, currentMouseY, selectedCard } from "../ui/controls";
+import { setCardPositions, hand } from "../components/cards";
+import { cellSize, gridHeight, gridWidth} from "../data/config";
+import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
+import { playerBoard, canvas, enemyBoard } from "../managers/setup";
+import { AIforts } from "../components/AIforts";
 
 export function getHoveredBuilding() {
     for (const board of allBoards) {
