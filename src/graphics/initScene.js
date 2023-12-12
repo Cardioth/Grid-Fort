@@ -8,10 +8,13 @@ export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
 
 let sceneMeshes;
 let baseMesh;
+let buildingAssets;
+let WeaponAssets;
 
 export const initScene = () => {
     const scene = new BABYLON.Scene(engine);
-    const buildingAssets = new BABYLON.AssetContainer(scene);
+    buildingAssets = new BABYLON.AssetContainer(scene);
+    WeaponAssets = new BABYLON.AssetContainer(scene);
     
     const mainLight = initLights(scene); //Lights
     
@@ -25,34 +28,66 @@ export const initScene = () => {
             sceneMeshes = meshes;
             baseMesh = meshes.find(mesh => mesh.id === "BaseMesh");
 
-            
+
+
             //If id ends in Building add to building assets
             for(let i = 0; i < meshes.length; i++){
-                console.log(meshes.parentNode);
-                if(meshes[i].parentNode){
-                    buildingAssets.meshes.push(meshes[i]);
+                // meshes[i].rotation = new BABYLON.Vector3(0, 0, 0);
+                
+                if(meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))){
+                    meshes[i].position = new BABYLON.Vector3(0, 0, 0);
                     meshes[i].setEnabled(false);
+                    //if parent is not already in building assets add it
+                    if(!buildingAssets.meshes.includes(meshes[i].parent)){
+                        buildingAssets.meshes.push(meshes[i].parent);
+                    }
+                }
+                if(meshes[i].parent && (meshes[i].parent.id.endsWith("Weapon"))){
+                    meshes[i].setEnabled(false);
+                    WeaponAssets.meshes.push(meshes[i]);
                 }
             }
-            
-            meshes.forEach(mesh => {
-                mesh.rotation = new BABYLON.Vector3(0, 0, 0);
-            });
 
             initShadows(mainLight);
 
             addReflectionsToBase(scene);
+
+            cloneBuilding("basicLaserBuilding", 0, 0, -90);
+
+            cloneBuilding("boringBuilding", 20, 20, -90);
         }
     );
 
     return scene;
 };
 
+function cloneBuilding(name, x,z, yRotation = 0) {
+    let building = buildingAssets.meshes.find(m => m.name === name);
+    if (building) {
+        let clone = building.clone(name + "_clone", null, true);
+        for(let i = 0; i < building.getChildMeshes().length; i++){
+            let child = building.getChildMeshes()[i];
+            let childClone = child.clone(child.name + "_clone", clone, true);
+            childClone.setEnabled(true);
+            baseMesh.material.reflectionTexture.renderList.push(childClone); //Add to render list for reflections
+            shadowGenerator.addShadowCaster(childClone); //Add to shadow generator
+            childClone.rotation.x = -(90) * (Math.PI / 180);
+            childClone.rotation.y = yRotation * (Math.PI / 180);
+            childClone.scaling.x = -1;
+            childClone.position.x = x;
+            childClone.position.z = z;
+        }
+
+        console.log(clone);
+        return clone;
+    }
+    return null;
+}
+
 export let shadowGenerator;
 function initShadows(mainLight) {
     shadowGenerator = new BABYLON.ShadowGenerator(1024, mainLight);
     shadowGenerator.bias = 0.00001;
-    shadowGenerator.useBlurExponentialShadowMap = true;
     shadowGenerator.setDarkness(0);
     baseMesh.receiveShadows = true;
 }
@@ -78,15 +113,17 @@ function initLights(scene) {
     blueLight.intensity = 80;
 
     // Warm Light
-    const warmLight = new BABYLON.PointLight("warmLight", new BABYLON.Vector3(3, 5, -3), scene);
+    const warmLight = new BABYLON.PointLight("warmLight", new BABYLON.Vector3(3, 7, -3), scene);
     warmLight.diffuse = new BABYLON.Color3(1, .5, 0);
-    warmLight.intensity = 80;
+    warmLight.intensity = 120;
 
     //Main Light 1
     const mainLight = new BABYLON.DirectionalLight("mainLight", new BABYLON.Vector3(-1, -2, -1), scene);
     mainLight.diffuse = new BABYLON.Color3(1, 1, 1);
-    mainLight.intensity = 5;
+    mainLight.intensity = 6;
     mainLight.range = 10;
+    // mainLight.shadowMinZ = -500;
+    // mainLight.shadowMaxZ = 500;
 
     // Main Light 2
     const mainLight2 = new BABYLON.PointLight("mainLight2", new BABYLON.Vector3(-2.5, 1.2, -2.5), scene);
@@ -97,7 +134,7 @@ function initLights(scene) {
     scene.fogColor = scene.clearColor;
     scene.fogStart = 9;
     scene.fogEnd = 13;
-    return mainLight;
+    return warmLight;
 }
 
 function postProcessEffects(scene, camera) {

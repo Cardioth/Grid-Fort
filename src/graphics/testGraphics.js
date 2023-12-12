@@ -574,7 +574,7 @@ function boostedAnimation() {
 }
 export let buttons = [];
 
-createBuildInterface();
+//createBuildInterface();
 export function createBuildInterface() {
     buttons = [];
     buttons.push(createButton("End Turn", testCanvas.width - 100, testCanvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {
