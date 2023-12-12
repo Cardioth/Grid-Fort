@@ -6,7 +6,7 @@ import { getRandomBuilding } from "../components/buildings";
 import allBuildings from "../components/buildings";
 import { gridWidth, gridHeight, cellSize } from "../data/config";
 import { spawnProjectile, blasts, createBuildInterface } from "../graphics/testGraphics";
-import { playerBoard, enemyBoard, canvas } from "../managers/setup";
+import { playerBoard, enemyBoard, testCanvas } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
 
 let battleLoopInterval;
@@ -53,7 +53,7 @@ function battleLoop() {
             updateCurrentScene("build");
             hand.push(getRandomBuilding());
             hand.push(getRandomBuilding());
-            playerBoard.targetPosition = { x: (canvas.width - (gridWidth * cellSize)) / 2, y: playerBoard.yGridOffset };
+            playerBoard.targetPosition = { x: (testCanvas.width - (gridWidth * cellSize)) / 2, y: playerBoard.yGridOffset };
             updateAvailableCredits(1);
             setTotalCredits(getAvailableCredits());
 

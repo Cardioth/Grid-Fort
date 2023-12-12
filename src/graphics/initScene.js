@@ -2,7 +2,7 @@ import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders'; // If you need to import any loaders
 
 // Get the canvas DOM element
-const canvas = document.getElementById('renderCanvas');
+export const canvas = document.getElementById('renderCanvas');
 
 export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
 
@@ -66,14 +66,14 @@ export const initScene = () => {
     );
 
     // // Subtle Blue Light on the Right
-    const blueLight = new BABYLON.PointLight("blueLight", new BABYLON.Vector3(3, 7, -3), scene);
-    blueLight.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
-    blueLight.intensity = 100;
+    const blueLight = new BABYLON.PointLight("blueLight", new BABYLON.Vector3(-2.5, 5, 2.5), scene);
+    blueLight.diffuse = new BABYLON.Color3(0, .5, 1);
+    blueLight.intensity = 80;
 
     // Warm Light on the Left
-    const warmLight = new BABYLON.PointLight("warmLight", new BABYLON.Vector3(-3, 7, 3), scene);
-    warmLight.diffuse = new BABYLON.Color3(1, 0.6, 0.6);
-    warmLight.intensity = 100;
+    const warmLight = new BABYLON.PointLight("warmLight", new BABYLON.Vector3(3, 5, -3), scene);
+    warmLight.diffuse = new BABYLON.Color3(1, .5, 0);
+    warmLight.intensity = 80;
 
     //Main Light in the Middle
     const mainLight = new BABYLON.DirectionalLight("mainLight", new BABYLON.Vector3(-1, -2, -1), scene);
@@ -125,7 +125,7 @@ function initCamera(scene) {
     let orthoLeft = -orthoSize * aspectRatio;
     let orthoRight = orthoSize * aspectRatio;
 
-    camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 5, 5), scene);
+    camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 6.2, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     camera.orthoTop = orthoTop;
     camera.orthoBottom = orthoBottom;
@@ -134,6 +134,32 @@ function initCamera(scene) {
     camera.setTarget(BABYLON.Vector3.Zero());
     return camera;
 }
+
+//addEventListener keydown Up Key to change camera position
+
+addEventListener('keydown', function (event) {
+    if (event.key === "ArrowUp") {
+        camera.position.y += 0.05;
+    }
+    if (event.key === "ArrowDown") {
+        camera.position.y -= 0.05;
+    }
+    if (event.key === "ArrowLeft") {
+        camera.position.x -= 0.1;
+    }
+    if (event.key === "ArrowRight") {
+        camera.position.x += 0.1;
+    }
+    if (event.key === "w") {
+        camera.position.z += 0.1;
+    }
+    if (event.key === "s") {
+        camera.position.z -= 0.1;
+    }
+
+    console.log(camera.position);
+    camera.setTarget(BABYLON.Vector3.Zero());
+});
 
 export function setOrthoSize(size) {
     orthoSize = size;

@@ -4,14 +4,16 @@ import { cellSize, gridHeight, gridWidth } from "../data/config.js";
 import { setCardPositions } from "../components/cards.js";
 import { initializeControls } from "../ui/controls.js";
 import { buildRandomDeck } from "../components/deck.js";
+import { canvas } from "../graphics/initScene.js";
 
-export const canvas = document.getElementById('gridCanvas');
-export const ctx = canvas.getContext('2d');
+export const testCanvas = document.getElementById('gridCanvas');
+export const ctx = testCanvas.getContext('2d');
 
 buildRandomDeck();
 
 setCardPositions();
 
+initializeControls(testCanvas);
 initializeControls(canvas);
 
 export const fortStats = {
@@ -30,9 +32,9 @@ export const fortStats = {
 export const playerBoard = {
     name:"Player",
     grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
-    xGridOffset:(canvas.width-(gridWidth*cellSize))/2,
-    yGridOffset:(canvas.height-(gridHeight*cellSize))/2-50,
-    targetPosition:{x:(canvas.width-(gridWidth*cellSize))/2,y:(canvas.height-(gridHeight*cellSize))/2-50},
+    xGridOffset:(testCanvas.width-(gridWidth*cellSize))/2,
+    yGridOffset:(testCanvas.height-(gridHeight*cellSize))/2-50,
+    targetPosition:{x:(testCanvas.width-(gridWidth*cellSize))/2,y:(testCanvas.height-(gridHeight*cellSize))/2-50},
     stats:JSON.parse(JSON.stringify(fortStats)),
     allPlacedBuildings:[],
     id:0,
@@ -41,9 +43,9 @@ export const playerBoard = {
 export const enemyBoard = {
     name:"Enemy",
     grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
-    xGridOffset:(canvas.width-(gridWidth*cellSize))/2+200,
-    yGridOffset:(canvas.height-(gridHeight*cellSize))/2-50,
-    targetPosition:{x:(canvas.width-(gridWidth*cellSize))/2+200,y:(canvas.height-(gridHeight*cellSize))/2-50},
+    xGridOffset:(testCanvas.width-(gridWidth*cellSize))/2+200,
+    yGridOffset:(testCanvas.height-(gridHeight*cellSize))/2-50,
+    targetPosition:{x:(testCanvas.width-(gridWidth*cellSize))/2+200,y:(testCanvas.height-(gridHeight*cellSize))/2-50},
     stats:JSON.parse(JSON.stringify(fortStats)),
     allPlacedBuildings:[],
     id:1,

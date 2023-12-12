@@ -5,7 +5,7 @@ import { currentMouseX, currentMouseY, selectedCard } from "../ui/controls";
 import { setCardPositions, hand } from "../components/cards";
 import { cellSize, gridHeight, gridWidth} from "../data/config";
 import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
-import { playerBoard, canvas, enemyBoard } from "../managers/setup";
+import { playerBoard, testCanvas, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
 
 export function getHoveredBuilding() {
@@ -208,8 +208,8 @@ export function circularizeGrids() {
                 if (cell.occupied === true && cell.building !== undefined) {
                     hand.push(cell.building);
                     setCardPositions();
-                    cell.building.currentPosition.x = canvas.width / 2;
-                    cell.building.currentPosition.y = canvas.height / 2;
+                    cell.building.currentPosition.x = testCanvas.width / 2;
+                    cell.building.currentPosition.y = testCanvas.height / 2;
                     updateTotalCredits(cell.building.cost);
                     cell.building.placed = false;
                     unplaceBuilding(cell.building, board);

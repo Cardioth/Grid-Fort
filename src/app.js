@@ -1,12 +1,12 @@
 
-import { initScene, engine, setOrthoSize } from './graphics/initScene';
+import { initScene, engine} from './graphics/initScene';
 import { updateTestGraphics } from "./graphics/testGraphics";
+import { updateGraphics } from "./graphics/graphics";
 
 const scene = initScene();
 
-let zoom = 2;
 engine.runRenderLoop(() => {
-    setOrthoSize(zoom);
+    updateGraphics();
     updateTestGraphics();
     scene.render();
 });

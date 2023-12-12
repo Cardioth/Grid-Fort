@@ -7,7 +7,7 @@ import { cellSize, gridHeight, gridWidth } from "../data/config";
 import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "../ui/controls";
 import { totalCredits } from "../gameplay/credits";
 import { currentScene, updateCurrentScene } from "../managers/sceneControl";
-import { allBoards, canvas, ctx, enemyBoard, playerBoard } from "../managers/setup";
+import { allBoards, testCanvas, ctx, enemyBoard, playerBoard } from "../managers/setup";
 import { camelCaseToTitleCase, updateBoardStats, wrapText } from "../utilities/utils";
 
 let countDownNumber = 4;
@@ -15,7 +15,7 @@ let countDownNumber = 4;
 function drawBattleCountdown() {
     ctx.fillStyle = "#fff";
     ctx.font = "bold 50px Arial";
-    ctx.fillText(countDownNumber, canvas.width / 2 - 25, canvas.height / 2 - 25);
+    ctx.fillText(countDownNumber, testCanvas.width / 2 - 25, testCanvas.height / 2 - 25);
 }
 
 function drawCardGraphics(card) {
@@ -208,22 +208,22 @@ function drawFortStats(board) {
     ctx.fillStyle = "#fff";
     const boxWidth = 143;
     const boxHeight = Object.keys(board.stats).length * 12 + 25;
-    ctx.fillRect(canvas.width - boxWidth - 3, 3, boxWidth, boxHeight);
+    ctx.fillRect(testCanvas.width - boxWidth - 3, 3, boxWidth, boxHeight);
 
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 1;
-    ctx.strokeRect(canvas.width - boxWidth - 3, 3, boxWidth, boxHeight);
+    ctx.strokeRect(testCanvas.width - boxWidth - 3, 3, boxWidth, boxHeight);
 
     ctx.fillStyle = "#000";
     ctx.font = "bold 11px Arial";
     let lineHeight = 15;
-    ctx.fillText("Fort Stats", canvas.width - boxWidth + 3, lineHeight);
+    ctx.fillText("Fort Stats", testCanvas.width - boxWidth + 3, lineHeight);
     lineHeight += 16;
 
     ctx.font = "10px Arial";
     for (let key in board.stats) {
         const text = camelCaseToTitleCase(key) + ": " + board.stats[key].stat;
-        ctx.fillText(text, canvas.width - boxWidth + 3, lineHeight);
+        ctx.fillText(text, testCanvas.width - boxWidth + 3, lineHeight);
         lineHeight += 12;
     }
 }
@@ -278,14 +278,14 @@ function drawBuildingStats(building) {
     }
 }
 export function updateTestGraphics() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, testCanvas.width, testCanvas.height);
 
     // Create a linear gradient background
-    const linearGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    const linearGradient = ctx.createLinearGradient(0, 0, 0, testCanvas.height);
     linearGradient.addColorStop(0, '#12313d');
     linearGradient.addColorStop(1, '#071f29');
     ctx.fillStyle = linearGradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, testCanvas.width, testCanvas.height);
 
     drawGrids();
 
@@ -353,7 +353,7 @@ export function updateTestGraphics() {
     //Draw credits
     ctx.fillStyle = "#fff";
     ctx.font = "bold 15px Arial";
-    ctx.fillText("Credits: " + totalCredits, canvas.width - 200, canvas.height - 25);
+    ctx.fillText("Credits: " + totalCredits, testCanvas.width - 200, testCanvas.height - 25);
 
     //Battle countdown
     if (currentScene === "battleCountdown" && countDownNumber < 4) {
@@ -577,7 +577,7 @@ export let buttons = [];
 createBuildInterface();
 export function createBuildInterface() {
     buttons = [];
-    buttons.push(createButton("End Turn", canvas.width - 100, canvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {
+    buttons.push(createButton("End Turn", testCanvas.width - 100, testCanvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {
         updateCurrentScene("battleCountdown");
         playerBoard.targetPosition = { x: playerBoard.xGridOffset - 200, y: playerBoard.yGridOffset };
         allBoards.push(enemyBoard);

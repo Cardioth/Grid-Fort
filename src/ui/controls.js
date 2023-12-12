@@ -7,6 +7,7 @@ import { cellSize } from "../data/config";
 import { buttons } from "../graphics/testGraphics";
 import { playerBoard } from "../managers/setup";
 import { hitTest } from "../utilities/utils";
+import { setZoomTarget } from "../graphics/graphics";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -22,6 +23,25 @@ export function setSelectedCard(card) {
 }
 
 export function initializeControls(canvas) {
+    //Mouse Scroll Listener
+
+    let zoomTarget = 1;
+    canvas.addEventListener('wheel', function (event) {
+        if (event.deltaY < 0) {
+            zoomTarget += 0.5;
+        }
+        if (event.deltaY > 0) {
+            zoomTarget -= 0.5;
+        }
+        if(zoomTarget > 3){
+            zoomTarget = 3;
+        }
+        if(zoomTarget < 1){
+            zoomTarget = 1;
+        }
+        setZoomTarget(zoomTarget);
+    });
+
     canvas.addEventListener('mousemove', function (e) {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
