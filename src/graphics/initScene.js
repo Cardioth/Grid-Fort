@@ -1,15 +1,13 @@
 import * as BABYLON from '@babylonjs/core';
+import '@babylonjs/loaders'; // If you need to import any loaders
 
 // Get the canvas DOM element
+const canvas = document.getElementById('renderCanvas');
 
-export const canvas = document.getElementById('renderCanvas');
-// Load the 3D engine
+export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
 
-export const engine = new BABYLON.Engine(canvas, true);
-
-export let sceneMeshes;
-
-export let baseMesh;
+let sceneMeshes;
+let baseMesh;
 
 export const initScene = () => {
     // Create a basic BJS Scene object
@@ -18,20 +16,7 @@ export const initScene = () => {
     const camera = initCamera(scene);
 
     // Creating the SSAO rendering pipeline
-    const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, { ssaoRatio: 3, combineRatio: 1 });
-    scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
-    ssaoPipeline.totalStrength = 1.3;
-    ssaoPipeline.radius = 0.0002;
-
-    // Create a bloom rendering pipeline
-    const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
-    bloomPipeline.bloomEnabled = true;
-
-    // Set properties for the bloom rendering pipeline
-    bloomPipeline.bloomThreshold = 0.3;
-    bloomPipeline.bloomWeight = 2.5;
-    bloomPipeline.bloomKernel = 15;
-    bloomPipeline.bloomScale = 2;
+    postProcessEffects(scene, camera);
 
     BABYLON.SceneLoader.ImportMesh(
         undefined, // Name of meshes to load, undefined to load all meshes
@@ -80,39 +65,67 @@ export const initScene = () => {
         }
     );
 
-    // Subtle Blue Light on the Right
+    // // Subtle Blue Light on the Right
     const blueLight = new BABYLON.PointLight("blueLight", new BABYLON.Vector3(3, 7, -3), scene);
-    blueLight.diffuse = new BABYLON.Color3(0.6, 0.6, 1);
-    blueLight.intensity = 110;
+    blueLight.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
+    blueLight.intensity = 100;
 
     // Warm Light on the Left
     const warmLight = new BABYLON.PointLight("warmLight", new BABYLON.Vector3(-3, 7, 3), scene);
-    warmLight.diffuse = new BABYLON.Color3(1, 0.7, 0.7);
-    warmLight.intensity = 110;
+    warmLight.diffuse = new BABYLON.Color3(1, 0.6, 0.6);
+    warmLight.intensity = 100;
 
-    // Main Light in the Middle
-    const mainLight = new BABYLON.PointLight("mainLight", new BABYLON.Vector3(-2, 10, -2), scene);
-    mainLight.intensity = 200;
+    //Main Light in the Middle
+    const mainLight = new BABYLON.DirectionalLight("mainLight", new BABYLON.Vector3(-1, -2, -1), scene);
+    mainLight.diffuse = new BABYLON.Color3(1, 1, 1);
+    mainLight.intensity = 5;
+    mainLight.range = 10;
+
+    // Main Light in the Middle 2
+    const mainLight2 = new BABYLON.PointLight("mainLight2", new BABYLON.Vector3(-2.5, 1.2, -2.5), scene);
+    mainLight2.diffuse = new BABYLON.Color3(1, 1, 1);
+    mainLight2.intensity = 12;
 
     scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     scene.fogColor = scene.clearColor;
-    scene.fogStart = 11;
-    scene.fogEnd = 16;
+    scene.fogStart = 9;
+    scene.fogEnd = 13;
 
     // Return the created scene
     return scene;
 };
 
 
-export function initCamera(scene) {
-    let orthoSize = 2.5;
+function postProcessEffects(scene, camera) {
+    const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, { ssaoRatio: 3, combineRatio: 1 });
+    scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
+    ssaoPipeline.totalStrength = 1.2;
+    ssaoPipeline.radius = 0.00005;
+
+    // Create a bloom rendering pipeline
+    const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
+    bloomPipeline.bloomEnabled = true;
+
+    // Set properties for the bloom rendering pipeline
+    bloomPipeline.bloomThreshold = 0.27;
+    bloomPipeline.bloomWeight = 2;
+    bloomPipeline.bloomKernel = 30;
+    bloomPipeline.bloomScale = 4;
+
+    var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
+    fxaaPostProcess.samples = 2;
+}
+
+let camera;
+let orthoSize = 1;
+function initCamera(scene) {
     let aspectRatio = canvas.width / canvas.height; // Aspect ratio from canvas dimensions
     let orthoTop = orthoSize;
     let orthoBottom = -orthoSize;
     let orthoLeft = -orthoSize * aspectRatio;
     let orthoRight = orthoSize * aspectRatio;
 
-    const camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 8, 5), scene);
+    camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 5, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     camera.orthoTop = orthoTop;
     camera.orthoBottom = orthoBottom;
@@ -120,4 +133,22 @@ export function initCamera(scene) {
     camera.orthoRight = orthoRight;
     camera.setTarget(BABYLON.Vector3.Zero());
     return camera;
+}
+
+export function setOrthoSize(size) {
+    orthoSize = size;
+    updateCameraOrtho();
+}
+
+function updateCameraOrtho() {
+    let aspectRatio = canvas.width / canvas.height; // Aspect ratio from canvas dimensions
+    let orthoTop = orthoSize;
+    let orthoBottom = -orthoSize;
+    let orthoLeft = -orthoSize * aspectRatio;
+    let orthoRight = orthoSize * aspectRatio;
+
+    camera.orthoTop = orthoTop;
+    camera.orthoBottom = orthoBottom;
+    camera.orthoLeft = orthoLeft;
+    camera.orthoRight = orthoRight;
 }

@@ -277,7 +277,7 @@ function drawBuildingStats(building) {
         }
     }
 }
-export function updateGraphics() {
+export function updateTestGraphics() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Create a linear gradient background
