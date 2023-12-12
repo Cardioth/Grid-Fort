@@ -52,9 +52,9 @@ export const initScene = () => {
 
             addReflectionsToBase(scene);
 
-            cloneBuilding("basicLaserBuilding", 0, 0, -90);
-
-            cloneBuilding("boringBuilding", 20, 20, -90);
+            cloneBuilding("boringBuilding", 0, 0, 0);
+            cloneBuilding("energyBuilding", 0, -12, 0);
+            cloneBuilding("basicLaserBuilding", -20, 0, 180);
         }
     );
 
@@ -71,9 +71,12 @@ function cloneBuilding(name, x,z, yRotation = 0) {
             childClone.setEnabled(true);
             baseMesh.material.reflectionTexture.renderList.push(childClone); //Add to render list for reflections
             shadowGenerator.addShadowCaster(childClone); //Add to shadow generator
+            
+            //Bizzare rotation and scaling to get the building to face the right way
             childClone.rotation.x = -(90) * (Math.PI / 180);
-            childClone.rotation.y = yRotation * (Math.PI / 180);
-            childClone.scaling.x = -1;
+            childClone.rotation.y = (yRotation+180) * (Math.PI / 180);
+            childClone.scaling.y = -1;
+
             childClone.position.x = x;
             childClone.position.z = z;
         }
