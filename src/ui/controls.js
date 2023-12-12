@@ -27,18 +27,9 @@ export function initializeControls(canvas) {
 
     let zoomTarget = 1;
     canvas.addEventListener('wheel', function (event) {
-        if (event.deltaY < 0) {
-            zoomTarget += 0.5;
-        }
-        if (event.deltaY > 0) {
-            zoomTarget -= 0.5;
-        }
-        if(zoomTarget > 3){
-            zoomTarget = 3;
-        }
-        if(zoomTarget < 1){
-            zoomTarget = 1;
-        }
+        event.preventDefault();
+        zoomTarget += event.deltaY < 0 ? -0.5 : (event.deltaY > 0 ? 0.5 : 0);
+        zoomTarget = Math.max(1, Math.min(zoomTarget, 3));
         setZoomTarget(zoomTarget);
     });
 
