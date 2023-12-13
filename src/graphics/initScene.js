@@ -69,6 +69,7 @@ function importModels(scene, mainLight) {
             cloneBuilding("boringBuilding", 0, 0, 0);
             cloneBuilding("energyBuilding", 0, -12, 0);
             cloneBuilding("basicLaserBuilding", -20, 0, 180);
+        
         }
     );
 }
