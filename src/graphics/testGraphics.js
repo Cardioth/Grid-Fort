@@ -18,7 +18,7 @@ function drawBattleCountdown() {
     ctx.fillText(countDownNumber, testCanvas.width / 2 - 25, testCanvas.height / 2 - 25);
 }
 
-function drawCardGraphics(card) {
+function drawTestCardGraphics(card) {
     ctx.save();
     ctx.translate(card.currentPosition.x, card.currentPosition.y);
 
@@ -69,9 +69,11 @@ function drawCardGraphics(card) {
     // Restore the context to its original state
     ctx.restore();
 }
+
 export function createBattleInterface() {
     buttons = [];
 }
+
 export const blasts = [];
 function drawBlast(blast) {
 
@@ -89,6 +91,7 @@ function drawBlast(blast) {
 
     ctx.globalAlpha = 1;
 }
+
 function drawLaser(laser) {
     ctx.globalAlpha = laser.alpha;
     ctx.strokeStyle = "#fff";
@@ -321,16 +324,8 @@ export function updateTestGraphics() {
     //draw cards
     hand.forEach((card, index) => {
         updateCardAnimation(card);
-        if (!card.isHovered && !card.isDragged) {
-            drawCardGraphics(card);
-        }
-    });
-
-    //draw hovered card
-    hand.forEach((card, index) => {
-        updateCardAnimation(card);
-        if (card.isHovered && !card.isDragged) {
-            drawCardGraphics(card);
+        if (!card.isDragged) {
+            drawTestCardGraphics(card);
         }
     });
 
@@ -574,8 +569,8 @@ function boostedAnimation() {
 }
 export let buttons = [];
 
-//createBuildInterface();
-export function createBuildInterface() {
+createTestBuildInterface();
+export function createTestBuildInterface() {
     buttons = [];
     buttons.push(createButton("End Turn", testCanvas.width - 100, testCanvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {
         updateCurrentScene("battleCountdown");

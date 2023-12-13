@@ -40,7 +40,6 @@ export function initializeControls(canvas) {
     
         //Hovering over a card
         if (selectedCard === null) {
-            hoveredCard = getHoveredCard(mouseX, mouseY);
         }
     
         //Drags a placed building

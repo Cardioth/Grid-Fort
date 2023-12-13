@@ -22,7 +22,7 @@ canvas:focus {
 }
 
 #gridCanvas {
-    display: none;
+    display:none;
 }
 
 h2 {
@@ -32,3 +32,28 @@ h2 {
     text-align: center;
     margin-top: 20px;
 }
+
+@font-face {
+    font-family: 'GemunuLibre-Bold';
+    src: url('gemunulibre-bold-webfont.woff') format('woff2'),
+         url('GemunuLibre-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+font-family: 'GemunuLibre-Medium';
+src: url('gemunulibre-medium-webfont.woff') format('woff2'),
+        url('gemunulibre-medium-webfont.woff2') format('woff');
+font-weight: 500; /* or 'medium' */
+font-style: normal;
+}
+
+@font-face {
+font-family: 'RussoOne-Regular';
+src: url('russoone-regular-webfont.woff2') format('woff2'),
+        url('russoone-regular-webfont.woff') format('woff');
+font-weight: normal;
+font-style: normal;
+}
+

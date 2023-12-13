@@ -5,7 +5,7 @@ import { setCardPositions, hand } from "../components/cards";
 import { getRandomBuilding } from "../components/buildings";
 import allBuildings from "../components/buildings";
 import { gridWidth, gridHeight, cellSize } from "../data/config";
-import { spawnProjectile, blasts, createBuildInterface } from "../graphics/testGraphics";
+import { spawnProjectile, blasts, createTestBuildInterface } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard, testCanvas } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
 
@@ -58,7 +58,7 @@ function battleLoop() {
             setTotalCredits(getAvailableCredits());
 
             setCardPositions();
-            createBuildInterface();
+            createTestBuildInterface();
 
             //revive all buildings
             playerBoard.allPlacedBuildings.forEach((building) => {

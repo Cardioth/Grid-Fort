@@ -13,7 +13,6 @@ buildRandomDeck();
 
 setCardPositions();
 
-initializeControls(testCanvas);
 initializeControls(canvas);
 
 export const fortStats = {
@@ -54,7 +53,7 @@ export const enemyBoard = {
 export const allBoards = [playerBoard];
 
 placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
-    
+
 function createGridWithStructuredNeighbors(width, height) {
     const grid = [];
     for (let y = 0; y < height; y++) {

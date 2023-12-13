@@ -1,7 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders'; // If you need to import any loaders
+import * as GUI from '@babylonjs/gui';
 
-// Get the canvas DOM element
 export const canvas = document.getElementById('renderCanvas');
 
 export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
@@ -13,36 +13,50 @@ let WeaponAssets;
 
 export const initScene = () => {
     const scene = new BABYLON.Scene(engine);
-    buildingAssets = new BABYLON.AssetContainer(scene);
-    WeaponAssets = new BABYLON.AssetContainer(scene);
-    
-    const mainLight = initLights(scene); //Lights
+   
+    const lights = initLights(scene); //Lights
     
     const camera = initCamera(scene); //Camera
 
     postProcessEffects(scene, camera); //Post Processing
 
-    //Meshes
-    BABYLON.SceneLoader.ImportMesh(undefined,"./models/","base.glb",scene,
+    importModels(scene, lights); //Meshes
+
+    return scene;
+};
+
+export let advancedTexture;
+export const initGUIScene = () => {
+    const GUIscene = new BABYLON.Scene(engine);
+    const camera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(0, 0, 0), GUIscene);
+    GUIscene.autoClear = false;
+    GUIscene.autoClearDepthAndStencil = false;
+    advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
+    advancedTexture.idealWidth = 1250;
+    return GUIscene;
+}
+
+function importModels(scene, mainLight) {
+    buildingAssets = new BABYLON.AssetContainer(scene);
+    WeaponAssets = new BABYLON.AssetContainer(scene);
+
+    BABYLON.SceneLoader.ImportMesh(undefined, "./models/", "base.glb", scene,
         function (meshes) {
             sceneMeshes = meshes;
             baseMesh = meshes.find(mesh => mesh.id === "BaseMesh");
 
-
-
             //If id ends in Building add to building assets
-            for(let i = 0; i < meshes.length; i++){
+            for (let i = 0; i < meshes.length; i++) {
                 // meshes[i].rotation = new BABYLON.Vector3(0, 0, 0);
-                
-                if(meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))){
+                if (meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))) {
                     meshes[i].position = new BABYLON.Vector3(0, 0, 0);
                     meshes[i].setEnabled(false);
                     //if parent is not already in building assets add it
-                    if(!buildingAssets.meshes.includes(meshes[i].parent)){
+                    if (!buildingAssets.meshes.includes(meshes[i].parent)) {
                         buildingAssets.meshes.push(meshes[i].parent);
                     }
                 }
-                if(meshes[i].parent && (meshes[i].parent.id.endsWith("Weapon"))){
+                if (meshes[i].parent && (meshes[i].parent.id.endsWith("Weapon"))) {
                     meshes[i].setEnabled(false);
                     WeaponAssets.meshes.push(meshes[i]);
                 }
@@ -57,9 +71,7 @@ export const initScene = () => {
             cloneBuilding("basicLaserBuilding", -20, 0, 180);
         }
     );
-
-    return scene;
-};
+}
 
 function cloneBuilding(name, x,z, yRotation = 0) {
     let building = buildingAssets.meshes.find(m => m.name === name);
@@ -80,8 +92,6 @@ function cloneBuilding(name, x,z, yRotation = 0) {
             childClone.position.x = x;
             childClone.position.z = z;
         }
-
-        console.log(clone);
         return clone;
     }
     return null;
@@ -120,24 +130,23 @@ function initLights(scene) {
     warmLight.diffuse = new BABYLON.Color3(1, .5, 0);
     warmLight.intensity = 120;
 
-    //Main Light 1
-    const mainLight = new BABYLON.DirectionalLight("mainLight", new BABYLON.Vector3(-1, -2, -1), scene);
-    mainLight.diffuse = new BABYLON.Color3(1, 1, 1);
-    mainLight.intensity = 6;
-    mainLight.range = 10;
-    // mainLight.shadowMinZ = -500;
-    // mainLight.shadowMaxZ = 500;
+    // Back Light
+    const backLight = new BABYLON.PointLight("backLight", new BABYLON.Vector3(-2.5, 6, -2.5), scene);
+    backLight.diffuse = new BABYLON.Color3(1, 1, 1);
+    backLight.intensity = 12;
 
-    // Main Light 2
-    const mainLight2 = new BABYLON.PointLight("mainLight2", new BABYLON.Vector3(-2.5, 1.2, -2.5), scene);
-    mainLight2.diffuse = new BABYLON.Color3(1, 1, 1);
-    mainLight2.intensity = 12;
+    // Front Light
+    const frontLight = new BABYLON.DirectionalLight("frontLight", new BABYLON.Vector3(-1, -2, -1), scene);
+    frontLight.diffuse = new BABYLON.Color3(1, 1, 1);
+    frontLight.intensity = 6;
+    frontLight.range = 10;
 
+    // Fog
     scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     scene.fogColor = scene.clearColor;
     scene.fogStart = 9;
     scene.fogEnd = 13;
-    return warmLight;
+    return backLight;
 }
 
 function postProcessEffects(scene, camera) {
@@ -161,18 +170,9 @@ function postProcessEffects(scene, camera) {
 let camera;
 let orthoSize = 1;
 function initCamera(scene) {
-    let aspectRatio = canvas.width / canvas.height;
-    let orthoTop = orthoSize;
-    let orthoBottom = -orthoSize;
-    let orthoLeft = -orthoSize * aspectRatio;
-    let orthoRight = orthoSize * aspectRatio;
-
     camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 6.2, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-    camera.orthoTop = orthoTop;
-    camera.orthoBottom = orthoBottom;
-    camera.orthoLeft = orthoLeft;
-    camera.orthoRight = orthoRight;
+    updateCameraOrtho();
     camera.setTarget(BABYLON.Vector3.Zero());
     return camera;
 }

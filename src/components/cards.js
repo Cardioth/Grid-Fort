@@ -1,13 +1,10 @@
 import { currentScene } from "../managers/sceneControl";
-import { testCanvas } from "../managers/setup";
+import { canvas } from "../graphics/initScene";
 import { updateTotalCredits } from "../gameplay/credits";
 import { circularizeGrids } from "../gameplay/buildingPlacement";
 import { currentMouseX, selectedCard, selectedBuilding, currentMouseY, setSelectedCard } from "../ui/controls";
 
 export let hand = [];
-
-const cardWidth = 60;
-const cardHeight = 90;
 
 export function removeCardFromHand(selectedCard) {
     hand = hand.filter(card => card !== selectedCard);
@@ -18,7 +15,7 @@ export function updateCardAnimation(card) {
         // Set target size and position for hovered card
         card.rotation = 0;
         card.targetSize = { width: 130, height: 130 * 1.5 };
-        card.targetPosition = { x: card.originalPosition.x, y: testCanvas.height - 130 };
+        card.targetPosition = { x: card.originalPosition.x, y: canvas.height - 130 };
     } else {
         // Reset to normal size and position when not hovered
         card.rotation = card.originalRotation;
@@ -37,22 +34,20 @@ export function updateCardAnimation(card) {
 }
 
 export function setCardPositions() {
-    let xCardOffset = testCanvas.width / 2; // Initial offset from left
-    let yCardOffset = -30; // Initial offset from top
-    const gap = 50 - hand.length * 2; // Gap between cards
+    let yCardOffset = 300; // Initial offset from middle
+    const gap = 100 - hand.length * 2; // Gap between cards
 
     hand.forEach((buildingCard, index) => {
         // Calculate the initial position for each card
-        const rotationAngle = (index + 0.5 - (hand.length / 2)) / 15;
-        const arcStrength = -1; // Adjust this value to increase or decrease the curvature of the arc
-        const xPosition = xCardOffset + (index + 0.5 - hand.length / 2) * gap;
+        const rotationAngle = (index + 0.5 - (hand.length / 2)) / 10;
+        const arcStrength = -2; // Adjust this value to increase or decrease the curvature of the arc
+        const xPosition = (index + 0.5 - hand.length / 2) * gap;
         const distanceFromCenter = (index + 0.5 - hand.length / 2);
-        const yPosition = testCanvas.height - cardHeight - yCardOffset - Math.pow(distanceFromCenter, 2) * arcStrength;
+        const yPosition = yCardOffset - Math.pow(distanceFromCenter, 2) * arcStrength;
 
         buildingCard.originalPosition = { x: xPosition, y: yPosition };
         if (buildingCard.initialized === undefined) {
             buildingCard.currentPosition = { ...buildingCard.originalPosition };
-            buildingCard.currentSize = { width: cardWidth, height: cardHeight }; // Initial size
             buildingCard.initialized = true;
         }
         buildingCard.targetSize = { ...buildingCard.currentSize };
@@ -70,8 +65,8 @@ export function getHoveredCard(mouseX, mouseY) {
         const hoverWidth = hand[i].currentSize.width * hoverWidthPercentage;
         const minX = hand[i].currentPosition.x - hoverWidth / 2 - 12;
         const maxX = hand[i].currentPosition.x + hoverWidth / 2 - 12;
-        const minY = testCanvas.height - cardHeight - 20;
-        const maxY = testCanvas.height;
+        const minY = canvas.height - cardHeight - 20;
+        const maxY = canvas.height;
 
         if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) {
             for (let j = 0; j < hand.length; j++) {
@@ -79,19 +74,19 @@ export function getHoveredCard(mouseX, mouseY) {
             }
             hand[i].isHovered = true;
             if (currentScene === "build") {
-                testCanvas.style.cursor = "grab";
+                canvas.style.cursor = "grab";
             }
             return hand[i];
         } else {
             hand[i].isHovered = false;
-            testCanvas.style.cursor = "default";
+            canvas.style.cursor = "default";
         }
     }
     return undefined;
 }
 
 export function returnBuildingToDeck() {
-    const arrayIndex = Math.floor(((currentMouseX) / (testCanvas.width - 50)) * hand.length);
+    const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length);
     if (selectedCard === null) {
         setSelectedCard(selectedBuilding);
     }
