@@ -35,16 +35,16 @@ h2 {
 
 @font-face {
     font-family: 'GemunuLibre-Bold';
-    src: url('./public/gemunulibre-bold-webfont.woff') format('woff2'),
-         url('./public/gemunuLibre-bold.woff') format('woff');
+    src: url('./public/gemunulibre-bold-webfont.woff2') format('woff2'),
+         url('./public/gemunulibre-bold-webfont.woff') format('woff');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
 font-family: 'GemunuLibre-Medium';
-src: url('./public/gemunulibre-medium-webfont.woff') format('woff2'),
-        url('./public/gemunulibre-medium-webfont.woff2') format('woff');
+src: url('./public/gemunulibre-medium-webfont.woff2') format('woff2'),
+        url('./public/gemunulibre-medium-webfont.woff') format('woff');
 font-weight: 500; /* or 'medium' */
 font-style: normal;
 }
