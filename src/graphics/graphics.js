@@ -13,9 +13,15 @@ export function setZoomTarget(size){
 
 // Gets called every frame
 export function updateGraphics(){
+    // Animate Camera Zoom
     zoom += (zoomTarget - zoom) * 0.05;
     setOrthoSize(zoom);
+
+    // Aniamte Cards
     updateCardAnimation();
+
+    // Update shaders
+    //shaderMaterial.setFloat("time", performance.now() / 1000);
 }
 
 export function createCardGraphic(card) {

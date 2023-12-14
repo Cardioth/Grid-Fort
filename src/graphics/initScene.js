@@ -1,18 +1,22 @@
 import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders'; // If you need to import any loaders
 import * as GUI from '@babylonjs/gui';
+import { getShaderMaterial } from '../shaders/gridShader.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
 export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
 
+export let scene;
+
 let sceneMeshes;
 let baseMesh;
 let buildingAssets;
 let WeaponAssets;
+let shaderMaterial;
 
 export const initScene = () => {
-    const scene = new BABYLON.Scene(engine);
+    scene = new BABYLON.Scene(engine);
    
     const lights = initLights(scene); //Lights
     
@@ -21,6 +25,12 @@ export const initScene = () => {
     postProcessEffects(scene, camera); //Post Processing
 
     importModels(scene, lights); //Meshes
+
+    var plane = BABYLON.MeshBuilder.CreateBox("plane", {height: .5, width: .5, depth: .5}, scene);
+    plane.position = new BABYLON.Vector3(-1, 0, 1);
+    shaderMaterial = getShaderMaterial();
+    plane.material = shaderMaterial;
+
 
     return scene;
 };
@@ -153,12 +163,11 @@ function initLights(scene) {
 function postProcessEffects(scene, camera) {
     const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, { ssaoRatio: 3, combineRatio: 1 });
     scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
-    ssaoPipeline.totalStrength = 1.2;
+    ssaoPipeline.totalStrength = 1;
     ssaoPipeline.radius = 0.00005;
 
     const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
     bloomPipeline.bloomEnabled = true;
-
     bloomPipeline.bloomThreshold = 0.27;
     bloomPipeline.bloomWeight = 2;
     bloomPipeline.bloomKernel = 30;
