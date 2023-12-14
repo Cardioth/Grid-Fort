@@ -6,7 +6,7 @@ import { getRandomBuilding } from "../components/buildings";
 import allBuildings from "../components/buildings";
 import { gridWidth, gridHeight, cellSize } from "../data/config";
 import { spawnProjectile, blasts, createTestBuildInterface } from "../graphics/testGraphics";
-import { playerBoard, enemyBoard, testCanvas } from "../managers/setup";
+import { playerBoard, enemyBoard } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
 
 let battleLoopInterval;

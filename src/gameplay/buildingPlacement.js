@@ -2,11 +2,11 @@ import { allBoards } from "../managers/setup";
 import { updateBoardStats } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedCard } from "../ui/controls";
-import { setCardPositions, hand } from "../components/cards";
 import { cellSize, gridHeight, gridWidth} from "../data/config";
 import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
-import { playerBoard, testCanvas, enemyBoard } from "../managers/setup";
+import { playerBoard, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
+import { circularizeGrids } from "../components/grids";
 
 export function getHoveredBuilding() {
     for (const board of allBoards) {
@@ -20,6 +20,7 @@ export function getHoveredBuilding() {
     }
     return null;
 }
+
 export function placeBuilding(building, mouseX, mouseY, board) {
     // Calculate top-left corner for the building and adjust to snap to grid
     const gridX = Math.floor((mouseX - board.xGridOffset) / cellSize) - Math.floor(building.width / 2);
@@ -98,6 +99,7 @@ export function placeBuilding(building, mouseX, mouseY, board) {
         return false;
     }
 }
+
 export function unplaceBuilding(building, board) {
     const gridX = building.x;
     const gridY = building.y;
@@ -140,6 +142,7 @@ export function unplaceBuilding(building, board) {
         }
     }
 }
+
 function canPlaceBuilding(building, gridX, gridY, board) {
     for (let x = 0; x < building.width; x++) {
         for (let y = 0; y < building.height; y++) {
@@ -192,44 +195,10 @@ export function rotateBuilding(building, direction = 'R') {
     building.height = width;
 }
 
-export function circularizeGrids() {
-    const centerX = (gridWidth - 1) / 2;
-    const centerY = (gridHeight - 1) / 2;
-
-    
-
-    allBoards.forEach((board) => {
-        updateBoardStats(board);
-        const radius = board.stats.radarRange.stat;
-        board.grid.forEach(cell => {
-            const distanceFromCenter = Math.sqrt(Math.pow(cell.x - centerX, 2) + Math.pow(cell.y - centerY, 2));
-            const outsideRadius = distanceFromCenter > radius;
-            if (outsideRadius) {
-                if (cell.occupied === true && cell.building !== undefined) {
-                    hand.push(cell.building);
-                    setCardPositions();
-                    cell.building.currentPosition.x = testCanvas.width / 2;
-                    cell.building.currentPosition.y = testCanvas.height / 2;
-                    updateTotalCredits(cell.building.cost);
-                    cell.building.placed = false;
-                    unplaceBuilding(cell.building, board);
-                }
-                cell.occupied = true;
-                cell.visible = false;
-                cell.building = undefined;
-            } else {
-                if (cell.visible === false) {
-                    cell.occupied = false;
-                    cell.visible = true;
-                }
-            }
-        });
-    });
-}
-
 export function placeBuildingToBoard(building, board, xLoc, yLoc) {
     placeBuilding(JSON.parse(JSON.stringify(building)), board.xGridOffset + (gridWidth * cellSize) / 2 + (xLoc * cellSize), board.yGridOffset + (gridHeight * cellSize) / 2 + (yLoc * cellSize), board);
 }
+
 export function placeAIFort(AIfortIndex) {
     const AIfort = AIforts[AIfortIndex];
     AIfort.layout.forEach((building) => {

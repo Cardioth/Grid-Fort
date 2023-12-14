@@ -1,13 +1,14 @@
 import { AIforts } from "../components/AIforts";
 import { lasers, startBattleLoop } from "../gameplay/battle";
-import { canPlaceBuildingNearest, circularizeGrids, placeAIFort, placeBuildingToBoard } from "../gameplay/buildingPlacement";
+import { canPlaceBuildingNearest, placeAIFort, placeBuildingToBoard } from "../gameplay/buildingPlacement";
+import { circularizeGrids } from "../components/grids";
 import allBuildings from "../components/buildings";
 import { hand, updateCardAnimation } from "../components/cards";
 import { cellSize, gridHeight, gridWidth } from "../data/config";
 import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "../ui/controls";
 import { totalCredits } from "../gameplay/credits";
 import { currentScene, updateCurrentScene } from "../managers/sceneControl";
-import { allBoards, testCanvas, ctx, enemyBoard, playerBoard } from "../managers/setup";
+import { allBoards, enemyBoard, playerBoard } from "../managers/setup";
 import { camelCaseToTitleCase, updateBoardStats, wrapText } from "../utilities/utils";
 
 let countDownNumber = 4;
@@ -569,7 +570,7 @@ function boostedAnimation() {
 }
 export let buttons = [];
 
-createTestBuildInterface();
+//createTestBuildInterface();
 export function createTestBuildInterface() {
     buttons = [];
     buttons.push(createButton("End Turn", testCanvas.width - 100, testCanvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {

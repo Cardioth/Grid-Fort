@@ -1,6 +1,5 @@
 
 import { initScene, initGUIScene, engine} from './graphics/initScene';
-import { updateTestGraphics } from "./graphics/testGraphics";
 import { updateGraphics } from "./graphics/graphics";
 
 const scene = initScene();

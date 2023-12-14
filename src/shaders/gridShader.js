@@ -1,5 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { scene, canvas } from '../graphics/initScene.js';
+import { gridHeight, gridWidth } from '../data/config.js';
+import { playerBoard } from "../managers/setup.js";
 
 export function getShaderMaterial() {
     BABYLON.Effect.ShadersStore['customVertexShader'] = `
@@ -19,22 +21,39 @@ export function getShaderMaterial() {
         precision highp float;
         varying vec2 vUV;
         uniform float time;
+        uniform sampler2D gridMaskTexture;
+        uniform float gridWidth;
         
         void main() {
             // Grid control variables
-            float gridScale = 20.0; // The scale of the grid
-            float lineThickness = 0.05; // The thickness of the grid lines
+            float gridScale = gridWidth; // The scale of the grid
+            float lineThickness = 0.06; // The thickness of the grid lines
             
             // Calculate grid line strength based on UV coordinates
             vec2 grid = abs(fract(vUV * gridScale - 0.5) - 0.5);
             float lineStrength = smoothstep(0.0, lineThickness, grid.x) * smoothstep(0.0, lineThickness, grid.y);
+            float cellShadow = step(0.9, texture2D(gridMaskTexture, vUV).r);
 
-            float shimmerValue = sin((vUV.y + vUV.x) * 4.0 + time*-1.5) * 0.3 + 0.5;
-            shimmerValue = max(shimmerValue, 0.2);
+            // Shimmer effect
+            float shimmerValue = sin((vUV.y + vUV.x/2.0) * 9.0 + time*-1.0) * 0.3 + 0.5;
+            shimmerValue = max(shimmerValue, 0.1);
 
-            gl_FragColor = vec4(1.0, 1.0, 1.0, (0.5 - lineStrength) * shimmerValue);
-            
-        }     
+            float red = (0.8 * shimmerValue * 2.0 * vUV.x);
+            float green = (1.0 * shimmerValue);
+            float blue = (1.0);
+            float alpha = (0.7 - lineStrength) * shimmerValue;
+        
+            // Calculate cellShadow mix value
+            float shadowMix = smoothstep(0.1, 0.0, cellShadow); // Adjust 0.0 and 1.0 for different shadow strengths
+        
+            // Blend the cellShadow with the current color
+            vec4 shadowColor = vec4(0.0, 0.0, 0.0, 0.05); // Shadow color (black with some alpha)
+            vec4 gridColor = vec4(red, green, blue, alpha);
+            vec4 finalColor = mix(gridColor, shadowColor, shadowMix);
+        
+            gl_FragColor = finalColor;
+        }
+        
     `;
 
     const shaderMaterial = new BABYLON.ShaderMaterial(
@@ -42,20 +61,50 @@ export function getShaderMaterial() {
         scene, 
         'custom',   
         { 
-            attributes: ["position", "uv", "time"], 
-            uniforms: ["worldViewProjection"]
+            attributes: ["position", "uv"], 
+            uniforms: ["worldViewProjection", "time", "gridMaskTexture", "gridWidth"]
         }
     );
 
-    shaderMaterial.alpha = 0; // Set global alpha for the material, can be adjusted as needed
+    // Set grid width uniform
+    shaderMaterial.setFloat("gridWidth", gridWidth);
 
-    // Enable blending for transparency
-    shaderMaterial.blendMode = BABYLON.Engine.ALPHA_COMBINE;
-    shaderMaterial.alphaMode = BABYLON.Engine.ALPHA_COMBINE; // Sets the alpha mode to combine the colors based on alpha value
+    // Create grid mask texture
+    const gridMaskTexture = createGridTexture();
+    shaderMaterial.setTexture("gridMaskTexture", gridMaskTexture);
 
-    
+    shaderMaterial.alpha = 0;
+
     shaderMaterial.setFloat("time", 0);
     shaderMaterial.setVector2("resolution", new BABYLON.Vector2(canvas.width, canvas.height));
 
     return shaderMaterial;
+}
+function createGridTexture() {
+    // Create grid mask texture
+    const resolution = 1000;
+
+    var gridMaskTexture = new BABYLON.DynamicTexture("gridMaskTexture", {width:resolution, height:resolution}, scene, false);
+    var ctx = gridMaskTexture.getContext();
+
+    const cellSizeX = resolution / gridWidth;
+    const cellSizeY = resolution / gridHeight;
+
+    const bleed = 2;
+
+    // Draw the grid
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, resolution, resolution);
+
+    //Loop through player board grid and draw cells
+    for (let i = 0; i < playerBoard.grid.length; i++) {
+        const cell = playerBoard.grid[i];
+        if (!cell.occupied) {
+            ctx.fillStyle = '#FFF';
+            ctx.fillRect(cell.x*cellSizeX-bleed, cell.y*cellSizeY-bleed, cellSizeX+bleed*2, cellSizeY+bleed*2);
+        }
+    }
+
+    gridMaskTexture.update();
+    return gridMaskTexture;
 }

@@ -2,18 +2,13 @@ import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../components/buildings.js";
 import { cellSize, gridHeight, gridWidth } from "../data/config.js";
 import { setCardPositions } from "../components/cards.js";
-import { initializeControls } from "../ui/controls.js";
 import { buildRandomDeck } from "../components/deck.js";
-import { canvas } from "../graphics/initScene.js";
-
-export const testCanvas = document.getElementById('gridCanvas');
-export const ctx = testCanvas.getContext('2d');
+import { createGridWithStructuredNeighbors } from "../components/grids.js";
+import { circularizeGrids } from "../components/grids.js";
 
 buildRandomDeck();
 
 setCardPositions();
-
-initializeControls(canvas);
 
 export const fortStats = {
     kineticFirepower: {name:"Kinetic Firepower", stat: 0},
@@ -31,9 +26,7 @@ export const fortStats = {
 export const playerBoard = {
     name:"Player",
     grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
-    xGridOffset:(testCanvas.width-(gridWidth*cellSize))/2,
-    yGridOffset:(testCanvas.height-(gridHeight*cellSize))/2-50,
-    targetPosition:{x:(testCanvas.width-(gridWidth*cellSize))/2,y:(testCanvas.height-(gridHeight*cellSize))/2-50},
+    targetPosition:{x:0,y:0},
     stats:JSON.parse(JSON.stringify(fortStats)),
     allPlacedBuildings:[],
     id:0,
@@ -42,9 +35,7 @@ export const playerBoard = {
 export const enemyBoard = {
     name:"Enemy",
     grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
-    xGridOffset:(testCanvas.width-(gridWidth*cellSize))/2+200,
-    yGridOffset:(testCanvas.height-(gridHeight*cellSize))/2-50,
-    targetPosition:{x:(testCanvas.width-(gridWidth*cellSize))/2+200,y:(testCanvas.height-(gridHeight*cellSize))/2-50},
+    targetPosition:{x:0,y:0},
     stats:JSON.parse(JSON.stringify(fortStats)),
     allPlacedBuildings:[],
     id:1,
@@ -52,47 +43,6 @@ export const enemyBoard = {
 
 export const allBoards = [playerBoard];
 
-placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
+circularizeGrids();
 
-function createGridWithStructuredNeighbors(width, height) {
-    const grid = [];
-    for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-            grid.push({ x, y, occupied: false, neighbors: {},building:undefined,effects:{}});
-        }
-    }
-
-    // Compute neighbors for each cell
-    grid.forEach(cell => {
-        cell.visible = true;
-        cell.neighbors = getStructuredNeighbors(cell.x, cell.y, width, height, grid);
-        cell.shape = 0;
-    });
-    return grid;
-}
-
-function getStructuredNeighbors(x, y, width, height, grid) {
-    const neighborPositions = {
-        topLeft: { dx: -1, dy: -1 },
-        top: { dx: 0, dy: -1 },
-        topRight: { dx: 1, dy: -1 },
-        left: { dx: -1, dy: 0 },
-        right: { dx: 1, dy: 0 },
-        bottomLeft: { dx: -1, dy: 1 },
-        bottom: { dx: 0, dy: 1 },
-        bottomRight: { dx: 1, dy: 1 }
-    };
-
-    const neighbors = {};
-
-    for (const [key, { dx, dy }] of Object.entries(neighborPositions)) {
-        const nx = x + dx;
-        const ny = y + dy;
-
-        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-            neighbors[key] = grid[ny * width + nx];
-        }
-    }
-
-    return neighbors;
-}
+//placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);

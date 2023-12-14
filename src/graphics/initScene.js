@@ -2,8 +2,12 @@ import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders'; // If you need to import any loaders
 import * as GUI from '@babylonjs/gui';
 import { getShaderMaterial } from '../shaders/gridShader.js';
+import { gridHeight, gridWidth } from '../data/config.js';
+import { initializeControls } from '../ui/controls.js';
 
 export const canvas = document.getElementById('renderCanvas');
+
+initializeControls(canvas);
 
 export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
 
@@ -26,7 +30,7 @@ export const initScene = () => {
 
     importModels(scene, lights); //Meshes
 
-    var plane = BABYLON.MeshBuilder.CreatePlane("plane", { width: 4, height: 4 }, scene);
+    var plane = BABYLON.MeshBuilder.CreatePlane("plane", { width: gridWidth/4, height: gridHeight/4 }, scene);
     plane.position = new BABYLON.Vector3(0, 0, 0);
     plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.WORLD);
     shaderMaterial = getShaderMaterial();
