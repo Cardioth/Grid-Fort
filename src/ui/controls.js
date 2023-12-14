@@ -37,10 +37,11 @@ export function initializeControls(canvas) {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
-    
+
         //Hovering over a card
-        if (selectedCard === null) {
-        }
+        //if (selectedCard === null) {            
+            selectedCard = getHoveredCard(mouseX, mouseY);
+        //}
     
         //Drags a placed building
         if (currentScene === "build") {

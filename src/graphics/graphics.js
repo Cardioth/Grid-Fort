@@ -2,7 +2,7 @@ import * as GUI from "@babylonjs/gui";
 import { advancedTexture } from './initScene.js';
 import { setOrthoSize} from "./initScene.js";
 import WebFont from "webfontloader";
-import { hand } from "../components/cards.js";
+import { hand, updateCardAnimation } from "../components/cards.js";
 
 let zoomTarget = 1;
 let zoom = 1;
@@ -15,6 +15,7 @@ export function setZoomTarget(size){
 export function updateGraphics(){
     zoom += (zoomTarget - zoom) * 0.05;
     setOrthoSize(zoom);
+    updateCardAnimation();
 }
 
 export function createCardGraphic(card) {
@@ -64,7 +65,7 @@ export function createCardGraphic(card) {
     costText.text = card.cost;
     costText.color = "#53F4FD";
     costText.fontSize = 65;
-    costText.top = "-383px";
+    costText.top = "-380px";
     costText.left = "-230px";
     costText.fontFamily = "RussoOne-Regular";
     container.addControl(costText);
@@ -111,6 +112,9 @@ export function createCardGraphic(card) {
     container.top = card.currentPosition.y;
     container.left = card.currentPosition.x;
     container.rotation = card.rotation;
+    container.zIndex = card.zIndex;
+
+    card.container = container;
 
     advancedTexture.addControl(container);
 

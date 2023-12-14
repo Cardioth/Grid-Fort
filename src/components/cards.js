@@ -10,27 +10,35 @@ export function removeCardFromHand(selectedCard) {
     hand = hand.filter(card => card !== selectedCard);
 }
 
-export function updateCardAnimation(card) {
-    if (card.isHovered) {
-        // Set target size and position for hovered card
-        card.rotation = 0;
-        card.targetSize = { width: 130, height: 130 * 1.5 };
-        card.targetPosition = { x: card.originalPosition.x, y: canvas.height - 130 };
-    } else {
-        // Reset to normal size and position when not hovered
-        card.rotation = card.originalRotation;
-        card.targetSize = { width: 60, height: 90 };
-        card.targetPosition = card.originalPosition;
-    }
+export function updateCardAnimation() {
+    hand.forEach(card => {
+        if (card.container !== undefined) {
+            if (card.isHovered) {
+                // Set target size and position for hovered card
+                card.rotation = 0;
+                card.container.scaleX = .4;
+                card.container.scaleY = .4;
+                card.targetPosition = { x: card.originalPosition.x, y: 100 };
+                card.zIndex = 100;
+            } else {
+                // Reset to normal size and position when not hovered
+                card.rotation = card.originalRotation;
+                card.container.scaleX = .25;
+                card.container.scaleY = .25;
+                card.targetPosition = card.originalPosition;
+                card.zIndex = card.originalZIndex;
+            }
+            // Animate position
+            card.currentPosition.x += (card.targetPosition.x - card.currentPosition.x) * 0.08;
+            card.currentPosition.y += (card.targetPosition.y - card.currentPosition.y) * 0.08;
 
-    // Animate size
-    card.currentSize.width = card.targetSize.width;
-    card.currentSize.height = card.targetSize.height;
-
-    // Animate position
-    card.currentPosition.x += (card.targetPosition.x - card.currentPosition.x) * 0.06;
-    card.currentPosition.y += (card.targetPosition.y - card.currentPosition.y) * 0.06;
-
+            // Update container to card
+            card.container.top = card.currentPosition.y;
+            card.container.left = card.currentPosition.x;
+            card.container.rotation = card.rotation;
+            card.container.zIndex = card.zIndex;
+        }
+    });
 }
 
 export function setCardPositions() {
@@ -44,7 +52,6 @@ export function setCardPositions() {
         const xPosition = (index + 0.5 - hand.length / 2) * gap;
         const distanceFromCenter = (index + 0.5 - hand.length / 2);
         const yPosition = yCardOffset - Math.pow(distanceFromCenter, 2) * arcStrength;
-
         buildingCard.originalPosition = { x: xPosition, y: yPosition };
         if (buildingCard.initialized === undefined) {
             buildingCard.currentPosition = { ...buildingCard.originalPosition };
@@ -55,19 +62,18 @@ export function setCardPositions() {
         buildingCard.originalRotation = rotationAngle;
         buildingCard.isHovered = false;
         buildingCard.isDragged = false;
+        buildingCard.zIndex = index;
+        buildingCard.originalZIndex = index;
     });
 }
 
 export function getHoveredCard(mouseX, mouseY) {
-    const hoverWidthPercentage = 0.5; // Adjust this value to change the width of the hovered card area
-
     for (let i = 0; i < hand.length; i++) {
-        const hoverWidth = hand[i].currentSize.width * hoverWidthPercentage;
-        const minX = hand[i].currentPosition.x - hoverWidth / 2 - 12;
-        const maxX = hand[i].currentPosition.x + hoverWidth / 2 - 12;
-        const minY = canvas.height - cardHeight - 20;
-        const maxY = canvas.height;
-
+        const hoverWidth = 70;
+        const minX = hand[i].currentPosition.x - hoverWidth + canvas.width / 2;
+        const maxX = hand[i].currentPosition.x + hoverWidth + canvas.width / 2;
+        const minY = canvas.height - 180;
+        const maxY = canvas.height;        
         if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) {
             for (let j = 0; j < hand.length; j++) {
                 hand[j].isHovered = false;
@@ -82,7 +88,7 @@ export function getHoveredCard(mouseX, mouseY) {
             canvas.style.cursor = "default";
         }
     }
-    return undefined;
+    return null;
 }
 
 export function returnBuildingToDeck() {
