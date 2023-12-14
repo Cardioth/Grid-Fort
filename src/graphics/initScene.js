@@ -13,7 +13,7 @@ let sceneMeshes;
 let baseMesh;
 let buildingAssets;
 let WeaponAssets;
-let shaderMaterial;
+export let shaderMaterial;
 
 export const initScene = () => {
     scene = new BABYLON.Scene(engine);
@@ -26,8 +26,9 @@ export const initScene = () => {
 
     importModels(scene, lights); //Meshes
 
-    var plane = BABYLON.MeshBuilder.CreateBox("plane", {height: .5, width: .5, depth: .5}, scene);
-    plane.position = new BABYLON.Vector3(-1, 0, 1);
+    var plane = BABYLON.MeshBuilder.CreatePlane("plane", { width: 4, height: 4 }, scene);
+    plane.position = new BABYLON.Vector3(0, 0, 0);
+    plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.WORLD);
     shaderMaterial = getShaderMaterial();
     plane.material = shaderMaterial;
 

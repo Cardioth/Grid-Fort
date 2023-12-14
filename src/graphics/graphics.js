@@ -1,5 +1,5 @@
 import * as GUI from "@babylonjs/gui";
-import { advancedTexture } from './initScene.js';
+import { advancedTexture, shaderMaterial } from './initScene.js';
 import { setOrthoSize} from "./initScene.js";
 import WebFont from "webfontloader";
 import { hand, updateCardAnimation } from "../components/cards.js";
@@ -19,9 +19,8 @@ export function updateGraphics(){
 
     // Aniamte Cards
     updateCardAnimation();
-
-    // Update shaders
-    //shaderMaterial.setFloat("time", performance.now() / 1000);
+    
+    shaderMaterial.setFloat("time", performance.now() / 1000);
 }
 
 export function createCardGraphic(card) {
