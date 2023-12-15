@@ -96,7 +96,7 @@ export function initializeControls(canvas) {
                 hoveredCard.container.isVisible = false;
 
                 //Create a building graphic to drag around
-                hoveredCard.buildingGraphic = cloneBuilding("basicLaserBuilding", 0, 0, 0);
+                hoveredCard.buildingGraphic = cloneBuilding(selectedBuilding.keyName+"Building", 0, 0, 0);
                 hoveredCard.buildingGraphic.isDragged = true;
                 hoveredCard.buildingGraphic.setEnabled(false);
 

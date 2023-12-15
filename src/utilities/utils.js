@@ -88,3 +88,13 @@ export function getPointerScreenLocation(mouseX, mouseY) {
 
     return { x: null, y: null };
 }
+
+export function setMaterialToBlocked(mesh) {
+    mesh.material = new BABYLON.StandardMaterial("redMaterial", scene);
+    mesh.material.diffuseColor = new BABYLON.Color3(0, 0.05, 1);
+    mesh.material.alpha = 0.1;
+}
+
+export function setMaterialToPrevious(mesh) {
+    mesh.material = mesh.defaultMaterial;
+}

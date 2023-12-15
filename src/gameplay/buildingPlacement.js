@@ -1,5 +1,5 @@
 import { allBoards } from "../managers/setup";
-import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats } from "../utilities/utils";
+import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToPrevious, setMaterialToBlocked } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard } from "../ui/controls";
 import { cellSize, gridHeight, gridWidth} from "../data/config";
@@ -235,6 +235,7 @@ export function cloneBuilding(name, x, z, yRotation = 0) {
 
             childClone.position.x = x;
             childClone.position.z = z;
+            childClone.defaultMaterial = childClone.material;
         }
         return clone;
     }
@@ -272,12 +273,20 @@ export function updateBuildingGraphicPosition() {
         selectedCard.buildingGraphic.setEnabled(true);
     }
 
+    for (let i = 0; i < selectedCard.buildingGraphic.getChildMeshes().length; i++) {
+        setMaterialToBlocked(selectedCard.buildingGraphic.getChildMeshes()[i]);
+    }
+
     if (gridX !== null && gridY !== null) {
         let placementResult = canPlaceBuildingNearest(selectedCard, gridX, gridY);
         if (placementResult.canPlace) {
             selectedCard.buildingGraphic.setEnabled(true);
             selectedCard.buildingGraphic.position.x = getPointerScreenLocationSnappedToGrid(currentMouseX, currentMouseY).x-placementResult.adjustedX*0.25+rotationAdjustmentX;
             selectedCard.buildingGraphic.position.z = getPointerScreenLocationSnappedToGrid(currentMouseX, currentMouseY).y+placementResult.adjustedY*0.25+rotationAdjustmentY;
+
+            for (let i = 0; i < selectedCard.buildingGraphic.getChildMeshes().length; i++) {
+                setMaterialToPrevious(selectedCard.buildingGraphic.getChildMeshes()[i]);
+            }
         }
     }
     

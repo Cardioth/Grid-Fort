@@ -13,11 +13,7 @@ export function buildRandomDeck() {
     hand.push({...allBuildings.basicLaser});
     hand.push({...allBuildings.basicLaser});
     hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.radar});
+    hand.push({...allBuildings.miniArty});
 }
 
 export function pickFromCards(){
