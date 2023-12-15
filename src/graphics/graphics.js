@@ -4,7 +4,6 @@ import WebFont from "webfontloader";
 import { hand, updateCardAnimation } from "../components/cards.js";
 import { createCardGraphic } from "./createCardGraphic.js";
 
-
 let zoomTarget = 1;
 let zoom = 1;
 
@@ -23,7 +22,10 @@ export function updateGraphics(){
 
     // Update Shader Time   
     shaderMaterial.setFloat("time", performance.now() / 1000);
+
 }
+
+
 
 WebFont.load({
     custom: {

@@ -1,13 +1,15 @@
 import { allBoards } from "../managers/setup";
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
-import { currentMouseX, currentMouseY, selectedBuilding, selectedCard } from "../ui/controls";
+import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard } from "../ui/controls";
 import { cellSize, gridHeight, gridWidth} from "../data/config";
 import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
 import { circularizeGrids } from "../components/grids";
-import { buildingAssets, baseMesh, shadowGenerator } from '../graphics/initScene';
+import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/initScene';
+import { hand, setCardPositions } from "../components/cards";
+import { drawGridTexture } from "../shaders/gridMaterial";
 
 export function getHoveredBuilding() {
     for (const board of allBoards) {
@@ -94,7 +96,7 @@ export function placeBuilding(building, gridX, gridY, board) {
                 }
             }
         }
-
+        drawGridTexture();
         updateBoardStats(board);
     } else {
         return false;
@@ -164,8 +166,6 @@ function canPlaceBuilding(building, gridX, gridY, board) {
 export function canPlaceBuildingNearest(building, gridX, gridY) {
     const directions = [[0, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]];
     for (let [dx, dy] of directions) {
-
-        
         if (canPlaceBuilding(building, gridX + dx, gridY + dy, playerBoard)) {
             return { canPlace: true, adjustedX: dx, adjustedY: dy };
         }
@@ -178,6 +178,7 @@ export function rotateBuilding(building, direction = 'R') {
     const { width, height, shape } = building;
 
     if (direction === 'R') {
+        building.rotation += Math.PI / 2;
         // Transpose and reverse rows for clockwise rotation
         for (let x = 0; x < width; x++) {
             for (let y = height - 1; y >= 0; y--) {
@@ -185,6 +186,7 @@ export function rotateBuilding(building, direction = 'R') {
             }
         }
     } else {
+        building.rotation -= Math.PI / 2;    
         // Transpose and reverse columns for counterclockwise rotation
         for (let x = width - 1; x >= 0; x--) {
             for (let y = 0; y < height; y++) {
@@ -229,7 +231,6 @@ export function cloneBuilding(name, x, z, yRotation = 0) {
 
             //Bizzare rotation and scaling to get the building to face the right way
             childClone.rotation.x = -(90) * (Math.PI / 180);
-            childClone.rotation.y = (yRotation + 180) * (Math.PI / 180);
             childClone.scaling.y = -1;
 
             childClone.position.x = x;
@@ -240,12 +241,31 @@ export function cloneBuilding(name, x, z, yRotation = 0) {
     return null;
 }
 
-export function updateBuildingGraphicPosition(mouseX, mouseY) {
-    const gridX = getPointerGridLocation(mouseX, mouseY).x;
-    const gridY = getPointerGridLocation(mouseX, mouseY).y;
+export function updateBuildingGraphicPosition() {
+    const gridX = getPointerGridLocation(currentMouseX, currentMouseY).x;
+    const gridY = getPointerGridLocation(currentMouseX, currentMouseY).y;
 
-    const xPosSmooth = getPointerScreenLocation(mouseX, mouseY).x;
-    const yPosSmooth = getPointerScreenLocation(mouseX, mouseY).y;
+    const xPosSmooth = getPointerScreenLocation(currentMouseX, currentMouseY).x;
+    const yPosSmooth = getPointerScreenLocation(currentMouseX, currentMouseY).y;
+
+    //Rotation adjustment to account for the fact that the building graphic is centered on the grid
+    let rotationAdjustmentX = 0;
+    let rotationAdjustmentY = 0;
+    let rotationModulus = selectedCard.rotation % (Math.PI*2);
+
+    if(rotationModulus > 0){
+        rotationAdjustmentX = -0.25;
+        rotationAdjustmentY = 0;
+    }
+    if(rotationModulus > Math.PI/2){
+        rotationAdjustmentX = -0.25;
+        rotationAdjustmentY = 0.25;
+    }
+    if(rotationModulus > Math.PI){
+        rotationAdjustmentX = 0;
+        rotationAdjustmentY = 0.25;
+    }
+
     if(xPosSmooth !== null || yPosSmooth !== null){
         selectedCard.buildingGraphic.position.x = xPosSmooth;
         selectedCard.buildingGraphic.position.z = yPosSmooth;
@@ -256,9 +276,40 @@ export function updateBuildingGraphicPosition(mouseX, mouseY) {
         let placementResult = canPlaceBuildingNearest(selectedCard, gridX, gridY);
         if (placementResult.canPlace) {
             selectedCard.buildingGraphic.setEnabled(true);
-            selectedCard.buildingGraphic.position.x = getPointerScreenLocationSnappedToGrid(mouseX, mouseY).x;
-            selectedCard.buildingGraphic.position.z = getPointerScreenLocationSnappedToGrid(mouseX, mouseY).y;
+            selectedCard.buildingGraphic.position.x = getPointerScreenLocationSnappedToGrid(currentMouseX, currentMouseY).x-placementResult.adjustedX*0.25+rotationAdjustmentX;
+            selectedCard.buildingGraphic.position.z = getPointerScreenLocationSnappedToGrid(currentMouseX, currentMouseY).y+placementResult.adjustedY*0.25+rotationAdjustmentY;
         }
+    }
+    
+    selectedCard.buildingGraphic.rotation.y = selectedCard.rotation;
+    //Rotate all children meshes of the building graphic
+    for (let i = 0; i < selectedCard.buildingGraphic.getChildMeshes().length; i++) {
+        let child = selectedCard.buildingGraphic.getChildMeshes()[i];
+        child.rotation.y = selectedCard.rotation;
+    }
+}
+
+export function returnBuildingToDeck() {
+    drawGridTexture();
+    const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length);
+    if (selectedCard === null) {
+        setSelectedCard(selectedBuilding);
+    }
+    hand.splice(arrayIndex, 0, selectedCard);
+    selectedCard.container.isVisible = true;
+
+    setCardPositions();
+    selectedCard.currentPosition.x = currentMouseX - canvas.width / 2;
+    selectedCard.currentPosition.y = currentMouseY - canvas.height / 2;
+
+    if (selectedBuilding.buildingGraphic !== undefined) {
+        selectedBuilding.buildingGraphic.dispose();
+    }
+
+    if (selectedBuilding.placed === true) {
+        updateTotalCredits(selectedCard.cost);
+        circularizeGrids();
+        selectedBuilding.placed = false;
     }
 }
 

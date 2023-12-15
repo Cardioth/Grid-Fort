@@ -43,8 +43,8 @@ export function getPointerGridLocation(mouseX, mouseY) {
         return mesh === baseMesh;
     });
     if (pickResult.pickedPoint !== null) {
-        const gridX = -Math.floor((pickResult.pickedPoint.x * 4) + 0.5) + 8;
-        const gridY = Math.floor((pickResult.pickedPoint.z * 4) + 0.5) + 8;
+        const gridX = -Math.floor((pickResult.pickedPoint.x * 4)) + 8;
+        const gridY = Math.floor((pickResult.pickedPoint.z * 4)) + 8;
         return { x: gridX, y: gridY };
     }
     return { x: null, y: null };

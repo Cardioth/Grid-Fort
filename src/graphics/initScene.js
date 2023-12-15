@@ -4,6 +4,7 @@ import * as GUI from '@babylonjs/gui';
 import { getShaderMaterial } from '../shaders/gridMaterial.js';
 import { gridHeight, gridWidth } from '../data/config.js';
 import { initializeControls } from '../ui/controls.js';
+import { drawPlayerBoardTexture } from './drawPlayerBoardTexture.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -17,6 +18,10 @@ export let gridPlane;
 export let buildingAssets;
 let WeaponAssets;
 export let shaderMaterial;
+let testPlane;
+export let testPlaneTexture;
+
+export let ctx;
 
 export const initScene = () => {
     scene = new BABYLON.Scene(engine);
@@ -30,6 +35,9 @@ export const initScene = () => {
     importModels(scene, lights); //Meshes
 
     gridPlane = createGridGraphic();
+
+    // Test Plane
+    createTestingPlane();
 
     initializeControls(canvas);
 
@@ -47,10 +55,29 @@ export const initGUIScene = () => {
     return GUIscene;
 }
 
+function createTestingPlane() {
+    testPlane = BABYLON.MeshBuilder.CreatePlane("plane", { width: gridWidth / 4, height:gridWidth / 4 }, scene);
+    testPlane.position = new BABYLON.Vector3(0, 0, 0);
+    testPlane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.WORLD);
+    testPlane.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI, BABYLON.Space.WORLD);
+    testPlane.material = new BABYLON.StandardMaterial("testPlaneMaterial", scene);
+
+    testPlaneTexture = new BABYLON.DynamicTexture("playerBoardTexture", { width: 1000, height: 1000 }, scene, true);
+    ctx = testPlaneTexture.getContext();
+    // Create grid mask texture
+    drawPlayerBoardTexture(testPlaneTexture);
+    testPlane.material.diffuseTexture = testPlaneTexture;
+    testPlane.material.specularColor = new BABYLON.Color3(0, 0, 0);
+
+    //Hide test plane
+    testPlane.setEnabled(false);
+}
+
 function createGridGraphic() {
     var plane = BABYLON.MeshBuilder.CreatePlane("plane", { width: gridWidth / 4, height: gridHeight / 4 }, scene);
     plane.position = new BABYLON.Vector3(0, 0, 0);
     plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.WORLD);
+    plane.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI, BABYLON.Space.WORLD);
     shaderMaterial = getShaderMaterial();
     plane.material = shaderMaterial;
 

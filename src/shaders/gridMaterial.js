@@ -3,6 +3,11 @@ import { scene, canvas } from '../graphics/initScene.js';
 import { gridHeight, gridWidth } from '../data/config.js';
 import { playerBoard } from "../managers/setup.js";
 
+let resolution; 
+let ctx;
+let gridMaskTexture;
+let shaderMaterial;
+
 export function getShaderMaterial() {
     BABYLON.Effect.ShadersStore['customVertexShader'] = `
         precision highp float;
@@ -35,7 +40,7 @@ export function getShaderMaterial() {
             float cellShadow = step(0.9, texture2D(gridMaskTexture, vUV).r);
 
             // Shimmer effect
-            float shimmerValue = sin((vUV.y + vUV.x/2.0) * 9.0 + time*-1.0) * 0.3 + 0.5;
+            float shimmerValue = sin((vUV.y + vUV.x/2.0) * 9.0 + time*1.0) * 0.3 + 0.5;
             shimmerValue = max(shimmerValue, 0.1);
 
             float red = (0.8 * shimmerValue * 2.0 * vUV.x);
@@ -56,7 +61,7 @@ export function getShaderMaterial() {
         
     `;
 
-    const shaderMaterial = new BABYLON.ShaderMaterial(
+    shaderMaterial = new BABYLON.ShaderMaterial(
         "shader", 
         scene, 
         'custom',   
@@ -80,14 +85,20 @@ export function getShaderMaterial() {
 
     return shaderMaterial;
 }
+
 function createGridTexture() {
     // Create grid mask texture
-    const resolution = 1000;
+    resolution = 1000;
 
-    var gridMaskTexture = new BABYLON.DynamicTexture("gridMaskTexture", {width:resolution, height:resolution}, scene, false);
-    var ctx = gridMaskTexture.getContext();
+    gridMaskTexture = new BABYLON.DynamicTexture("gridMaskTexture", {width:resolution, height:resolution}, scene, false);
+    ctx = gridMaskTexture.getContext();
 
     // Set constants
+    drawGridTexture(resolution, ctx, gridMaskTexture);
+    return gridMaskTexture;
+}
+
+export function drawGridTexture() {
     const cellSizeX = resolution / gridWidth;
     const cellSizeY = resolution / gridHeight;
 
@@ -102,10 +113,11 @@ function createGridTexture() {
         const cell = playerBoard.grid[i];
         if (!cell.occupied) {
             ctx.fillStyle = '#FFF';
-            ctx.fillRect(cell.x*cellSizeX-bleed, cell.y*cellSizeY-bleed, cellSizeX+bleed*2, cellSizeY+bleed*2);
+            ctx.fillRect(cell.x * cellSizeX - bleed, cell.y * cellSizeY - bleed, cellSizeX + bleed * 2, cellSizeY + bleed * 2);
         }
     }
 
     gridMaskTexture.update();
-    return gridMaskTexture;
+    shaderMaterial.setTexture("gridMaskTexture", gridMaskTexture);
 }
+

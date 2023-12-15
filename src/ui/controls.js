@@ -1,13 +1,14 @@
 import { currentScene } from "../managers/sceneControl";
 import { totalCredits } from "../gameplay/credits";
-import { returnBuildingToDeck } from "../components/cards";
+import { returnBuildingToDeck } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, getHoveredBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding, cloneBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
-import { cellSize } from "../data/config";
 import { playerBoard } from "../managers/setup";
 import { setZoomTarget } from "../graphics/graphics";
 import { getPointerGridLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
+import { drawPlayerBoardTexture } from "../graphics/drawPlayerBoardTexture";
+import { testPlaneTexture } from "../graphics/initScene";
 
 
 
@@ -44,7 +45,7 @@ export function initializeControls(canvas) {
         if (selectedCard === null) {            
             hoveredCard = getHoveredCard(mouseX, mouseY);
         } else {
-            updateBuildingGraphicPosition(mouseX, mouseY);
+            updateBuildingGraphicPosition();
         }
     
         //Drags a placed building
@@ -95,7 +96,7 @@ export function initializeControls(canvas) {
                 hoveredCard.container.isVisible = false;
 
                 //Create a building graphic to drag around
-                hoveredCard.buildingGraphic = cloneBuilding("energyBuilding", 0, 0, 0);
+                hoveredCard.buildingGraphic = cloneBuilding("basicLaserBuilding", 0, 0, 0);
                 hoveredCard.buildingGraphic.isDragged = true;
                 hoveredCard.buildingGraphic.setEnabled(false);
 
@@ -133,6 +134,7 @@ export function initializeControls(canvas) {
                     if (placementResult.canPlace) {
                         placeBuilding(selectedBuilding, gridX + placementResult.adjustedX, gridY + placementResult.adjustedY, playerBoard);
                         canvas.style.cursor = "default";
+                        drawPlayerBoardTexture(testPlaneTexture);
                     } else {
                         returnBuildingToDeck();
                     }

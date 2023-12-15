@@ -1,6 +1,6 @@
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../components/buildings.js";
-import { cellSize, gridHeight, gridWidth } from "../data/config.js";
+import { gridHeight, gridWidth } from "../data/config.js";
 import { setCardPositions } from "../components/cards.js";
 import { buildRandomDeck } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";

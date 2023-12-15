@@ -28,6 +28,7 @@ const defaultQualities = {
     destroyed:false,
     possibleCellTargets:[],
     preferredTarget:["Booster","Weapon","Shield","Radar", "Core"],
+    rotation:0,
 }
 
 const allBuildings = { 

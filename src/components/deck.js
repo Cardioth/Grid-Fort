@@ -1,6 +1,7 @@
 
 
 import { getRandomBuilding } from "./buildings";
+import allBuildings from "./buildings";
 import { hand } from "./cards";
 
 export const deck = [];
@@ -9,12 +10,14 @@ export function buildRandomDeck() {
     for(let i = 0; i < 30; i++){
         deck.push(getRandomBuilding());
     }
-    hand.push(getRandomBuilding());
-    hand.push(getRandomBuilding());
-    hand.push(getRandomBuilding());
-    hand.push(getRandomBuilding());
-    hand.push(getRandomBuilding());
-    hand.push(getRandomBuilding());
+    hand.push({...allBuildings.basicLaser});
+    hand.push({...allBuildings.basicLaser});
+    hand.push({...allBuildings.basicLaser});
+    hand.push({...allBuildings.basicLaser});
+    hand.push({...allBuildings.basicLaser});
+    hand.push({...allBuildings.basicLaser});
+    hand.push({...allBuildings.basicLaser});
+    hand.push({...allBuildings.radar});
 }
 
 export function pickFromCards(){
