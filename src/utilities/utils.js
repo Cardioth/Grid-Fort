@@ -54,7 +54,7 @@ export function getPointerScreenLocationSnappedToGrid(mouseX, mouseY) {
     const ray = scene.createPickingRay(mouseX, mouseY, BABYLON.Matrix.Identity(), camera);
 
     let pickResult = scene.pickWithRay(ray, function (mesh) {
-        return mesh === baseMesh;
+        return mesh === gridPlane;
     });
 
     if (pickResult.pickedPoint !== null) {
@@ -76,7 +76,9 @@ export function getPointerScreenLocationSnappedToGrid(mouseX, mouseY) {
 export function getPointerScreenLocation(mouseX, mouseY) {
     const ray = scene.createPickingRay(mouseX, mouseY, BABYLON.Matrix.Identity(), camera);
 
-    let pickResult = scene.pickWithRay(ray);
+    let pickResult = scene.pickWithRay(ray, function (mesh) {
+        return mesh === gridPlane;
+    });
 
     if (pickResult.pickedPoint !== null) {
         const gridX = pickResult.pickedPoint.x;

@@ -95,8 +95,9 @@ export function initializeControls(canvas) {
                 hoveredCard.container.isVisible = false;
 
                 //Create a building graphic to drag around
-                hoveredCard.buildingGraphic = cloneBuilding("basicLaserBuilding", 0, 0, 0);
+                hoveredCard.buildingGraphic = cloneBuilding("energyBuilding", 0, 0, 0);
                 hoveredCard.buildingGraphic.isDragged = true;
+                hoveredCard.buildingGraphic.setEnabled(false);
 
                 selectedCard = hoveredCard;
                 //remove card from deck

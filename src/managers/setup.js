@@ -45,4 +45,4 @@ export const allBoards = [playerBoard];
 
 circularizeGrids();
 
-//placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
+placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);

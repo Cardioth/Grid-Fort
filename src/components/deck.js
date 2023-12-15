@@ -12,6 +12,9 @@ export function buildRandomDeck() {
     hand.push(getRandomBuilding());
     hand.push(getRandomBuilding());
     hand.push(getRandomBuilding());
+    hand.push(getRandomBuilding());
+    hand.push(getRandomBuilding());
+    hand.push(getRandomBuilding());
 }
 
 export function pickFromCards(){

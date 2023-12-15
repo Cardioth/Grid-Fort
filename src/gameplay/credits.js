@@ -1,6 +1,6 @@
 
 export let availableCredits = 2;
-export let totalCredits = 10;
+export let totalCredits = 20;
 
 export function updateTotalCredits(amount) {
     totalCredits += amount;

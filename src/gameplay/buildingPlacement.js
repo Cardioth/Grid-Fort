@@ -1,7 +1,7 @@
 import { allBoards } from "../managers/setup";
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
-import { currentMouseX, currentMouseY, selectedCard } from "../ui/controls";
+import { currentMouseX, currentMouseY, selectedBuilding, selectedCard } from "../ui/controls";
 import { cellSize, gridHeight, gridWidth} from "../data/config";
 import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
@@ -244,12 +244,18 @@ export function updateBuildingGraphicPosition(mouseX, mouseY) {
     const gridX = getPointerGridLocation(mouseX, mouseY).x;
     const gridY = getPointerGridLocation(mouseX, mouseY).y;
 
-    selectedCard.buildingGraphic.position.x = getPointerScreenLocation(mouseX, mouseY).x;
-    selectedCard.buildingGraphic.position.z = getPointerScreenLocation(mouseX, mouseY).y;
+    const xPosSmooth = getPointerScreenLocation(mouseX, mouseY).x;
+    const yPosSmooth = getPointerScreenLocation(mouseX, mouseY).y;
+    if(xPosSmooth !== null || yPosSmooth !== null){
+        selectedCard.buildingGraphic.position.x = xPosSmooth;
+        selectedCard.buildingGraphic.position.z = yPosSmooth;
+        selectedCard.buildingGraphic.setEnabled(true);
+    }
 
     if (gridX !== null && gridY !== null) {
         let placementResult = canPlaceBuildingNearest(selectedCard, gridX, gridY);
         if (placementResult.canPlace) {
+            selectedCard.buildingGraphic.setEnabled(true);
             selectedCard.buildingGraphic.position.x = getPointerScreenLocationSnappedToGrid(mouseX, mouseY).x;
             selectedCard.buildingGraphic.position.z = getPointerScreenLocationSnappedToGrid(mouseX, mouseY).y;
         }
