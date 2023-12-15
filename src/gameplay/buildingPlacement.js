@@ -1,5 +1,5 @@
 import { allBoards } from "../managers/setup";
-import { updateBoardStats } from "../utilities/utils";
+import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedCard } from "../ui/controls";
 import { cellSize, gridHeight, gridWidth} from "../data/config";
@@ -7,6 +7,7 @@ import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
 import { circularizeGrids } from "../components/grids";
+import { buildingAssets, baseMesh, shadowGenerator } from '../graphics/initScene';
 
 export function getHoveredBuilding() {
     for (const board of allBoards) {
@@ -21,12 +22,11 @@ export function getHoveredBuilding() {
     return null;
 }
 
-export function placeBuilding(building, mouseX, mouseY, board) {
-    // Calculate top-left corner for the building and adjust to snap to grid
-    const gridX = Math.floor((mouseX - board.xGridOffset) / cellSize) - Math.floor(building.width / 2);
-    const gridY = Math.floor((mouseY - board.yGridOffset) / cellSize) - Math.floor(building.height / 2);
-
+export function placeBuilding(building, gridX, gridY, board) {
+    //One more check to be sure
     if (canPlaceBuilding(building, gridX, gridY, board)) {
+        building.buildingGraphic = null;
+        building.container = null;
         const newBuilding = JSON.parse(JSON.stringify(building));
         newBuilding.uid = Math.random().toString(36).substring(7);
         newBuilding.x = gridX;
@@ -94,6 +94,7 @@ export function placeBuilding(building, mouseX, mouseY, board) {
                 }
             }
         }
+
         updateBoardStats(board);
     } else {
         return false;
@@ -149,7 +150,7 @@ function canPlaceBuilding(building, gridX, gridY, board) {
             const shapeKey = building.shape[x + y * building.width];
             if (shapeKey >= 1 && shapeKey <= 4) {
                 const cellX = gridX + x;
-                const cellY = gridY + y;
+                const cellY = gridY + y;                
                 // Check bounds and if cell is already occupied
                 if (cellX < 0 || cellX >= gridWidth || cellY < 0 || cellY >= gridHeight || board.grid[cellY * gridWidth + cellX].occupied) {
                     return false;
@@ -163,6 +164,8 @@ function canPlaceBuilding(building, gridX, gridY, board) {
 export function canPlaceBuildingNearest(building, gridX, gridY) {
     const directions = [[0, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]];
     for (let [dx, dy] of directions) {
+
+        
         if (canPlaceBuilding(building, gridX + dx, gridY + dy, playerBoard)) {
             return { canPlace: true, adjustedX: dx, adjustedY: dy };
         }
@@ -211,5 +214,45 @@ export function placeAIFort(AIfortIndex) {
         }
         placeBuildingToBoard(newBuilding, enemyBoard, building.x, building.y);
     });
+}
+
+export function cloneBuilding(name, x, z, yRotation = 0) {
+    let building = buildingAssets.meshes.find(m => m.name === name);
+    if (building) {
+        let clone = building.clone(name + "_clone", null, true);
+        for (let i = 0; i < building.getChildMeshes().length; i++) {
+            let child = building.getChildMeshes()[i];
+            let childClone = child.clone(child.name + "_clone", clone, true);
+            childClone.setEnabled(true);
+            baseMesh.material.reflectionTexture.renderList.push(childClone); //Add to render list for reflections
+            shadowGenerator.addShadowCaster(childClone); //Add to shadow generator
+
+            //Bizzare rotation and scaling to get the building to face the right way
+            childClone.rotation.x = -(90) * (Math.PI / 180);
+            childClone.rotation.y = (yRotation + 180) * (Math.PI / 180);
+            childClone.scaling.y = -1;
+
+            childClone.position.x = x;
+            childClone.position.z = z;
+        }
+        return clone;
+    }
+    return null;
+}
+
+export function updateBuildingGraphicPosition(mouseX, mouseY) {
+    const gridX = getPointerGridLocation(mouseX, mouseY).x;
+    const gridY = getPointerGridLocation(mouseX, mouseY).y;
+
+    selectedCard.buildingGraphic.position.x = getPointerScreenLocation(mouseX, mouseY).x;
+    selectedCard.buildingGraphic.position.z = getPointerScreenLocation(mouseX, mouseY).y;
+
+    if (gridX !== null && gridY !== null) {
+        let placementResult = canPlaceBuildingNearest(selectedCard, gridX, gridY);
+        if (placementResult.canPlace) {
+            selectedCard.buildingGraphic.position.x = getPointerScreenLocationSnappedToGrid(mouseX, mouseY).x;
+            selectedCard.buildingGraphic.position.z = getPointerScreenLocationSnappedToGrid(mouseX, mouseY).y;
+        }
+    }
 }
 

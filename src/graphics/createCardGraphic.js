@@ -2,8 +2,6 @@ import * as GUI from "@babylonjs/gui";
 import { advancedTexture } from './initScene.js';
 
 export function createCardGraphic(card) {
-    console.log(card);
-
     var container = new GUI.Rectangle();
     container.width = "620px";
     container.height = "920px";

@@ -32,6 +32,14 @@ export function updateCardAnimation() {
             card.currentPosition.x += (card.targetPosition.x - card.currentPosition.x) * 0.08;
             card.currentPosition.y += (card.targetPosition.y - card.currentPosition.y) * 0.08;
 
+            // If the current position is close to the target position, snap to it
+            if (Math.abs(card.targetPosition.x - card.currentPosition.x) < 1) {
+                card.currentPosition.x = card.targetPosition.x;
+            }
+            if (Math.abs(card.targetPosition.y - card.currentPosition.y) < 1) {
+                card.currentPosition.y = card.targetPosition.y;
+            }
+
             // Update container to card
             card.container.top = card.currentPosition.y;
             card.container.left = card.currentPosition.x;
@@ -97,9 +105,15 @@ export function returnBuildingToDeck() {
         setSelectedCard(selectedBuilding);
     }
     hand.splice(arrayIndex, 0, selectedCard);
+    selectedCard.container.isVisible = true;
+
     setCardPositions();
-    selectedCard.currentPosition.x = currentMouseX;
-    selectedCard.currentPosition.y = currentMouseY;
+    selectedCard.currentPosition.x = currentMouseX - canvas.width / 2;
+    selectedCard.currentPosition.y = currentMouseY - canvas.height / 2;
+
+    if (selectedBuilding.buildingGraphic !== undefined) {
+        selectedBuilding.buildingGraphic.dispose();
+    }
 
     if (selectedBuilding.placed === true) {
         updateTotalCredits(selectedCard.cost);

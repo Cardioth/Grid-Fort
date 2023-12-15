@@ -11,10 +11,6 @@ body {
 canvas {
     border: 1px solid #000;
     box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
 canvas:focus {
@@ -35,24 +31,24 @@ h2 {
 
 @font-face {
     font-family: 'GemunuLibre-Bold';
-    src: url('./public/gemunulibre-bold-webfont.woff2') format('woff2'),
-         url('./public/gemunulibre-bold-webfont.woff') format('woff');
+    src: url('/gemunulibre-bold-webfont.woff2') format('woff2'),
+         url('/gemunulibre-bold-webfont.woff') format('woff');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
 font-family: 'GemunuLibre-Medium';
-src: url('./public/gemunulibre-medium-webfont.woff2') format('woff2'),
-        url('./public/gemunulibre-medium-webfont.woff') format('woff');
+src: url('/gemunulibre-medium-webfont.woff2') format('woff2'),
+        url('/gemunulibre-medium-webfont.woff') format('woff');
 font-weight: 500; /* or 'medium' */
 font-style: normal;
 }
 
 @font-face {
 font-family: 'RussoOne-Regular';
-src: url('./public/russoone-regular-webfont.woff2') format('woff2'),
-        url('./public/russoone-regular-webfont.woff') format('woff');
+src: url('/russoone-regular-webfont.woff2') format('woff2'),
+        url('/russoone-regular-webfont.woff') format('woff');
 font-weight: normal;
 font-style: normal;
 }

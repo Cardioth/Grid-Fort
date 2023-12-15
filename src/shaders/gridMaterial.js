@@ -44,7 +44,7 @@ export function getShaderMaterial() {
             float alpha = (0.7 - lineStrength) * shimmerValue;
         
             // Calculate cellShadow mix value
-            float shadowMix = smoothstep(0.1, 0.0, cellShadow); // Adjust 0.0 and 1.0 for different shadow strengths
+            float shadowMix = smoothstep(0.1, 0.0, cellShadow);
         
             // Blend the cellShadow with the current color
             vec4 shadowColor = vec4(0.0, 0.0, 0.0, 0.05); // Shadow color (black with some alpha)
@@ -87,13 +87,14 @@ function createGridTexture() {
     var gridMaskTexture = new BABYLON.DynamicTexture("gridMaskTexture", {width:resolution, height:resolution}, scene, false);
     var ctx = gridMaskTexture.getContext();
 
+    // Set constants
     const cellSizeX = resolution / gridWidth;
     const cellSizeY = resolution / gridHeight;
 
     const bleed = 2;
 
-    // Draw the grid
-    ctx.fillStyle = '#000000';
+    // Black background
+    ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, resolution, resolution);
 
     //Loop through player board grid and draw cells

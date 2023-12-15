@@ -1,13 +1,15 @@
 import { currentScene } from "../managers/sceneControl";
 import { totalCredits } from "../gameplay/credits";
 import { returnBuildingToDeck } from "../components/cards";
-import { unplaceBuilding, getHoveredBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
+import { unplaceBuilding, getHoveredBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding, cloneBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
 import { cellSize } from "../data/config";
-import { buttons } from "../graphics/testGraphics";
 import { playerBoard } from "../managers/setup";
-import { hitTest } from "../utilities/utils";
 import { setZoomTarget } from "../graphics/graphics";
+import { getPointerGridLocation } from '../utilities/utils';
+import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
+
+
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -33,15 +35,17 @@ export function initializeControls(canvas) {
         setZoomTarget(zoomTarget);
     });
 
-    canvas.addEventListener('mousemove', function (e) {
+    canvas.addEventListener('pointermove', function (e) {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
         //Hovering over a card
-        //if (selectedCard === null) {            
-            selectedCard = getHoveredCard(mouseX, mouseY);
-        //}
+        if (selectedCard === null) {            
+            hoveredCard = getHoveredCard(mouseX, mouseY);
+        } else {
+            updateBuildingGraphicPosition(mouseX, mouseY);
+        }
     
         //Drags a placed building
         if (currentScene === "build") {
@@ -76,46 +80,38 @@ export function initializeControls(canvas) {
             const deltaY = currentMouseY - startDragLocation.y;
             distanceDragged = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         }
-    
-        //HitTest Buttons
-        buttons.forEach((button) => {
-            if (hitTest(mouseX, mouseY, button)) {
-                button.highlighted = true;
-                canvas.style.cursor = "pointer";
-            } else {
-                button.highlighted = false;
-            }
-        });
     });
+
     let startDrag = false;
     let startDragLocation = { x: 0, y: 0 };
     let distanceDragged = 0;
-    canvas.addEventListener('mousedown', function () {
-        //HitTest Buttons
-        buttons.forEach((button) => {
-            if (hitTest(currentMouseX, currentMouseY, button)) {
-                button.onClick();
-            }
-        });
+
+    
+    canvas.addEventListener('pointerdown', function (event) {
         if (currentScene === "build") {
-            if (hoveredCard !== undefined && hoveredCard.cost <= totalCredits) {
+            if (hoveredCard !== null && hoveredCard.cost <= totalCredits) {
                 selectedBuilding = hoveredCard;
                 hoveredCard.isDragged = true;
+                hoveredCard.container.isVisible = false;
+
+                //Create a building graphic to drag around
+                hoveredCard.buildingGraphic = cloneBuilding("basicLaserBuilding", 0, 0, 0);
+                hoveredCard.buildingGraphic.isDragged = true;
+
                 selectedCard = hoveredCard;
                 //remove card from deck
                 removeCardFromHand(selectedCard);
                 setCardPositions();
             }
         }
-    
         startDrag = true;
         startDragLocation.x = currentMouseX;
         startDragLocation.y = currentMouseY;
     });
-    canvas.addEventListener('mouseup', function (event) {
-    
-        //Left Click
+
+    canvas.addEventListener('pointerup', function (event) {
         if (event.button === 0) {
+            //Builing Selecting
             if (selectedBuilding === null) {
                 const clickedBuilding = getHoveredBuilding();
                 if (clickedBuilding) {
@@ -128,17 +124,21 @@ export function initializeControls(canvas) {
             //If there's a building selected try to place it
             if (selectedBuilding !== null) {
                 // Place the selected shape on the grid
-                const gridX = Math.floor((currentMouseX - playerBoard.xGridOffset) / cellSize - Math.floor(selectedBuilding.width / 2));
-                const gridY = Math.floor((currentMouseY - playerBoard.yGridOffset) / cellSize - Math.floor(selectedBuilding.height / 2));
-    
-                let placementResult = canPlaceBuildingNearest(selectedBuilding, gridX, gridY);
-                if (placementResult.canPlace) {
-                    placeBuilding(selectedBuilding, currentMouseX + placementResult.adjustedX * cellSize, currentMouseY + placementResult.adjustedY * cellSize, playerBoard);
-                    canvas.style.cursor = "default";
+                const gridX = getPointerGridLocation(currentMouseX, currentMouseY).x;
+                const gridY = getPointerGridLocation(currentMouseX, currentMouseY).y;
+
+                if(gridX !== null && gridY !== null){
+                    let placementResult = canPlaceBuildingNearest(selectedBuilding, gridX, gridY);
+                    if (placementResult.canPlace) {
+                        placeBuilding(selectedBuilding, gridX + placementResult.adjustedX, gridY + placementResult.adjustedY, playerBoard);
+                        canvas.style.cursor = "default";
+                    } else {
+                        returnBuildingToDeck();
+                    }
                 } else {
                     returnBuildingToDeck();
                 }
-    
+
                 selectedBuilding = null;
             }
     
