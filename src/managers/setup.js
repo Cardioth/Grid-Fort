@@ -44,5 +44,3 @@ export const enemyBoard = {
 export const allBoards = [playerBoard];
 
 circularizeGrids();
-
-placeBuildingToBoard(allBuildings.core, playerBoard, 0, 0);
