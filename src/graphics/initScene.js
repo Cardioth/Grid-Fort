@@ -18,9 +18,9 @@ export let gridPlane;
 export let buildingAssets;
 let WeaponAssets;
 export let shaderMaterial;
+
 let testPlane;
 export let testPlaneTexture;
-
 export let ctx;
 
 export const initScene = () => {
@@ -112,12 +112,7 @@ function importModels(scene, mainLight) {
 
             initShadows(mainLight);
 
-            addReflectionsToBase(scene);
-
-            // cloneBuilding("boringBuilding", 0, 0, 0);
-            // cloneBuilding("energyBuilding", 0, -12, 0);
-            // cloneBuilding("basicLaserBuilding", -20, 0, 180);
-        
+            addReflectionsToBase(scene);    
         }
     );
 }
@@ -138,7 +133,7 @@ function addReflectionsToBase(scene) {
     baseMesh.material.reflectionTexture.mirrorPlane = new BABYLON.Plane(0, -1, 0, 0);
     baseMesh.material.reflectionTexture.level = 1;
     for (let i = 1; i < sceneMeshes.length; i++) {
-        if (sceneMeshes[i].id !== "BaseMesh") {
+        if (sceneMeshes[i].id.endsWith("Building")) {
             baseMesh.material.reflectionTexture.renderList.push(sceneMeshes[i]);
         }
     }
@@ -192,7 +187,7 @@ function postProcessEffects(scene, camera) {
 }
 
 export let camera;
-let orthoSize = 1;
+let orthoSize = 2.5;
 function initCamera(scene) {
     camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 6.2, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;

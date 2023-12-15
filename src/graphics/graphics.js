@@ -4,8 +4,8 @@ import WebFont from "webfontloader";
 import { hand, updateCardAnimation } from "../components/cards.js";
 import { createCardGraphic } from "./createCardGraphic.js";
 
-let zoomTarget = 1;
-let zoom = 1;
+let zoomTarget = 2.5;
+let zoom = 2.5;
 
 export function setZoomTarget(size){
     zoomTarget = size;

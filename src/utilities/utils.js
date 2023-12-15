@@ -40,11 +40,11 @@ export function getPointerGridLocation(mouseX, mouseY) {
     const ray = scene.createPickingRay(mouseX, mouseY, BABYLON.Matrix.Identity(), camera);
 
     const pickResult = scene.pickWithRay(ray, function (mesh) {
-        return mesh === baseMesh;
+        return mesh === gridPlane;
     });
     if (pickResult.pickedPoint !== null) {
-        const gridX = -Math.floor((pickResult.pickedPoint.x * 4)) + 8;
-        const gridY = Math.floor((pickResult.pickedPoint.z * 4)) + 8;
+        const gridX = -Math.floor(((pickResult.pickedPoint.x+0.125)*4)) + 8;
+        const gridY = Math.floor(((pickResult.pickedPoint.z+0.125)*4)) + 8;
         return { x: gridX, y: gridY };
     }
     return { x: null, y: null };
@@ -58,8 +58,8 @@ export function getPointerScreenLocationSnappedToGrid(mouseX, mouseY) {
     });
 
     if (pickResult.pickedPoint !== null) {
-        const gridX = Math.floor((pickResult.pickedPoint.x*4))/4;
-        const gridY = Math.floor((pickResult.pickedPoint.z*4))/4;
+        const gridX = Math.floor(((pickResult.pickedPoint.x+0.125)*4))/4;
+        const gridY = Math.floor(((pickResult.pickedPoint.z+0.125)*4))/4;
         return { x: gridX, y: gridY };
     } else {
         pickResult = scene.pick(mouseX,mouseY);

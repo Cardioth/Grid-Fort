@@ -52,7 +52,7 @@ export function getShaderMaterial() {
             float shadowMix = smoothstep(0.1, 0.0, cellShadow);
         
             // Blend the cellShadow with the current color
-            vec4 shadowColor = vec4(0.0, 0.0, 0.0, 0.05); // Shadow color (black with some alpha)
+            vec4 shadowColor = vec4(0.0, 0.0, 0.0, 0.06); // Shadow color (black with some alpha)
             vec4 gridColor = vec4(red, green, blue, alpha);
             vec4 finalColor = mix(gridColor, shadowColor, shadowMix);
         
