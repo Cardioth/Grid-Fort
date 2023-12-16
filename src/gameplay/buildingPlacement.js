@@ -10,6 +10,7 @@ import { circularizeGrids } from "../components/grids";
 import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/initScene';
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
+import { shapeKeyLegend } from "../data/config";
 
 export function getHoveredBuilding() {
     for (const board of allBoards) {
@@ -27,9 +28,11 @@ export function getHoveredBuilding() {
 export function placeBuilding(building, gridX, gridY, board) {
     //One more check to be sure
     if (canPlaceBuilding(building, gridX, gridY, board)) {
+        const buildingGraphicHold = building.buildingGraphic;
         building.buildingGraphic = null;
         building.container = null;
         const newBuilding = JSON.parse(JSON.stringify(building));
+        newBuilding.buildingGraphic = buildingGraphicHold;
         newBuilding.uid = Math.random().toString(36).substring(7);
         newBuilding.x = gridX;
         newBuilding.y = gridY;
@@ -47,9 +50,9 @@ export function placeBuilding(building, gridX, gridY, board) {
         for (let x = 0; x < building.width; x++) {
             for (let y = 0; y < building.height; y++) {
                 const cellIndex = (gridY + y) * gridWidth + (gridX + x);
-                const shapeKey = building.shape[x + y * building.width];
+                const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
                 //Building
-                if (shapeKey >= 1 && shapeKey <= 4) {
+                if (shapeKey === "occupied" || shapeKey.endsWith("Weapon") || shapeKey.startsWith("anchorPoint")) {
                     //add cell effects to building
                     for (let key in board.grid[cellIndex].effects) {
                         for (let key2 in newBuilding.stats) {
@@ -67,9 +70,15 @@ export function placeBuilding(building, gridX, gridY, board) {
                     board.grid[cellIndex].occupied = true;
                     board.grid[cellIndex].building = newBuilding;
                     board.grid[cellIndex].shapeKey = shapeKey;
+
+                    //set building position to anchor point
+                    if(shapeKey.startsWith("anchorPoint")){
+                        newBuilding.buildingGraphic.position.x =  ((-gridX - x + 8) / 4);
+                        newBuilding.buildingGraphic.position.z = -((-gridY - y + 8) / 4);
+                    }
                 }
                 //Effects
-                if (shapeKey > 4) {
+                if (shapeKey.endsWith("booster")) {
                     if (board.grid[cellIndex]) {
                         for (let key in newBuilding.effects) {
                             //Add effects to existing building stats
@@ -112,9 +121,9 @@ export function unplaceBuilding(building, board) {
     for (let x = 0; x < building.width; x++) {
         for (let y = 0; y < building.height; y++) {
             const cellIndex = (gridY + y) * gridWidth + (gridX + x);
-            const shapeKey = building.shape[x + y * building.width];
+            const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
 
-            if (shapeKey >= 1 && shapeKey <= 4) {
+            if (shapeKey === "occupied" || shapeKey.endsWith("Weapon") || shapeKey.startsWith("anchorPoint")) {
                 board.grid[cellIndex].occupied = false;
                 board.grid[cellIndex].building = null;
                 for (let key in building.stats) {
@@ -124,7 +133,7 @@ export function unplaceBuilding(building, board) {
                 }
                 board.grid[cellIndex].shapeKey = 0;
             }
-            if (shapeKey > 4) {
+            if (shapeKey === "booster") {
                 if (board.grid[cellIndex]) {
                     if (board.grid[cellIndex].occupied && board.grid[cellIndex].building !== undefined) {
                         for (let key in building.effects) {
@@ -149,8 +158,8 @@ export function unplaceBuilding(building, board) {
 function canPlaceBuilding(building, gridX, gridY, board) {
     for (let x = 0; x < building.width; x++) {
         for (let y = 0; y < building.height; y++) {
-            const shapeKey = building.shape[x + y * building.width];
-            if (shapeKey >= 1 && shapeKey <= 4) {
+            const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
+            if (shapeKey === "occupied" || shapeKey.endsWith("Weapon") || shapeKey.startsWith("anchorPoint")) {
                 const cellX = gridX + x;
                 const cellY = gridY + y;                
                 // Check bounds and if cell is already occupied
@@ -186,7 +195,7 @@ export function rotateBuilding(building, direction = 'R') {
             }
         }
     } else {
-        building.rotation -= Math.PI / 2;    
+        building.rotation -= Math.PI / 2;
         // Transpose and reverse columns for counterclockwise rotation
         for (let x = width - 1; x >= 0; x--) {
             for (let y = 0; y < height; y++) {
@@ -194,10 +203,22 @@ export function rotateBuilding(building, direction = 'R') {
             }
         }
     }
+    
     // Update the shape object
     building.shape = newShape;
     building.width = height;
     building.height = width;
+
+    // Adjustments for building graphic rotation
+    for (let x = 0; x < building.width; x++) {
+        for (let y = 0; y < building.height; y++) {
+            const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
+            if(shapeKey.startsWith("anchorPoint")){
+                building.rotationAdjustment.x =  ((-x) / 4);
+                building.rotationAdjustment.y = -((-y) / 4);
+            }
+        }
+    }
 }
 
 export function placeBuildingToBoard(building, board, xLoc, yLoc) {
@@ -249,23 +270,9 @@ export function updateBuildingGraphicPosition() {
     const xPosSmooth = getPointerScreenLocation(currentMouseX, currentMouseY).x;
     const yPosSmooth = getPointerScreenLocation(currentMouseX, currentMouseY).y;
 
-    //Rotation adjustment to account for the fact that the building graphic is centered on the grid
-    let rotationAdjustmentX = 0;
-    let rotationAdjustmentY = 0;
-    let rotationModulus = selectedCard.rotation % (Math.PI*2);
-
-    if(rotationModulus > 0){
-        rotationAdjustmentX = -0.25;
-        rotationAdjustmentY = 0;
-    }
-    if(rotationModulus > Math.PI/2){
-        rotationAdjustmentX = -0.25;
-        rotationAdjustmentY = 0.25;
-    }
-    if(rotationModulus > Math.PI){
-        rotationAdjustmentX = 0;
-        rotationAdjustmentY = 0.25;
-    }
+    //Rotation adjustment for anchor point
+    let rotationAdjustmentX = selectedCard.rotationAdjustment.x;
+    let rotationAdjustmentY = selectedCard.rotationAdjustment.y;
 
     if(xPosSmooth !== null || yPosSmooth !== null){
         selectedCard.buildingGraphic.position.x = xPosSmooth;

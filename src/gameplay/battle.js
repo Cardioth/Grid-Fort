@@ -8,6 +8,7 @@ import { gridWidth, gridHeight, cellSize } from "../data/config";
 import { spawnProjectile, blasts, createTestBuildInterface } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
+import { shapeKeyLegend } from "../data/config";
 
 let battleLoopInterval;
 export function startBattleLoop(){
@@ -98,7 +99,7 @@ function fireKineticTurret(building, board, target, enemy) {
         building.fireRateCounter = 0;
         for (let x = 0; x < building.width; x++) {
             for (let y = 0; y < building.height; y++) {
-                const shapeKey = building.shape[x + y * building.width];
+                const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
                 if (shapeKey === 2) {
                     const turretOffsetX = (x * cellSize);
                     const turretOffsetY = (y * cellSize);

@@ -99,6 +99,7 @@ export function initializeControls(canvas) {
                 hoveredCard.buildingGraphic = cloneBuilding(selectedBuilding.keyName+"Building", 0, 0, 0);
                 hoveredCard.buildingGraphic.isDragged = true;
                 hoveredCard.buildingGraphic.setEnabled(false);
+                hoveredCard.rotationAdjustment = {x:0, y:0};
 
                 selectedCard = hoveredCard;
                 //remove card from deck
