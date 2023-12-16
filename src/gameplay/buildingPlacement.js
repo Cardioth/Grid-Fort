@@ -69,6 +69,8 @@ export function placeBuilding(building, gridX, gridY, board) {
                     if(shapeKey.startsWith("anchorPoint")){
                         newBuilding.buildingGraphic.position.x =  ((-gridX - x + 8) / 4);
                         newBuilding.buildingGraphic.position.z = -((-gridY - y + 8) / 4);
+                        newBuilding.buildingGraphic.targetPosition.x =  ((-gridX - x + 8) / 4);
+                        newBuilding.buildingGraphic.targetPosition.z = -((-gridY - y + 8) / 4);
                     }
 
                     newBuilding.buildingGraphic.building = newBuilding;
