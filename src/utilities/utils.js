@@ -1,6 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
 import { scene, camera, gridPlane, baseMesh } from '../graphics/initScene';
 import { fortStats } from "../managers/setup";
+import { currentMouseX, currentMouseY } from "../ui/controls";
 
 export function wrapText(context, text, x, y, lineHeight) {
     const lines = text.split("\n");
@@ -36,8 +37,8 @@ export function updateBoardStats(board) {
     });
 }
 
-export function getPointerGridLocation(mouseX, mouseY) {
-    const ray = scene.createPickingRay(mouseX, mouseY, BABYLON.Matrix.Identity(), camera);
+export function getPointerGridLocation() {
+    const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
 
     const pickResult = scene.pickWithRay(ray, function (mesh) {
         return mesh === gridPlane;
@@ -50,8 +51,8 @@ export function getPointerGridLocation(mouseX, mouseY) {
     return { x: null, y: null };
 }
 
-export function getPointerScreenLocationSnappedToGrid(mouseX, mouseY) {
-    const ray = scene.createPickingRay(mouseX, mouseY, BABYLON.Matrix.Identity(), camera);
+export function getPointerScreenLocationSnappedToGrid() {
+    const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
 
     let pickResult = scene.pickWithRay(ray, function (mesh) {
         return mesh === gridPlane;
@@ -61,20 +62,13 @@ export function getPointerScreenLocationSnappedToGrid(mouseX, mouseY) {
         const gridX = Math.floor(((pickResult.pickedPoint.x+0.125)*4))/4;
         const gridY = Math.floor(((pickResult.pickedPoint.z+0.125)*4))/4;
         return { x: gridX, y: gridY };
-    } else {
-        pickResult = scene.pick(mouseX,mouseY);
-        if(pickResult.pickedPoint !== null){
-            const x = pickResult.pickedPoint.x;
-            const y = pickResult.pickedPoint.z;
-            return { x: x, y: y };
-        }
     }
-
+    
     return { x: null, y: null };
 }
 
-export function getPointerScreenLocation(mouseX, mouseY) {
-    const ray = scene.createPickingRay(mouseX, mouseY, BABYLON.Matrix.Identity(), camera);
+export function getPointerScreenLocation() {
+    const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
 
     let pickResult = scene.pickWithRay(ray, function (mesh) {
         return mesh === gridPlane;
@@ -97,4 +91,12 @@ export function setMaterialToBlocked(mesh) {
 
 export function setMaterialToPrevious(mesh) {
     mesh.material = mesh.defaultMaterial;
+}
+export function getHoveredBuilding() {
+    const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
+    let pickResult = scene.pickWithRay(ray);
+    if (pickResult.pickedMesh !== null && pickResult.pickedMesh.building !== undefined) {
+        return pickResult.pickedMesh.building;
+    }
+    return null;
 }

@@ -64,16 +64,19 @@ const allBuildings = {
 
 //Add default stats to all buildings if stat is not specified
 for (let key in allBuildings) {
+    //Add default qualities to building
     for(let key2 in defaultQualities){
         if(!allBuildings[key].hasOwnProperty(key2)){
             allBuildings[key][key2] = defaultQualities[key2];
         }
     }
+    //Add default stats to building
     for(let key3 in defaultStats){
         if(!allBuildings[key].stats.hasOwnProperty(key3) && !allBuildings[key].rejectStats.includes(key3)){
             allBuildings[key].stats[key3] = defaultStats[key3];
         }
     }
+    //Add default stats for attacking buildings
     if(allBuildings[key].stats.hasOwnProperty("kineticFirepower") || allBuildings[key].stats.hasOwnProperty("energyFirepower")){
         for(let key4 in defaultAttackingStats){
             if(!allBuildings[key].stats.hasOwnProperty(key4)){
@@ -81,6 +84,13 @@ for (let key in allBuildings) {
             }
         }
     }
+    //Add backup shape for buildings
+    for(let key5 in allBuildings[key]){
+        allBuildings[key].originalShape = [...allBuildings[key].shape];
+        allBuildings[key].originalWidth = allBuildings[key].width;
+        allBuildings[key].originalHeight = allBuildings[key].height;
+    }
+    //Add keyName to building
     allBuildings[key].keyName = key;
 }
 

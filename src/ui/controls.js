@@ -1,7 +1,8 @@
 import { currentScene } from "../managers/sceneControl";
 import { totalCredits } from "../gameplay/credits";
 import { returnBuildingToDeck } from "../gameplay/buildingPlacement";
-import { unplaceBuilding, getHoveredBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding, cloneBuilding } from "../gameplay/buildingPlacement";
+import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding, cloneBuilding } from "../gameplay/buildingPlacement";
+import { getHoveredBuilding } from "../utilities/utils";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
 import { playerBoard } from "../managers/setup";
 import { setZoomTarget } from "../graphics/graphics";
@@ -9,8 +10,6 @@ import { getPointerGridLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
 import { drawPlayerBoardTexture } from "../graphics/drawPlayerBoardTexture";
 import { testPlaneTexture } from "../graphics/initScene";
-
-
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -44,10 +43,12 @@ export function initializeControls(canvas) {
         //Hovering over a card
         if (selectedCard === null) {            
             hoveredCard = getHoveredCard(mouseX, mouseY);
-        } else {
-            updateBuildingGraphicPosition();
         }
-    
+
+        if (selectedBuilding !== null) {
+            updateBuildingGraphicPosition(selectedBuilding);
+        }
+
         //Drags a placed building
         if (currentScene === "build") {
             if (hoveredBuilding !== null && distanceDragged > 5 && selectedBuilding === null && hoveredBuilding.moveable === true) {
@@ -57,17 +58,11 @@ export function initializeControls(canvas) {
                 selectedPlacedBuilding = null;
             }
             if (selectedCard === null) {
-                if (getHoveredBuilding() && getHoveredBuilding().moveable === true) {
-                    hoveredBuilding = getHoveredBuilding();
+                hoveredBuilding = getHoveredBuilding();
+                if (hoveredBuilding) {
                     canvas.style.cursor = "grab";
                 } else {
                     hoveredBuilding = null;
-                }
-                if (getHoveredBuilding() && getHoveredBuilding().moveable === false) {
-                    canvas.style.cursor = "pointer";
-                }
-                if (!getHoveredBuilding() && hoveredCard === null && selectedBuilding === null) {
-                    canvas.style.cursor = "default";
                 }
             }
         }
@@ -96,7 +91,7 @@ export function initializeControls(canvas) {
                 hoveredCard.container.isVisible = false;
 
                 //Create a building graphic to drag around
-                hoveredCard.buildingGraphic = cloneBuilding(selectedBuilding.keyName+"Building", 0, 0, 0);
+                hoveredCard.buildingGraphic = cloneBuilding(selectedBuilding.keyName+"Building", 0, 0, 0, hoveredCard);
                 hoveredCard.buildingGraphic.isDragged = true;
                 hoveredCard.buildingGraphic.setEnabled(false);
                 hoveredCard.rotationAdjustment = {x:0, y:0};
@@ -127,8 +122,8 @@ export function initializeControls(canvas) {
             //If there's a building selected try to place it
             if (selectedBuilding !== null) {
                 // Place the selected shape on the grid
-                const gridX = getPointerGridLocation(currentMouseX, currentMouseY).x;
-                const gridY = getPointerGridLocation(currentMouseX, currentMouseY).y;
+                const gridX = getPointerGridLocation().x;
+                const gridY = getPointerGridLocation().y;
 
                 if(gridX !== null && gridY !== null){
                     let placementResult = canPlaceBuildingNearest(selectedBuilding, gridX, gridY);

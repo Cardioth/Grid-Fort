@@ -92,6 +92,11 @@ function importModels(scene, mainLight) {
         function (meshes) {
             sceneMeshes = meshes;
             baseMesh = meshes.find(mesh => mesh.id === "BaseMesh");
+            const backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
+            const baseBaseMesh = meshes.find(mesh => mesh.id === "baseBase");
+            backgroundMesh.isPickable = false;
+            baseBaseMesh.isPickable = false;
+            baseMesh.isPickable = false;
 
             //If id ends in Building add to building assets
             for (let i = 0; i < meshes.length; i++) {

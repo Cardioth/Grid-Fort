@@ -12,26 +12,20 @@ import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
 import { shapeKeyLegend } from "../data/config";
 
-export function getHoveredBuilding() {
-    for (const board of allBoards) {
-        // Calculate grid cell coordinates
-        const gridX = Math.floor((currentMouseX - board.xGridOffset) / cellSize);
-        const gridY = Math.floor((currentMouseY - board.yGridOffset) / cellSize);
-
-        if (gridY < gridHeight && gridX < gridWidth && gridY >= 0 && gridX >= 0 && board.grid[gridY * gridWidth + gridX].occupied) {
-            return board.grid[gridY * gridWidth + gridX].building;
-        }
-    }
-    return null;
-}
+export let allBuildingGraphics = [];
 
 export function placeBuilding(building, gridX, gridY, board) {
     //One more check to be sure
     if (canPlaceBuilding(building, gridX, gridY, board)) {
+        //Pre Parse Setup
         const buildingGraphicHold = building.buildingGraphic;
         building.buildingGraphic = null;
+        const buildingContainerHold = building.container;
         building.container = null;
+        //Parse building
         const newBuilding = JSON.parse(JSON.stringify(building));
+        //Post Parse Setup
+        newBuilding.container = buildingContainerHold;
         newBuilding.buildingGraphic = buildingGraphicHold;
         newBuilding.uid = Math.random().toString(36).substring(7);
         newBuilding.x = gridX;
@@ -47,10 +41,10 @@ export function placeBuilding(building, gridX, gridY, board) {
         }
 
         //Update grid
-        for (let x = 0; x < building.width; x++) {
-            for (let y = 0; y < building.height; y++) {
+        for (let x = 0; x < newBuilding.width; x++) {
+            for (let y = 0; y < newBuilding.height; y++) {
                 const cellIndex = (gridY + y) * gridWidth + (gridX + x);
-                const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
+                const shapeKey = shapeKeyLegend[newBuilding.shape[x + y * newBuilding.width]];
                 //Building
                 if (shapeKey === "occupied" || shapeKey.endsWith("Weapon") || shapeKey.startsWith("anchorPoint")) {
                     //add cell effects to building
@@ -70,11 +64,17 @@ export function placeBuilding(building, gridX, gridY, board) {
                     board.grid[cellIndex].occupied = true;
                     board.grid[cellIndex].building = newBuilding;
                     board.grid[cellIndex].shapeKey = shapeKey;
-
+                    
                     //set building position to anchor point
                     if(shapeKey.startsWith("anchorPoint")){
                         newBuilding.buildingGraphic.position.x =  ((-gridX - x + 8) / 4);
                         newBuilding.buildingGraphic.position.z = -((-gridY - y + 8) / 4);
+                    }
+
+                    newBuilding.buildingGraphic.building = newBuilding;
+                    for (let i = 0; i < newBuilding.buildingGraphic.getChildMeshes().length; i++) {
+                        let child = newBuilding.buildingGraphic.getChildMeshes()[i];
+                        child.building = newBuilding;
                     }
                 }
                 //Effects
@@ -115,6 +115,9 @@ export function placeBuilding(building, gridX, gridY, board) {
 export function unplaceBuilding(building, board) {
     const gridX = building.x;
     const gridY = building.y;
+    if (building.x === undefined || building.y === undefined) {
+        return;
+    }
 
     board.allPlacedBuildings = board.allPlacedBuildings.filter(obj => obj !== building);
     //Update grid
@@ -122,8 +125,9 @@ export function unplaceBuilding(building, board) {
         for (let y = 0; y < building.height; y++) {
             const cellIndex = (gridY + y) * gridWidth + (gridX + x);
             const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
-
+           
             if (shapeKey === "occupied" || shapeKey.endsWith("Weapon") || shapeKey.startsWith("anchorPoint")) {
+                
                 board.grid[cellIndex].occupied = false;
                 board.grid[cellIndex].building = null;
                 for (let key in building.stats) {
@@ -153,6 +157,8 @@ export function unplaceBuilding(building, board) {
             }
         }
     }
+
+    drawGridTexture();
 }
 
 function canPlaceBuilding(building, gridX, gridY, board) {
@@ -202,9 +208,7 @@ export function rotateBuilding(building, direction = 'R') {
                 newShape.push(shape[y * width + x]);
             }
         }
-    }
-    
-    // Update the shape object
+    }    
     building.shape = newShape;
     building.width = height;
     building.height = width;
@@ -239,7 +243,7 @@ export function placeAIFort(AIfortIndex) {
     });
 }
 
-export function cloneBuilding(name, x, z, yRotation = 0) {
+export function cloneBuilding(name, x, z, yRotation = 0, card) {
     let building = buildingAssets.meshes.find(m => m.name === name);
     if (building) {
         let clone = building.clone(name + "_clone", null, true);
@@ -258,50 +262,48 @@ export function cloneBuilding(name, x, z, yRotation = 0) {
             childClone.position.z = z;
             childClone.defaultMaterial = childClone.material;
         }
+        clone.targetPosition = { x: x, z: z };
+        allBuildingGraphics.push(clone);
         return clone;
     }
     return null;
 }
 
-export function updateBuildingGraphicPosition() {
-    const gridX = getPointerGridLocation(currentMouseX, currentMouseY).x;
-    const gridY = getPointerGridLocation(currentMouseX, currentMouseY).y;
+export function updateBuildingGraphicPosition(building) {
 
-    const xPosSmooth = getPointerScreenLocation(currentMouseX, currentMouseY).x;
-    const yPosSmooth = getPointerScreenLocation(currentMouseX, currentMouseY).y;
+    const gridX = getPointerGridLocation().x;
+    const gridY = getPointerGridLocation().y;
 
     //Rotation adjustment for anchor point
-    let rotationAdjustmentX = selectedCard.rotationAdjustment.x;
-    let rotationAdjustmentY = selectedCard.rotationAdjustment.y;
+    let rotationAdjustmentX = building.rotationAdjustment.x;
+    let rotationAdjustmentY = building.rotationAdjustment.y;
 
-    if(xPosSmooth !== null || yPosSmooth !== null){
-        selectedCard.buildingGraphic.position.x = xPosSmooth;
-        selectedCard.buildingGraphic.position.z = yPosSmooth;
-        selectedCard.buildingGraphic.setEnabled(true);
-    }
-
-    for (let i = 0; i < selectedCard.buildingGraphic.getChildMeshes().length; i++) {
-        setMaterialToBlocked(selectedCard.buildingGraphic.getChildMeshes()[i]);
+    for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
+        setMaterialToBlocked(building.buildingGraphic.getChildMeshes()[i]);
     }
 
     if (gridX !== null && gridY !== null) {
-        let placementResult = canPlaceBuildingNearest(selectedCard, gridX, gridY);
+        let placementResult = canPlaceBuildingNearest(building, gridX, gridY);
         if (placementResult.canPlace) {
-            selectedCard.buildingGraphic.setEnabled(true);
-            selectedCard.buildingGraphic.position.x = getPointerScreenLocationSnappedToGrid(currentMouseX, currentMouseY).x-placementResult.adjustedX*0.25+rotationAdjustmentX;
-            selectedCard.buildingGraphic.position.z = getPointerScreenLocationSnappedToGrid(currentMouseX, currentMouseY).y+placementResult.adjustedY*0.25+rotationAdjustmentY;
+            building.buildingGraphic.setEnabled(true);
+            building.buildingGraphic.targetPosition.x = getPointerScreenLocationSnappedToGrid().x-placementResult.adjustedX*0.25+rotationAdjustmentX;
+            building.buildingGraphic.targetPosition.z = getPointerScreenLocationSnappedToGrid().y+placementResult.adjustedY*0.25+rotationAdjustmentY;
 
-            for (let i = 0; i < selectedCard.buildingGraphic.getChildMeshes().length; i++) {
-                setMaterialToPrevious(selectedCard.buildingGraphic.getChildMeshes()[i]);
+            for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
+                setMaterialToPrevious(building.buildingGraphic.getChildMeshes()[i]);
             }
         }
+    } else {
+        building.buildingGraphic.targetPosition.x = getPointerScreenLocation().x;
+        building.buildingGraphic.targetPosition.z = getPointerScreenLocation().y;
+        building.buildingGraphic.setEnabled(true);
     }
     
-    selectedCard.buildingGraphic.rotation.y = selectedCard.rotation;
+    building.buildingGraphic.rotation.y = building.rotation;
     //Rotate all children meshes of the building graphic
-    for (let i = 0; i < selectedCard.buildingGraphic.getChildMeshes().length; i++) {
-        let child = selectedCard.buildingGraphic.getChildMeshes()[i];
-        child.rotation.y = selectedCard.rotation;
+    for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
+        let child = building.buildingGraphic.getChildMeshes()[i];
+        child.rotation.y = building.rotation;
     }
 }
 
@@ -313,6 +315,9 @@ export function returnBuildingToDeck() {
     }
     hand.splice(arrayIndex, 0, selectedCard);
     selectedCard.container.isVisible = true;
+    selectedCard.shape = [...selectedCard.originalShape];
+    selectedCard.width = selectedCard.originalWidth;
+    selectedCard.height = selectedCard.originalHeight;
 
     setCardPositions();
     selectedCard.currentPosition.x = currentMouseX - canvas.width / 2;
@@ -320,6 +325,8 @@ export function returnBuildingToDeck() {
 
     if (selectedBuilding.buildingGraphic !== undefined) {
         selectedBuilding.buildingGraphic.dispose();
+        allBuildingGraphics = allBuildingGraphics.filter(obj => obj !== selectedBuilding.buildingGraphic);
+        console.log(allBuildingGraphics);
     }
 
     if (selectedBuilding.placed === true) {
