@@ -1,16 +1,16 @@
 import { currentScene } from "./sceneControl";
 import { totalCredits } from "../gameplay/credits";
 import { returnBuildingToDeck } from "../gameplay/buildingPlacement";
-import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding, cloneBuilding } from "../gameplay/buildingPlacement";
+import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredBuilding } from "../utilities/utils";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
 import { playerBoard } from "./setup";
 import { setZoomTarget } from "../graphics/graphics";
-import { getPointerGridLocation, getPointerScreenLocation } from '../utilities/utils';
+import { getPointerGridLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
 import { drawPlayerBoardTexture } from "../graphics/drawPlayerBoardTexture";
 import { testPlaneTexture } from "../graphics/initScene";
-import { createSelectionLine } from "../graphics/createSelectionLine";
+import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -19,7 +19,7 @@ export let selectedCard = null;
 export let currentMouseX = 0;
 export let currentMouseY = 0;
 
-let hoveredCard = undefined;
+export let hoveredCard = undefined;
 
 export function setSelectedCard(card) {
     selectedCard = card;
@@ -90,20 +90,7 @@ export function initializeControls(canvas) {
                 selectedBuilding = hoveredCard;
                 hoveredCard.isDragged = true;
                 hoveredCard.container.isVisible = false;
-
-                //Create a building graphic to drag around
-                hoveredCard.buildingGraphic = cloneBuilding(selectedBuilding.keyName+"Building", 0, 0, 0, hoveredCard);
-                hoveredCard.buildingGraphic.isDragged = true;
-                hoveredCard.buildingGraphic.setEnabled(false);
-                hoveredCard.rotationAdjustment = {x:0, y:0};
-                const gridLoc = {x:getPointerScreenLocation().x, y:getPointerScreenLocation().y};
-                hoveredCard.buildingGraphic.targetPosition.x = gridLoc.x;
-                hoveredCard.buildingGraphic.targetPosition.z = gridLoc.y;
-                hoveredCard.buildingGraphic.position.x = gridLoc.x;
-                hoveredCard.buildingGraphic.position.z = gridLoc.y;
-                hoveredCard.buildingGraphic.setEnabled(true);
-                createSelectionLine(hoveredCard.buildingGraphic.getChildMeshes()[0]);
-
+                createBuildingGraphicFromCard(hoveredCard);
                 selectedCard = hoveredCard;
                 //remove card from deck
                 removeCardFromHand(selectedCard);
@@ -177,3 +164,4 @@ export function initializeControls(canvas) {
         }
     });
 }
+

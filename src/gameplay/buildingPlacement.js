@@ -11,6 +11,7 @@ import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/i
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
 import { shapeKeyLegend } from "../data/config";
+import { createSelectionLine } from "../graphics/createSelectionLine";
 
 
 export let allBuildingGraphics = [];
@@ -295,6 +296,9 @@ export function updateBuildingGraphicPosition(building) {
             for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
                 setMaterialToPrevious(building.buildingGraphic.getChildMeshes()[i]);
             }
+        } else {
+            building.buildingGraphic.targetPosition.x = getPointerScreenLocation().x;
+            building.buildingGraphic.targetPosition.z = getPointerScreenLocation().y;
         }
     } else {
         building.buildingGraphic.targetPosition.x = getPointerScreenLocation().x;
@@ -335,5 +339,18 @@ export function returnBuildingToDeck() {
         circularizeGrids();
         selectedBuilding.placed = false;
     }
+}
+export function createBuildingGraphicFromCard(building) {
+    building.buildingGraphic = cloneBuilding(selectedBuilding.keyName + "Building", 0, 0, 0, building);
+    building.buildingGraphic.isDragged = true;
+    building.buildingGraphic.setEnabled(false);
+    building.rotationAdjustment = { x: 0, y: 0 };
+    const gridLoc = { x: getPointerScreenLocation().x, y: getPointerScreenLocation().y };
+    building.buildingGraphic.targetPosition.x = gridLoc.x;
+    building.buildingGraphic.targetPosition.z = gridLoc.y;
+    building.buildingGraphic.position.x = gridLoc.x;
+    building.buildingGraphic.position.z = gridLoc.y;
+    building.buildingGraphic.setEnabled(true);
+    createSelectionLine(building.buildingGraphic.getChildMeshes()[0]);
 }
 
