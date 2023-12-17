@@ -1,5 +1,5 @@
 import * as GUI from "@babylonjs/gui";
-import { advancedTexture } from './initScene.js';
+import { GUITexture } from './sceneInitialization.js';
 
 export function createCardGraphic(card) {
     var container = new GUI.Rectangle();
@@ -97,7 +97,7 @@ export function createCardGraphic(card) {
 
     card.container = container;
 
-    advancedTexture.addControl(container);
+    GUITexture.addControl(container);
 
     return container;
 }

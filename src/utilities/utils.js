@@ -1,5 +1,5 @@
 import * as BABYLON from "@babylonjs/core";
-import { scene, camera, gridPlane, collisionPlane } from '../graphics/initScene';
+import { scene, camera, gridPlane, collisionPlane } from '../graphics/sceneInitialization';
 import { fortStats } from "../managers/setup";
 import { currentMouseX, currentMouseY } from "../managers/eventListeners";
 
@@ -11,13 +11,6 @@ export function wrapText(context, text, x, y, lineHeight) {
     }
 }
 
-export function hitTest(x,y,button){
-    if(x > button.x && x < button.x+button.width && y > button.y && y < button.y+button.height){
-        return true;
-    }
-    return false;
-}
-
 export function camelCaseToTitleCase(input) {
     // This regular expression finds all camel case words.
     return input
@@ -26,6 +19,7 @@ export function camelCaseToTitleCase(input) {
         // Capitalize the first letter of each word.
         .replace(/\b\w/g, char => char.toUpperCase());
 }
+
 export function updateBoardStats(board) {
     board.stats = JSON.parse(JSON.stringify(fortStats));
     board.allPlacedBuildings.forEach((building) => {
@@ -37,6 +31,8 @@ export function updateBoardStats(board) {
     });
 }
 
+
+// Gets the pointer location quantized to the grid - Used for placing buildings
 export function getPointerGridLocation() {
     const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
 
@@ -51,6 +47,7 @@ export function getPointerGridLocation() {
     return { x: null, y: null };
 }
 
+// Gets the pointer location quantized to the grid - Used for placing building graphic is real world space
 export function getPointerScreenLocationSnappedToGrid() {
     const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
 
@@ -67,6 +64,7 @@ export function getPointerScreenLocationSnappedToGrid() {
     return { x: null, y: null };
 }
 
+// Gets the pointer location in real world space without any quantization
 export function getPointerScreenLocation() {
     const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
 
@@ -92,6 +90,7 @@ export function setMaterialToBlocked(mesh) {
 export function setMaterialToPrevious(mesh) {
     mesh.material = mesh.defaultMaterial;
 }
+
 export function getHoveredBuilding() {
     const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
     let pickResult = scene.pickWithRay(ray);

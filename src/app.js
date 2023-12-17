@@ -1,19 +1,3 @@
+import { setCurrentScene } from "./managers/sceneManager";
 
-import { initScene, initGUIScene, engine} from './graphics/initScene';
-import { updateGraphics } from "./graphics/graphics";
-
-const scene = initScene();
-const GUIscene = initGUIScene();
-
-engine.runRenderLoop(() => {
-    updateGraphics();
-    scene.render();
-    GUIscene.render();
-});
-
-// the canvas/window resize event handler
-window.addEventListener('resize', () => {
-    engine.resize();
-});
-
-
+setCurrentScene("menu");

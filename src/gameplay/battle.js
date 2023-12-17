@@ -1,4 +1,4 @@
-import { currentScene, updateCurrentScene } from "../managers/sceneControl";
+import { currentScene, setCurrentScene } from "../managers/sceneManager";
 import { allBoards } from "../managers/setup";
 import { updateAvailableCredits, getAvailableCredits, setTotalCredits } from "./credits";
 import { setCardPositions, hand } from "../components/cards";
@@ -51,7 +51,7 @@ function battleLoop() {
         });
 
         if (allBuildingsDestroyed) {
-            updateCurrentScene("build");
+            setCurrentScene("build");
             hand.push(getRandomBuilding());
             hand.push(getRandomBuilding());
             playerBoard.targetPosition = { x: (testCanvas.width - (gridWidth * cellSize)) / 2, y: playerBoard.yGridOffset };

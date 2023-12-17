@@ -54,10 +54,10 @@ const allBuildings = {
         effects:{energyFirepower:5, powerStorage:10}},
     core:{name:"Core", class:"Core",cost:9, width:3,height:3,shape:[1,1,1,1,2,1,1,1,1], color:"#a9bcdb", moveable:false, returnable:false, 
         stats:{kineticFirepower:1,health:30, ammoStorage:1000, fireRate:3}},
-    Matador:{name:"Matador", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
+    matador:{name:"Matador", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
         stats:{kineticFirepower:1, ammoStorage:15, radarRange:2}, 
         effects:{armor:1,energyResistance:1, radarRange:2}},
-    Salvador:{name:"Salvador", class:"Weapon",cost:5,  width:4,height:3,shape:[0,1,1,1,2,1], color:"#324d62",
+    salvador:{name:"Salvador", class:"Weapon",cost:5,  width:4,height:3,shape:[0,1,1,1,2,1], color:"#324d62",
         stats:{kineticFirepower:1, ammoStorage:20, fireRate:1, blastRadius:2, health:30},
     }
 }

@@ -1,5 +1,5 @@
 import * as GUI from "@babylonjs/gui";
-import { advancedTexture } from './initScene.js';
+import { GUITexture } from '../graphics/sceneInitialization.js';
 
 export function createSelectionLine(mesh) {
     var line = new GUI.MultiLine();
@@ -7,7 +7,7 @@ export function createSelectionLine(mesh) {
     line.lineWidth = 3;
     line.dash = [4, 7];
     line.color = "white";
-    advancedTexture.addControl(line);
+    GUITexture.addControl(line);
 
     var rect1 = new GUI.Rectangle();
     rect1.width = "20px";
@@ -15,6 +15,6 @@ export function createSelectionLine(mesh) {
     rect1.cornerRadius = 5;
     rect1.color = "White";
     rect1.thickness = 2;
-    advancedTexture.addControl(rect1);
+    GUITexture.addControl(rect1);
     rect1.linkWithMesh(mesh);
 }

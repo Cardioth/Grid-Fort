@@ -1,5 +1,6 @@
-import { currentScene } from "../managers/sceneControl";
-import { canvas } from "../graphics/initScene";
+import { currentScene } from "../managers/sceneManager";
+import { canvas } from "../graphics/sceneInitialization";
+import { createCardGraphic } from "../graphics/createCardGraphic";
 
 export let hand = [];
 
@@ -96,4 +97,8 @@ export function getHoveredCard(mouseX, mouseY) {
     return null;
 }
 
-
+export function createCardGraphicsForHand(){
+    hand.forEach(card => {
+        createCardGraphic(card);
+    });
+}

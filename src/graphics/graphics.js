@@ -1,12 +1,12 @@
-import { shaderMaterial } from './initScene.js';
-import { setOrthoSize} from "./initScene.js";
-import WebFont from "webfontloader";
-import { hand, updateCardAnimation } from "../components/cards.js";
-import { createCardGraphic } from "./createCardGraphic.js";
+import { gridShaderMaterial } from './sceneInitialization.js';
+import { setOrthoSize} from "./sceneInitialization.js";
+import { updateCardAnimation } from "../components/cards.js";
 import { allBuildingGraphics } from '../gameplay/buildingPlacement.js';
+import { menuBackgroundAnimation } from './menuBackgroundAnimation.js';
 
-let zoomTarget = 2.5;
-let zoom = 2.5;
+// Camera Zoom
+let zoomTarget = 3;
+let zoom = 3;
 
 export function setZoomTarget(size){
     zoomTarget = size;
@@ -21,26 +21,16 @@ export function updateGraphics(){
     // Animate Cards
     updateCardAnimation();
 
-    // Update Shader Time   
-    shaderMaterial.setFloat("time", performance.now() / 1000);
-
+    // Animate Shader Time   
+    gridShaderMaterial.setFloat("time", performance.now() / 1000);
+    
+    // Animate Building Placement Movement
     for(const buildingGraphic of allBuildingGraphics){
         buildingGraphic.position.x += (buildingGraphic.targetPosition.x - buildingGraphic.position.x) * 0.2;
         buildingGraphic.position.z += (buildingGraphic.targetPosition.z - buildingGraphic.position.z) * 0.2;
     }
 }
 
-
-
-WebFont.load({
-    custom: {
-        families: ['GemunuLibre-Bold', 'GemunuLibre-Medium', 'RussoOne-Regular'],
-        urls: ['style.css']
-    },
-    active: function () {
-        hand.forEach(card => {
-            createCardGraphic(card);
-        });
-    }
-});
-
+export function updateMenuGraphics(){
+    menuBackgroundAnimation();
+}

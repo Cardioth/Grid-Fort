@@ -1,58 +1,99 @@
 import * as BABYLON from '@babylonjs/core';
-import '@babylonjs/loaders'; // If you need to import any loaders
+import '@babylonjs/loaders';
 import * as GUI from '@babylonjs/gui';
 import { getShaderMaterial } from '../shaders/gridMaterial.js';
 import { gridHeight, gridWidth } from '../data/config.js';
-import { initializeControls } from '../managers/eventListeners.js';
-import { drawPlayerBoardTexture } from './drawPlayerBoardTexture.js';
+import { initializeGameControls } from '../managers/eventListeners.js';
+import { drawTestPlaneTexture } from './drawTestPlaneTexture.js';
+import { createCardGraphicsForHand } from '../components/cards.js';
+import { currentScene } from '../managers/sceneManager.js';
+import { updateGraphics, updateMenuGraphics } from './graphics.js';
+import { createMenuScreen } from '../ui/menuGUI.js';
+import WebFont from "webfontloader";
 
 export const canvas = document.getElementById('renderCanvas');
 
 export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
 
 export let scene;
+export let GUIscene;
 
-let sceneMeshes;
+// Meshs
+let allMeshes = [];
 export let baseMesh;
 export let gridPlane;
+export let gridShaderMaterial;
 export let buildingAssets;
 let WeaponAssets;
-export let shaderMaterial;
+export let shadowGenerator;
+export let menuBackgrounds = [];
 
+// Testing Plane
 let testPlane;
+export let testPlaneContext;
 export let testPlaneTexture;
+
+// Raycasting Collision Plane
 export let collisionPlane;
-export let ctx;
+
+// Cameras
 export let camera;
 export let GUIcamera;
-let orthoSize = 2.5;
+let orthoSize = 3;
 
-export const initScene = () => {
+// GUI
+export let GUITexture;
+export const infoBoxes = [];
+
+export const initMenuScene = () => {
     scene = new BABYLON.Scene(engine);
-   
+    camera = initCamera(scene); //Camera
+    setOrthoSize(2.45);
+
     const lights = initLights(scene); //Lights
     
-    const camera = initCamera(scene); //Camera
+    postProcessEffects(scene, camera); //Post processing effects
 
-    postProcessEffects(scene, camera); //Post Processing
+    importMenuBackground(scene, lights); //Game meshes
 
-    importModels(scene, lights); //Meshes
+    WebFont.load({
+        custom: {
+            families: ['GemunuLibre-Bold', 'GemunuLibre-Medium', 'RussoOne-Regular'],
+            urls: ['style.css']
+        },
+        active: function () {
+            createMenuScreen(); //Menu screen
 
-    gridPlane = createGridGraphic();
+        }
+    });
+    return scene;
+};
 
-    collisionPlane = createCollisionPlane();
+export const initGameScene = () => {
+    scene = new BABYLON.Scene(engine);
+    camera = initCamera(scene); //Camera
 
-    // Test Plane
-    createTestingPlane();
+    const lights = initLights(scene); //Lights
+    
+    postProcessEffects(scene, camera); //Post processing effects
 
-    initializeControls(canvas);
+    importModels(scene, lights); //Game meshes
+
+    gridPlane = createGridGraphic(); //Grid graphic
+
+    collisionPlane = createCollisionPlane(); // For raycasting
+
+    createTestingPlane(); // For visualising building placement
+
+    initializeGameControls(canvas); //Event listeners
+
+    createCardGraphicsForHand(); //Card graphics
 
     return scene;
 };
 
-export let advancedTexture;
 export const initGUIScene = () => {
-    const GUIscene = new BABYLON.Scene(engine);
+    GUIscene = new BABYLON.Scene(engine);
     GUIcamera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(5, 6.2, 5), GUIscene);
     GUIcamera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     GUIcamera.setTarget(BABYLON.Vector3.Zero());
@@ -60,9 +101,17 @@ export const initGUIScene = () => {
     
     GUIscene.autoClear = false;
     GUIscene.autoClearDepthAndStencil = false;
-    advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
+    GUITexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
     //advancedTexture.idealWidth = 1600;
     return GUIscene;
+}
+
+export const disposeGameScene = () => {
+    scene.dispose();
+}
+
+export const disposeGUIScene = () => {
+    GUIscene.dispose();
 }
 
 function createCollisionPlane() {
@@ -72,6 +121,7 @@ function createCollisionPlane() {
     collisionPlane.material = new BABYLON.StandardMaterial("collisionPlaneMaterial", scene);
     collisionPlane.material.alpha = 0;
     collisionPlane.isPickable = true;
+    allMeshes.push(collisionPlane);
     return collisionPlane;
 }
 
@@ -83,9 +133,9 @@ function createTestingPlane() {
     testPlane.material = new BABYLON.StandardMaterial("testPlaneMaterial", scene);
 
     testPlaneTexture = new BABYLON.DynamicTexture("playerBoardTexture", { width: 1000, height: 1000 }, scene, true);
-    ctx = testPlaneTexture.getContext();
+    testPlaneContext = testPlaneTexture.getContext();
     // Create grid mask texture
-    drawPlayerBoardTexture(testPlaneTexture);
+    drawTestPlaneTexture(testPlaneTexture);
     testPlane.material.diffuseTexture = testPlaneTexture;
     testPlane.material.specularColor = new BABYLON.Color3(0, 0, 0);
 
@@ -98,8 +148,8 @@ function createGridGraphic() {
     plane.position = new BABYLON.Vector3(0, 0, 0);
     plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.WORLD);
     plane.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI, BABYLON.Space.WORLD);
-    shaderMaterial = getShaderMaterial();
-    plane.material = shaderMaterial;
+    gridShaderMaterial = getShaderMaterial();
+    plane.material = gridShaderMaterial;
 
     return plane;
 }
@@ -110,9 +160,7 @@ function importModels(scene, mainLight) {
 
     BABYLON.SceneLoader.ImportMesh(undefined, "./models/", "base.glb", scene,
         function (meshes) {
-            sceneMeshes = meshes;
             baseMesh = meshes.find(mesh => mesh.id === "BaseMesh");
-
             const backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
             const baseBaseMesh = meshes.find(mesh => mesh.id === "baseBase");
             backgroundMesh.isPickable = false;
@@ -138,12 +186,27 @@ function importModels(scene, mainLight) {
 
             initShadows(mainLight);
 
-            addReflectionsToBase(scene);    
+            addReflectionsToBase(scene, meshes);    
         }
     );
 }
 
-export let shadowGenerator;
+function importMenuBackground(scene) {
+    BABYLON.SceneLoader.ImportMesh(undefined, "./models/", "menuBackground.glb", scene,
+        function (meshes) {
+            const backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
+            menuBackgrounds.push(backgroundMesh);
+            const secondBackgroundMesh = backgroundMesh.clone("backgroundMesh");
+            menuBackgrounds.push(secondBackgroundMesh);
+            const meshWidth = backgroundMesh.getBoundingInfo().boundingBox.extendSizeWorld.x;
+            backgroundMesh.width = meshWidth;
+            secondBackgroundMesh.width = meshWidth;
+            backgroundMesh.position.x = -meshWidth;
+            secondBackgroundMesh.position.x = meshWidth;
+        }
+    )
+}
+
 function initShadows(mainLight) {
     shadowGenerator = new BABYLON.ShadowGenerator(1024, mainLight);
     shadowGenerator.bias = 0.00001;
@@ -151,16 +214,16 @@ function initShadows(mainLight) {
     baseMesh.receiveShadows = true;
 }
 
-function addReflectionsToBase(scene) {
+function addReflectionsToBase(scene, meshes) {
     let baseMaterial = new BABYLON.PBRMaterial("baseMaterial", scene);
     baseMaterial.albedoColor = new BABYLON.Color3(0.1, 0.1, 0.1);
     baseMesh.material.roughness = 0.6;
     baseMesh.material.reflectionTexture = new BABYLON.MirrorTexture("mirror", 1024, scene, true);
     baseMesh.material.reflectionTexture.mirrorPlane = new BABYLON.Plane(0, -1, 0, 0);
     baseMesh.material.reflectionTexture.level = 1;
-    for (let i = 1; i < sceneMeshes.length; i++) {
-        if (sceneMeshes[i].id.endsWith("Building")) {
-            baseMesh.material.reflectionTexture.renderList.push(sceneMeshes[i]);
+    for (let i = 1; i < meshes.length; i++) {
+        if (meshes[i].id.endsWith("Building")) {
+            baseMesh.material.reflectionTexture.renderList.push(meshes[i]);
         }
     }
 }
@@ -189,7 +252,7 @@ function initLights(scene) {
 
     // Fog
     scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
-    scene.fogColor = scene.clearColor;
+    scene.fogColor = new BABYLON.Color3(0.2, 0.22, 0.29);
     scene.fogStart = 9;
     scene.fogEnd = 13;
     return backLight;
@@ -232,10 +295,12 @@ function updateCameraOrtho() {
     let orthoLeft = -orthoSize * aspectRatio;
     let orthoRight = orthoSize * aspectRatio;
 
-    camera.orthoTop = orthoTop;
-    camera.orthoBottom = orthoBottom;
-    camera.orthoLeft = orthoLeft;
-    camera.orthoRight = orthoRight;
+    if(camera){
+        camera.orthoTop = orthoTop;
+        camera.orthoBottom = orthoBottom;
+        camera.orthoLeft = orthoLeft;
+        camera.orthoRight = orthoRight;
+    }
 
     if(GUIcamera){
         GUIcamera.orthoTop = orthoTop;
@@ -244,3 +309,16 @@ function updateCameraOrtho() {
         GUIcamera.orthoRight = orthoRight;
     }
 }
+engine.runRenderLoop(() => {
+    if (currentScene === "menu") {
+        scene.render();
+        GUIscene.render();
+        updateMenuGraphics();
+    }
+
+    if (currentScene === "build") {
+        scene.render();
+        GUIscene.render();
+        updateGraphics();
+    }
+});

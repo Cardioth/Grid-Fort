@@ -1,4 +1,4 @@
-import { currentScene } from "./sceneControl";
+import { currentScene } from "./sceneManager";
 import { totalCredits } from "../gameplay/credits";
 import { returnBuildingToDeck } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
@@ -8,8 +8,8 @@ import { playerBoard } from "./setup";
 import { setZoomTarget } from "../graphics/graphics";
 import { getPointerGridLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
-import { drawPlayerBoardTexture } from "../graphics/drawPlayerBoardTexture";
-import { testPlaneTexture } from "../graphics/initScene";
+import { drawTestPlaneTexture } from "../graphics/drawTestPlaneTexture";
+import { engine, testPlaneTexture } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 
 export let selectedPlacedBuilding = null;
@@ -25,10 +25,10 @@ export function setSelectedCard(card) {
     selectedCard = card;
 }
 
-export function initializeControls(canvas) {
+export function initializeGameControls(canvas) {
     
     //Mouse Scroll Listener
-    let zoomTarget = 1;
+    let zoomTarget = 3;
     canvas.addEventListener('wheel', function (event) {
         event.preventDefault();
         zoomTarget += event.deltaY < 0 ? -0.5 : (event.deltaY > 0 ? 0.5 : 0);
@@ -109,6 +109,7 @@ export function initializeControls(canvas) {
                 const clickedBuilding = getHoveredBuilding();
                 if (clickedBuilding) {
                     selectedPlacedBuilding = clickedBuilding;
+                    displayBuildingInfo(clickedBuilding);
                 } else {
                     selectedPlacedBuilding = null;
                 }
@@ -125,7 +126,7 @@ export function initializeControls(canvas) {
                     if (placementResult.canPlace) {
                         placeBuilding(selectedBuilding, gridX + placementResult.adjustedX, gridY + placementResult.adjustedY, playerBoard);
                         canvas.style.cursor = "default";
-                        drawPlayerBoardTexture(testPlaneTexture);
+                        drawTestPlaneTexture(testPlaneTexture);
                     } else {
                         returnBuildingToDeck();
                     }
@@ -163,5 +164,8 @@ export function initializeControls(canvas) {
             rotateBuilding(selectedBuilding, 'R');
         }
     });
+    // the canvas/window resize event handler
+    window.addEventListener('resize', () => {
+        engine.resize();
+    });
 }
-

@@ -2,17 +2,14 @@ import { allBoards } from "../managers/setup";
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToPrevious, setMaterialToBlocked } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard } from "../managers/eventListeners";
-import { cellSize, gridHeight, gridWidth} from "../data/config";
+import { cellSize, gridHeight, gridWidth, shapeKeyLegend} from "../data/config";
 import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
 import { circularizeGrids } from "../components/grids";
-import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/initScene';
+import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/sceneInitialization';
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
-import { shapeKeyLegend } from "../data/config";
-import { createSelectionLine } from "../graphics/createSelectionLine";
-
 
 export let allBuildingGraphics = [];
 
@@ -258,7 +255,7 @@ export function cloneBuilding(name, x, z, yRotation = 0, card) {
             baseMesh.material.reflectionTexture.renderList.push(childClone); //Add to render list for reflections
             shadowGenerator.addShadowCaster(childClone); //Add to shadow generator
 
-            //Bizzare rotation and scaling to get the building to face the right way
+            //Convert Z up to Y up
             childClone.rotation.x = -(90) * (Math.PI / 180);
             childClone.scaling.y = -1;
 
@@ -274,7 +271,6 @@ export function cloneBuilding(name, x, z, yRotation = 0, card) {
 }
 
 export function updateBuildingGraphicPosition(building) {
-
     //Get Mouse Position in Grid
     const gridX = getPointerGridLocation().x;
     const gridY = getPointerGridLocation().y;
@@ -305,8 +301,8 @@ export function updateBuildingGraphicPosition(building) {
         building.buildingGraphic.targetPosition.z = getPointerScreenLocation().y;
     }
     
+    //Rotate Meshes
     building.buildingGraphic.rotation.y = building.rotation;
-    //Rotate all children meshes of the building graphic
     for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
         let child = building.buildingGraphic.getChildMeshes()[i];
         child.rotation.y = building.rotation;
@@ -314,8 +310,8 @@ export function updateBuildingGraphicPosition(building) {
 }
 
 export function returnBuildingToDeck() {
-    drawGridTexture();
-    const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length);
+    drawGridTexture(); //Update grid texture
+    const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length); //Update this math so that it only spans the width of the cards in hand
     if (selectedCard === null) {
         setSelectedCard(selectedBuilding);
     }
@@ -340,6 +336,7 @@ export function returnBuildingToDeck() {
         selectedBuilding.placed = false;
     }
 }
+
 export function createBuildingGraphicFromCard(building) {
     building.buildingGraphic = cloneBuilding(selectedBuilding.keyName + "Building", 0, 0, 0, building);
     building.buildingGraphic.isDragged = true;
@@ -351,6 +348,4 @@ export function createBuildingGraphicFromCard(building) {
     building.buildingGraphic.position.x = gridLoc.x;
     building.buildingGraphic.position.z = gridLoc.y;
     building.buildingGraphic.setEnabled(true);
-    createSelectionLine(building.buildingGraphic.getChildMeshes()[0]);
 }
-

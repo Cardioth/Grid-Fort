@@ -7,7 +7,7 @@ import { hand, updateCardAnimation } from "../components/cards";
 import { cellSize, gridHeight, gridWidth } from "../data/config";
 import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "../managers/eventListeners";
 import { totalCredits } from "../gameplay/credits";
-import { currentScene, updateCurrentScene } from "../managers/sceneControl";
+import { currentScene, setCurrentScene } from "../managers/sceneManager";
 import { allBoards, enemyBoard, playerBoard } from "../managers/setup";
 import { camelCaseToTitleCase, updateBoardStats, wrapText } from "../utilities/utils";
 
@@ -574,7 +574,7 @@ export let buttons = [];
 export function createTestBuildInterface() {
     buttons = [];
     buttons.push(createButton("End Turn", testCanvas.width - 100, testCanvas.height - 50, 80, 40, "#ccc", "#eee", "#000", false, function () {
-        updateCurrentScene("battleCountdown");
+        setCurrentScene("battleCountdown");
         playerBoard.targetPosition = { x: playerBoard.xGridOffset - 200, y: playerBoard.yGridOffset };
         allBoards.push(enemyBoard);
         placeBuildingToBoard(allBuildings.core, enemyBoard, 0, 0);
@@ -586,7 +586,7 @@ export function createTestBuildInterface() {
         let countDownInterval = setInterval(function () {
             countDownNumber--;
             if (countDownNumber === 0) {
-                updateCurrentScene("battle");
+                setCurrentScene("battle");
                 startBattleLoop();
                 clearInterval(countDownInterval);
             }
