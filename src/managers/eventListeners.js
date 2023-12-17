@@ -1,15 +1,16 @@
-import { currentScene } from "../managers/sceneControl";
+import { currentScene } from "./sceneControl";
 import { totalCredits } from "../gameplay/credits";
 import { returnBuildingToDeck } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding, cloneBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredBuilding } from "../utilities/utils";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
-import { playerBoard } from "../managers/setup";
+import { playerBoard } from "./setup";
 import { setZoomTarget } from "../graphics/graphics";
-import { getPointerGridLocation } from '../utilities/utils';
+import { getPointerGridLocation, getPointerScreenLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
 import { drawPlayerBoardTexture } from "../graphics/drawPlayerBoardTexture";
 import { testPlaneTexture } from "../graphics/initScene";
+import { createSelectionLine } from "../graphics/createSelectionLine";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -25,8 +26,8 @@ export function setSelectedCard(card) {
 }
 
 export function initializeControls(canvas) {
+    
     //Mouse Scroll Listener
-
     let zoomTarget = 1;
     canvas.addEventListener('wheel', function (event) {
         event.preventDefault();
@@ -95,6 +96,13 @@ export function initializeControls(canvas) {
                 hoveredCard.buildingGraphic.isDragged = true;
                 hoveredCard.buildingGraphic.setEnabled(false);
                 hoveredCard.rotationAdjustment = {x:0, y:0};
+                const gridLoc = {x:getPointerScreenLocation().x, y:getPointerScreenLocation().y};
+                hoveredCard.buildingGraphic.targetPosition.x = gridLoc.x;
+                hoveredCard.buildingGraphic.targetPosition.z = gridLoc.y;
+                hoveredCard.buildingGraphic.position.x = gridLoc.x;
+                hoveredCard.buildingGraphic.position.z = gridLoc.y;
+                hoveredCard.buildingGraphic.setEnabled(true);
+                createSelectionLine(hoveredCard.buildingGraphic.getChildMeshes()[0]);
 
                 selectedCard = hoveredCard;
                 //remove card from deck
@@ -155,8 +163,10 @@ export function initializeControls(canvas) {
         if (selectedBuilding) {
             if (event.key === 'Q' || event.key === 'q') {
                 rotateBuilding(selectedBuilding, 'R');
+                updateBuildingGraphicPosition(selectedBuilding);
             } else if (event.key === 'E' || event.key === 'e') {
                 rotateBuilding(selectedBuilding, 'L');
+                updateBuildingGraphicPosition(selectedBuilding);
             }
         }
     });

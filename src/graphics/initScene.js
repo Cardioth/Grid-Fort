@@ -3,7 +3,7 @@ import '@babylonjs/loaders'; // If you need to import any loaders
 import * as GUI from '@babylonjs/gui';
 import { getShaderMaterial } from '../shaders/gridMaterial.js';
 import { gridHeight, gridWidth } from '../data/config.js';
-import { initializeControls } from '../ui/controls.js';
+import { initializeControls } from '../managers/eventListeners.js';
 import { drawPlayerBoardTexture } from './drawPlayerBoardTexture.js';
 
 export const canvas = document.getElementById('renderCanvas');
@@ -21,7 +21,11 @@ export let shaderMaterial;
 
 let testPlane;
 export let testPlaneTexture;
+export let collisionPlane;
 export let ctx;
+export let camera;
+export let GUIcamera;
+let orthoSize = 2.5;
 
 export const initScene = () => {
     scene = new BABYLON.Scene(engine);
@@ -36,6 +40,8 @@ export const initScene = () => {
 
     gridPlane = createGridGraphic();
 
+    collisionPlane = createCollisionPlane();
+
     // Test Plane
     createTestingPlane();
 
@@ -47,12 +53,26 @@ export const initScene = () => {
 export let advancedTexture;
 export const initGUIScene = () => {
     const GUIscene = new BABYLON.Scene(engine);
-    const camera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(0, 0, 0), GUIscene);
+    GUIcamera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(5, 6.2, 5), GUIscene);
+    GUIcamera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+    GUIcamera.setTarget(BABYLON.Vector3.Zero());
+    updateCameraOrtho();
+    
     GUIscene.autoClear = false;
     GUIscene.autoClearDepthAndStencil = false;
     advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
-    advancedTexture.idealWidth = 1250;
+    //advancedTexture.idealWidth = 1600;
     return GUIscene;
+}
+
+function createCollisionPlane() {
+    const collisionPlane = BABYLON.MeshBuilder.CreatePlane("plane", { width: 50, height: 50 }, scene);
+    collisionPlane.position = new BABYLON.Vector3(0, 0, 0);
+    collisionPlane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.WORLD);
+    collisionPlane.material = new BABYLON.StandardMaterial("collisionPlaneMaterial", scene);
+    collisionPlane.material.alpha = 0;
+    collisionPlane.isPickable = true;
+    return collisionPlane;
 }
 
 function createTestingPlane() {
@@ -92,6 +112,7 @@ function importModels(scene, mainLight) {
         function (meshes) {
             sceneMeshes = meshes;
             baseMesh = meshes.find(mesh => mesh.id === "BaseMesh");
+
             const backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
             const baseBaseMesh = meshes.find(mesh => mesh.id === "baseBase");
             backgroundMesh.isPickable = false;
@@ -191,8 +212,6 @@ function postProcessEffects(scene, camera) {
     fxaaPostProcess.samples = 2;
 }
 
-export let camera;
-let orthoSize = 2.5;
 function initCamera(scene) {
     camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 6.2, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
@@ -217,4 +236,11 @@ function updateCameraOrtho() {
     camera.orthoBottom = orthoBottom;
     camera.orthoLeft = orthoLeft;
     camera.orthoRight = orthoRight;
+
+    if(GUIcamera){
+        GUIcamera.orthoTop = orthoTop;
+        GUIcamera.orthoBottom = orthoBottom;
+        GUIcamera.orthoLeft = orthoLeft;
+        GUIcamera.orthoRight = orthoRight;
+    }
 }

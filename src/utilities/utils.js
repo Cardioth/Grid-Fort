@@ -1,7 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
-import { scene, camera, gridPlane, baseMesh } from '../graphics/initScene';
+import { scene, camera, gridPlane, collisionPlane } from '../graphics/initScene';
 import { fortStats } from "../managers/setup";
-import { currentMouseX, currentMouseY } from "../ui/controls";
+import { currentMouseX, currentMouseY } from "../managers/eventListeners";
 
 export function wrapText(context, text, x, y, lineHeight) {
     const lines = text.split("\n");
@@ -71,7 +71,7 @@ export function getPointerScreenLocation() {
     const ray = scene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), camera);
 
     let pickResult = scene.pickWithRay(ray, function (mesh) {
-        return mesh === gridPlane;
+        return mesh === collisionPlane;
     });
 
     if (pickResult.pickedPoint !== null) {

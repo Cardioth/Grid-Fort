@@ -5,7 +5,7 @@ import { circularizeGrids } from "../components/grids";
 import allBuildings from "../components/buildings";
 import { hand, updateCardAnimation } from "../components/cards";
 import { cellSize, gridHeight, gridWidth } from "../data/config";
-import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "../ui/controls";
+import { currentMouseX, currentMouseY, hoveredBuilding, selectedBuilding, selectedPlacedBuilding } from "../managers/eventListeners";
 import { totalCredits } from "../gameplay/credits";
 import { currentScene, updateCurrentScene } from "../managers/sceneControl";
 import { allBoards, enemyBoard, playerBoard } from "../managers/setup";

@@ -15,7 +15,7 @@ export function updateCardAnimation() {
                 card.rotation = 0;
                 card.container.scaleX = .4;
                 card.container.scaleY = .4;
-                card.targetPosition = { x: card.originalPosition.x, y: 100 };
+                card.targetPosition = { x: card.originalPosition.x, y: 150 };
                 card.zIndex = 100;
             } else {
                 // Reset to normal size and position when not hovered
@@ -47,7 +47,7 @@ export function updateCardAnimation() {
 }
 
 export function setCardPositions() {
-    let yCardOffset = 300; // Initial offset from middle
+    let yCardOffset = 360; // Initial offset from middle
     const gap = 100 - hand.length * 2; // Gap between cards
 
     hand.forEach((buildingCard, index) => {
@@ -77,7 +77,7 @@ export function getHoveredCard(mouseX, mouseY) {
         const hoverWidth = 70;
         const minX = hand[i].currentPosition.x - hoverWidth + canvas.width / 2;
         const maxX = hand[i].currentPosition.x + hoverWidth + canvas.width / 2;
-        const minY = canvas.height - 180;
+        const minY = canvas.height - 300;
         const maxY = canvas.height;        
         if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) {
             for (let j = 0; j < hand.length; j++) {

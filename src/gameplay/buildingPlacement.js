@@ -1,7 +1,7 @@
 import { allBoards } from "../managers/setup";
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToPrevious, setMaterialToBlocked } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
-import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard } from "../ui/controls";
+import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard } from "../managers/eventListeners";
 import { cellSize, gridHeight, gridWidth} from "../data/config";
 import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
@@ -11,6 +11,7 @@ import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/i
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
 import { shapeKeyLegend } from "../data/config";
+
 
 export let allBuildingGraphics = [];
 
@@ -273,6 +274,7 @@ export function cloneBuilding(name, x, z, yRotation = 0, card) {
 
 export function updateBuildingGraphicPosition(building) {
 
+    //Get Mouse Position in Grid
     const gridX = getPointerGridLocation().x;
     const gridY = getPointerGridLocation().y;
 
@@ -284,13 +286,12 @@ export function updateBuildingGraphicPosition(building) {
         setMaterialToBlocked(building.buildingGraphic.getChildMeshes()[i]);
     }
 
+    //If mouse position is in grid
     if (gridX !== null && gridY !== null) {
         let placementResult = canPlaceBuildingNearest(building, gridX, gridY);
         if (placementResult.canPlace) {
-            building.buildingGraphic.setEnabled(true);
             building.buildingGraphic.targetPosition.x = getPointerScreenLocationSnappedToGrid().x-placementResult.adjustedX*0.25+rotationAdjustmentX;
             building.buildingGraphic.targetPosition.z = getPointerScreenLocationSnappedToGrid().y+placementResult.adjustedY*0.25+rotationAdjustmentY;
-
             for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
                 setMaterialToPrevious(building.buildingGraphic.getChildMeshes()[i]);
             }
@@ -298,7 +299,6 @@ export function updateBuildingGraphicPosition(building) {
     } else {
         building.buildingGraphic.targetPosition.x = getPointerScreenLocation().x;
         building.buildingGraphic.targetPosition.z = getPointerScreenLocation().y;
-        building.buildingGraphic.setEnabled(true);
     }
     
     building.buildingGraphic.rotation.y = building.rotation;
@@ -328,7 +328,6 @@ export function returnBuildingToDeck() {
     if (selectedBuilding.buildingGraphic !== undefined) {
         selectedBuilding.buildingGraphic.dispose();
         allBuildingGraphics = allBuildingGraphics.filter(obj => obj !== selectedBuilding.buildingGraphic);
-        console.log(allBuildingGraphics);
     }
 
     if (selectedBuilding.placed === true) {
