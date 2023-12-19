@@ -69,7 +69,7 @@ export function displayBuildingInfo(building){
     statsTitleText.color = "white";
     statsTitleText.fontSize = 30;
     statsTitleText.top = "-34px";
-    statsTitleText.left = "110px";
+    statsTitleText.left = "90px";
     statsTitleText.scaleX = 1;
     statsTitleText.fontFamily = "GemunuLibre-Medium";
     buildingInfoPanelBottomContainer.addControl(statsTitleText);
@@ -86,12 +86,12 @@ export function displayBuildingInfo(building){
             statsText.color = "#4B555C";
             statsText.fontSize = 22;
             statsText.top = 10 + lineHeight + "px";
-            statsText.left = column === 0 ? "110px" : "290px";
+            statsText.left = column === 0 ? "90px" : "280px";
             statsText.scaleX = 1;
             statsText.fontFamily = "GemunuLibre-Medium";
             buildingInfoPanelBottomContainer.addControl(statsText);
             lineHeight += 22;
-            if (lineHeight > 80) {
+            if (lineHeight > 100) {
                 lineHeight = 0;
                 column++;
             }
@@ -137,23 +137,6 @@ export function displayBuildingInfo(building){
         }
     }
 
-
-    // Old code for adding in stats
-    // if(Object.keys(building.effects).length > 0){
-    //     lineHeight += 12;
-    //     ctx.font = "bold 11px Arial";
-    //     ctx.fillText("Boosts", 10, lineHeight);
-    //     lineHeight += 16;
-    //     ctx.font = "10px Arial";
-    //     for(let key in building.effects){
-    //         if(building.effects[key] !== 0){
-    //             const text = camelCaseToTitleCase(key) + ": " + building.effects[key];
-    //             ctx.fillText(text, 10, lineHeight);
-    //             lineHeight += 12;
-    //         }
-    //     }
-    // }
-    
     //bottom panel animation
     const animation = new BABYLON.Animation("bottomPanelAnimation", "top", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     animation.setKeys([
@@ -182,7 +165,7 @@ export function displayBuildingInfo(building){
     classText.color = "white";
     classText.fontSize = 60;
     classText.top = "-155px";
-    classText.left = "-122px";
+    classText.left = "-140px";
     classText.shadowBlur = 0;
     classText.shadowColor = "#16171A";
     classText.shadowOffsetX = 0;
@@ -199,7 +182,7 @@ export function displayBuildingInfo(building){
     nameText.color = "white";
     nameText.fontSize = 60;
     nameText.top = "-105px";
-    nameText.left = "-30px";
+    nameText.left = "-50px";
     nameText.shadowBlur = 0;
     nameText.shadowColor = "#16171A";
     nameText.shadowOffsetX = 0;
