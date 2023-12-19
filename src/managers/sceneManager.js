@@ -1,4 +1,4 @@
-import { initGameScene, initMenuScene, disposeGUIScene, disposeGameScene, initGUIScene} from "../graphics/sceneInitialization";
+import { initGameScene, initMenuScene, disposeGUIScene, disposeGameScene, initGUIScene, GUITexture} from "../graphics/sceneInitialization";
 
 export let currentScene;
 

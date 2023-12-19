@@ -24,7 +24,7 @@ export let baseMesh;
 export let gridPlane;
 export let gridShaderMaterial;
 export let buildingAssets;
-let WeaponAssets;
+export let weaponAssets;
 export let shadowGenerator;
 export let menuBackgrounds = [];
 
@@ -66,6 +66,7 @@ export const initMenuScene = () => {
 
         }
     });
+    
     return scene;
 };
 
@@ -156,7 +157,7 @@ function createGridGraphic() {
 
 function importModels(scene, mainLight) {
     buildingAssets = new BABYLON.AssetContainer(scene);
-    WeaponAssets = new BABYLON.AssetContainer(scene);
+    weaponAssets = new BABYLON.AssetContainer(scene);
 
     BABYLON.SceneLoader.ImportMesh(undefined, "./models/", "base.glb", scene,
         function (meshes) {
@@ -180,7 +181,7 @@ function importModels(scene, mainLight) {
                 }
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Weapon"))) {
                     meshes[i].setEnabled(false);
-                    WeaponAssets.meshes.push(meshes[i]);
+                    weaponAssets.meshes.push(meshes[i]);
                 }
             }
 

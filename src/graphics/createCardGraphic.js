@@ -87,6 +87,18 @@ export function createCardGraphic(card) {
         container.addControl(healthText);
     }
 
+    //Card Level
+    if(card.cardLevel >= 1){
+        const imageName = "cardLevel"+card.cardLevel+".png";
+        console.log(imageName);
+        var levelImage = new GUI.Image("but", imageName);
+        levelImage.width = "323px";
+        levelImage.height = "44px";
+        levelImage.top = "-385px";
+        levelImage.left = "0px";
+        container.addControl(levelImage);
+    }
+
     container.scaleX = 0.25;
     container.scaleY = 0.25;
 

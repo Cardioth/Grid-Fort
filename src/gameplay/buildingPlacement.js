@@ -10,6 +10,7 @@ import { circularizeGrids } from "../components/grids";
 import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/sceneInitialization';
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
+import { displayBuildingInfo } from "../ui/gameGUI";
 
 export let allBuildingGraphics = [];
 
@@ -311,6 +312,7 @@ export function updateBuildingGraphicPosition(building) {
 
 export function returnBuildingToDeck() {
     drawGridTexture(); //Update grid texture
+    displayBuildingInfo(null); //Update building info panel
     const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length); //Update this math so that it only spans the width of the cards in hand
     if (selectedCard === null) {
         setSelectedCard(selectedBuilding);

@@ -11,6 +11,7 @@ import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
 import { drawTestPlaneTexture } from "../graphics/drawTestPlaneTexture";
 import { engine, testPlaneTexture } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
+import { displayBuildingInfo } from "../ui/gameGUI";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -86,6 +87,7 @@ export function initializeGameControls(canvas) {
     
     canvas.addEventListener('pointerdown', function (event) {
         if (currentScene === "build") {
+            //Clicking a card in hand
             if (hoveredCard !== null && hoveredCard.cost <= totalCredits) {
                 selectedBuilding = hoveredCard;
                 hoveredCard.isDragged = true;
@@ -104,7 +106,7 @@ export function initializeGameControls(canvas) {
 
     canvas.addEventListener('pointerup', function (event) {
         if (event.button === 0) {
-            //Builing Selecting
+            //Building Selecting
             if (selectedBuilding === null) {
                 const clickedBuilding = getHoveredBuilding();
                 if (clickedBuilding) {
@@ -112,6 +114,7 @@ export function initializeGameControls(canvas) {
                     displayBuildingInfo(clickedBuilding);
                 } else {
                     selectedPlacedBuilding = null;
+                    displayBuildingInfo(null);
                 }
             }
     
