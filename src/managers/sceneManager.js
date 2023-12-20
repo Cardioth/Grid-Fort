@@ -1,9 +1,14 @@
-import { initGameScene, initMenuScene, disposeGUIScene, disposeGameScene, initGUIScene, GUITexture} from "../graphics/sceneInitialization";
+import { initGameScene, initMenuScene, disposeGUIScene, disposeGameScene, initGUIScene, GUITexture, initPreloadScene} from "../graphics/sceneInitialization";
 
 export let currentScene;
 
 export function setCurrentScene(setScene) {
-    if(setScene === "menu" && currentScene === undefined){
+    if(setScene === "preload" && currentScene === undefined){
+        initGUIScene();
+        initPreloadScene();
+    }
+
+    if(setScene === "menu" && currentScene === "preload"){
         initGUIScene();
         initMenuScene();
     }
@@ -15,14 +20,11 @@ export function setCurrentScene(setScene) {
 
     if(setScene === "menu" && currentScene === "build"){
         disposeGameScene();
-        disposeGUIScene();
         initGUIScene();
         initMenuScene();
     }
 
     if(setScene === "build" && currentScene === "menu"){
-        disposeGameScene();
-        disposeGUIScene();
         initGUIScene();
         initGameScene();
     }

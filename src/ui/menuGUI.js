@@ -1,6 +1,7 @@
 import * as GUI from "@babylonjs/gui";
 import { GUITexture } from '../graphics/sceneInitialization.js';
 import { setCurrentScene } from "../managers/sceneManager.js";
+import { fadeToBlack } from "./generalGUI.js";
 
 export function createMenuScreen(){
     const menuScreen = new GUI.Rectangle();
@@ -33,9 +34,30 @@ export function createMenuScreen(){
     playButton.thickness = 0;
     playButton.background = "black";
     playButton.onPointerClickObservable.add(() => {
-        setCurrentScene("build");
+        fadeToBlack(() => {
+            setCurrentScene("build");
+        });
     });
     menuScreen.addControl(playButton);
+
+    // Create Collection Button
+    const collectionButton = GUI.Button.CreateSimpleButton("collectionButton", "Collection");
+    collectionButton.width = 0.2;
+    collectionButton.height = "40px";
+    collectionButton.color = "white";
+    collectionButton.fontSize = 30;
+    collectionButton.fontFamily = "GemunuLibre-Bold";
+    collectionButton.top = 80;
+    collectionButton.left = 0;
+    collectionButton.thickness = 0;
+    collectionButton.background = "black";
+    collectionButton.onPointerClickObservable.add(() => {
+        fadeToBlack(() => {
+            //setCurrentScene("collection");
+        });
+    });
+    menuScreen.addControl(collectionButton);
+
     GUITexture.addControl(menuScreen);
     return menuScreen;
 }

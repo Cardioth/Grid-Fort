@@ -1,3 +1,3 @@
 import { setCurrentScene } from "./managers/sceneManager";
 
-setCurrentScene("menu");
+setCurrentScene("preload");
