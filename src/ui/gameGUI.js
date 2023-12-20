@@ -34,6 +34,7 @@ function createSelectionLine(startPoint,mesh) {
 }
 
 export function displayBuildingInfo(building){
+    //Remove previous building info
     if(GUITexture.buildingInfo){
         for(let i = 0; i < GUITexture.buildingInfo.selectionLine.length; i++){
             GUITexture.buildingInfo.selectionLine[i].dispose();
@@ -86,7 +87,7 @@ export function displayBuildingInfo(building){
     statsTitleText.fontFamily = "GemunuLibre-Medium";
     buildingInfoPanelBottomContainer.addControl(statsTitleText);
 
-    //building stats text
+    //Building stats text
     let lineHeight = 0;
     let column = 0;
     for(let key in building.stats){
@@ -110,7 +111,7 @@ export function displayBuildingInfo(building){
         }
     }
 
-    //building effects title text
+    //Building effects title text
     const effectsTitleText = new GUI.TextBlock();
     effectsTitleText.text = "Effects";
     effectsTitleText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -122,7 +123,7 @@ export function displayBuildingInfo(building){
     effectsTitleText.fontFamily = "GemunuLibre-Medium";
     buildingInfoPanelBottomContainer.addControl(effectsTitleText);
 
-    //building effects text
+    //Building effects text
     if(Object.keys(building.effects).length > 0){
         lineHeight = 0;
         column = 0;
@@ -148,7 +149,7 @@ export function displayBuildingInfo(building){
         }
     }
 
-    //bottom panel animation
+    //Bottom panel animation
     const animation = new BABYLON.Animation("bottomPanelAnimation", "top", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     animation.setKeys([
         { frame: 0, value: -387 },
@@ -161,7 +162,7 @@ export function displayBuildingInfo(building){
     animation.setEasingFunction(ease);    
     GUIscene.beginDirectAnimation(buildingInfoPanelBottomContainer, [buildingInfoPanelBottomContainer.animations[0]], 0, 40, false, 1);
 
-    //build info image panel added
+    //Building info image panel
     const buildingInfoPanel = new GUI.Image("buildingInfo", "buildingStatsPanel.png");
     buildingInfoPanel.width = "920px";
     buildingInfoPanel.height = "387px";
@@ -169,7 +170,7 @@ export function displayBuildingInfo(building){
     buildingInfoPanel.left = 0;
     container.addControl(buildingInfoPanel);
 
-    //building class
+    //Building class
     const classText = new GUI.TextBlock();
     classText.text = building.class;
     classText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -186,7 +187,7 @@ export function displayBuildingInfo(building){
     classText.fontFamily = "GemunuLibre-Medium";
     container.addControl(classText);
 
-    //building name
+    //Building name
     const nameText = new GUI.TextBlock();
     nameText.text = building.name;
     nameText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -202,6 +203,29 @@ export function displayBuildingInfo(building){
     nameText.scaleX = 0.7;
     nameText.fontFamily = "GemunuLibre-Medium";
     container.addControl(nameText);
+
+    //Building level
+    const levelText = new GUI.TextBlock();
+    levelText.text = "Level " + building.cardLevel;
+    levelText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    levelText.color = "#94EAFF";
+    levelText.fontSize = 27;
+    levelText.top = "-145px";
+    levelText.left = "770px";
+    levelText.fontFamily = "GemunuLibre-Medium";
+    container.addControl(levelText);
+
+    //Building Level image
+    if(building.cardLevel >= 1){
+        const imageName = "cardLevel"+building.cardLevel+".png"
+        var levelImage = new GUI.Image("but", imageName);
+        levelImage.width = "323px";
+        levelImage.height = "44px";
+        levelImage.top = "-108px";
+        levelImage.left = "228px";
+        levelImage.scaleX = 1.09;
+        container.addControl(levelImage);
+    }
 
     container.scaleX = 0.7;
     container.scaleY = 0.7;
