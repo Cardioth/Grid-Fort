@@ -20,6 +20,15 @@ function createSelectionLine(startPoint,mesh) {
     rect1.thickness = 2;
     GUITexture.addControl(rect1);
     rect1.linkWithMesh(mesh);
+
+    //Put a dot in the middle of the rect1
+    const rect2 = new GUI.Rectangle();
+    rect2.width = "8px";
+    rect2.height = "8px";
+    rect2.cornerRadius = 4;
+    rect2.color = "White";
+    rect2.background = "White";
+    rect1.addControl(rect2);
     
     return [line, rect1];
 }
@@ -36,23 +45,26 @@ export function displayBuildingInfo(building){
         return;
     }
     
+    //Main container
     const container = new GUI.Rectangle();
     container.width = "920px";
     container.height = "387px";
     container.thickness = 0;
 
+    //Mask for bottom panel
     const mask = new GUI.Rectangle();
     mask.width = "920px";
     mask.height = "387px";
     mask.top = "20px";
     mask.thickness = 0;
 
+    //Bottom panel container
     const buildingInfoPanelBottomContainer = new GUI.Rectangle();
     buildingInfoPanelBottomContainer.width = "920px";
     buildingInfoPanelBottomContainer.height = "387px";
     buildingInfoPanelBottomContainer.thickness = 0;
 
-    //build info image panel added
+    //Bottom panel image
     const buildingInfoPanelBottom = new GUI.Image("buildingInfo", "buildingStatsPanelBottom.png");
     buildingInfoPanelBottom.width = "920px";
     buildingInfoPanelBottom.height = "387px";
@@ -62,7 +74,7 @@ export function displayBuildingInfo(building){
     mask.addControl(buildingInfoPanelBottomContainer);
     container.addControl(mask);
 
-    //building stats title text
+    //Stats title text
     const statsTitleText = new GUI.TextBlock();
     statsTitleText.text = "Stats";
     statsTitleText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -109,7 +121,6 @@ export function displayBuildingInfo(building){
     effectsTitleText.scaleX = 1;
     effectsTitleText.fontFamily = "GemunuLibre-Medium";
     buildingInfoPanelBottomContainer.addControl(effectsTitleText);
-
 
     //building effects text
     if(Object.keys(building.effects).length > 0){
@@ -199,9 +210,9 @@ export function displayBuildingInfo(building){
     container.top = "-50px";
     container.left = "-130px";
 
-    const selectionLine = createSelectionLine({x: 640, y: 220}, building.buildingGraphic.getChildMeshes()[0]);
-    container.selectionLine = selectionLine;
-    
     GUITexture.addControl(container);
     GUITexture.buildingInfo = container;
+
+    const selectionLine = createSelectionLine({x: 643, y: 220}, building.buildingGraphic.getChildMeshes()[0]);
+    container.selectionLine = selectionLine;
 }
