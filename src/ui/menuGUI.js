@@ -52,9 +52,9 @@ export function createMenuScreen(){
     collectionButton.thickness = 0;
     collectionButton.background = "black";
     collectionButton.onPointerClickObservable.add(() => {
-        fadeToBlack(() => {
-            //setCurrentScene("collection");
-        });
+        // fadeToBlack(() => {
+        //     //setCurrentScene("collection");
+        // });
     });
     menuScreen.addControl(collectionButton);
 
