@@ -216,11 +216,15 @@ export function rotateBuilding(building, direction = 'R') {
     building.height = width;
 
     // Adjustments for building graphic rotation
+    setAnchorRotationAdjustment(building);
+}
+
+export function setAnchorRotationAdjustment(building) {
     for (let x = 0; x < building.width; x++) {
         for (let y = 0; y < building.height; y++) {
             const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
-            if(shapeKey.startsWith("anchorPoint")){
-                building.rotationAdjustment.x =  ((-x) / 4);
+            if (shapeKey.startsWith("anchorPoint")) {
+                building.rotationAdjustment.x = ((-x) / 4);
                 building.rotationAdjustment.y = -((-y) / 4);
             }
         }
@@ -273,12 +277,8 @@ export function cloneBuilding(name, x, z, yRotation = 0, card) {
 
 export function updateBuildingGraphicPosition(building) {
     //Get Mouse Position in Grid
-    const gridX = getPointerGridLocation().x;
-    const gridY = getPointerGridLocation().y;
-
-    //Rotation adjustment for anchor point
-    let rotationAdjustmentX = building.rotationAdjustment.x;
-    let rotationAdjustmentY = building.rotationAdjustment.y;
+    const gridX = getPointerGridLocation().x+(building.rotationAdjustment.x*4);
+    const gridY = getPointerGridLocation().y-(building.rotationAdjustment.y*4);
 
     for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
         setMaterialToBlocked(building.buildingGraphic.getChildMeshes()[i]);
@@ -288,8 +288,8 @@ export function updateBuildingGraphicPosition(building) {
     if (gridX !== null && gridY !== null) {
         let placementResult = canPlaceBuildingNearest(building, gridX, gridY);
         if (placementResult.canPlace) {
-            building.buildingGraphic.targetPosition.x = getPointerScreenLocationSnappedToGrid().x-placementResult.adjustedX*0.25+rotationAdjustmentX;
-            building.buildingGraphic.targetPosition.z = getPointerScreenLocationSnappedToGrid().y+placementResult.adjustedY*0.25+rotationAdjustmentY;
+            building.buildingGraphic.targetPosition.x = getPointerScreenLocationSnappedToGrid().x-placementResult.adjustedX*0.25;
+            building.buildingGraphic.targetPosition.z = getPointerScreenLocationSnappedToGrid().y+placementResult.adjustedY*0.25;
             for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
                 setMaterialToPrevious(building.buildingGraphic.getChildMeshes()[i]);
             }

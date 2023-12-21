@@ -1,6 +1,6 @@
 import { currentScene } from "./sceneManager";
 import { totalCredits } from "../gameplay/credits";
-import { returnBuildingToDeck } from "../gameplay/buildingPlacement";
+import { returnBuildingToDeck, setAnchorRotationAdjustment } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredBuilding } from "../utilities/utils";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
@@ -97,6 +97,7 @@ export function initializeGameControls(canvas) {
                 //remove card from deck
                 removeCardFromHand(selectedCard);
                 setCardPositions();
+                setAnchorRotationAdjustment(selectedBuilding);
             }
         }
         startDrag = true;
@@ -121,8 +122,8 @@ export function initializeGameControls(canvas) {
             //If there's a building selected try to place it
             if (selectedBuilding !== null) {
                 // Place the selected shape on the grid
-                const gridX = getPointerGridLocation().x;
-                const gridY = getPointerGridLocation().y;
+                const gridX = getPointerGridLocation().x+(selectedBuilding.rotationAdjustment.x*4);
+                const gridY = getPointerGridLocation().y-(selectedBuilding.rotationAdjustment.y*4);
 
                 if(gridX !== null && gridY !== null){
                     let placementResult = canPlaceBuildingNearest(selectedBuilding, gridX, gridY);
