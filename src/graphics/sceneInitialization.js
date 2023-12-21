@@ -189,7 +189,7 @@ function importModels(scene) {
             for (let i = 0; i < meshes.length; i++) {
                 // meshes[i].rotation = new BABYLON.Vector3(0, 0, 0);
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))) {
-                    meshes[i].position = new BABYLON.Vector3(0, 0, 0);
+                    //meshes[i].position = new BABYLON.Vector3(0, 0, 0);
                     //if parent is not already in building assets add it
                     if (!buildingAssets.meshes.includes(meshes[i].parent)) {
                         buildingAssets.meshes.push(meshes[i].parent);
@@ -197,9 +197,12 @@ function importModels(scene) {
                     meshes[i].setEnabled(false);
                 }
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Weapon"))) {
-                    weaponAssets.meshes.push(meshes[i]);
+                    if (!weaponAssets.meshes.includes(meshes[i].parent)) {
+                        weaponAssets.meshes.push(meshes[i].parent);
+                    }
                     meshes[i].setEnabled(false);
                 }
+
             }
 
             baseMesh.setEnabled(false);
@@ -241,7 +244,7 @@ function addReflectionsToBase(scene, meshes) {
     baseMesh.material.roughness = 0.6;
     baseMesh.material.reflectionTexture = new BABYLON.MirrorTexture("mirror", 1024, scene, true);
     baseMesh.material.reflectionTexture.mirrorPlane = new BABYLON.Plane(0, -1, 0, 0);
-    baseMesh.material.reflectionTexture.level = 1;
+    baseMesh.material.reflectionTexture.level = 3;
     for (let i = 1; i < meshes.length; i++) {
         if (meshes[i].id.endsWith("Building")) {
             baseMesh.material.reflectionTexture.renderList.push(meshes[i]);

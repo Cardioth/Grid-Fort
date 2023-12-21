@@ -34,7 +34,7 @@ const defaultQualities = {
 }
 
 const allBuildings = { 
-    miniArty:{name:"Artillery", class:"Weapon", description:"",cost:1, width:3, height:2, shape:[1,2,1,0,1,0], color:"#3ca9c8", 
+    miniArty:{name:"Artillery", class:"Weapon", description:"",cost:1, width:3, height:2, shape:[1,7,1,0,1,0], color:"#3ca9c8", 
         stats:{kineticFirepower:1, blastRadius:1, ammoStorage:10, fireRate:8}},
     basicLaser:{name:"Basic Laser", class:"Weapon", cost:1, width:2, height:2, shape:[8,1,1,0], color:"#5497e3", 
         stats:{health:25, energyFirepower:2, powerStorage:15, powerDraw:0.2, fireRate:2}},

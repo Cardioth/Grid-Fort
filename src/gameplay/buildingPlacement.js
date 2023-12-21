@@ -7,10 +7,11 @@ import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
 import { circularizeGrids } from "../components/grids";
-import { buildingAssets, baseMesh, shadowGenerator, canvas } from '../graphics/sceneInitialization';
+import { buildingAssets, baseMesh, shadowGenerator, canvas, weaponAssets } from '../graphics/sceneInitialization';
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
 import { displayBuildingInfo } from "../ui/gameGUI";
+import * as BABYLON from '@babylonjs/core';
 
 export let allBuildingGraphics = [];
 
@@ -195,7 +196,7 @@ export function rotateBuilding(building, direction = 'R') {
     const { width, height, shape } = building;
 
     if (direction === 'R') {
-        building.rotation += Math.PI / 2;
+        building.buildingGraphic.rotate(BABYLON.Axis.Y, Math.PI / 2, BABYLON.Space.WORLD);
         // Transpose and reverse rows for clockwise rotation
         for (let x = 0; x < width; x++) {
             for (let y = height - 1; y >= 0; y--) {
@@ -203,20 +204,23 @@ export function rotateBuilding(building, direction = 'R') {
             }
         }
     } else {
-        building.rotation -= Math.PI / 2;
+        building.buildingGraphic.rotate(BABYLON.Axis.Y, -Math.PI / 2, BABYLON.Space.WORLD);
         // Transpose and reverse columns for counterclockwise rotation
         for (let x = width - 1; x >= 0; x--) {
             for (let y = 0; y < height; y++) {
                 newShape.push(shape[y * width + x]);
             }
         }
-    }    
+    }
+
     building.shape = newShape;
     building.width = height;
     building.height = width;
 
     // Adjustments for building graphic rotation
     setAnchorRotationAdjustment(building);
+
+    
 }
 
 export function setAnchorRotationAdjustment(building) {
@@ -275,6 +279,37 @@ export function cloneBuilding(name, x, z, yRotation = 0, card) {
     return null;
 }
 
+export function cloneWeapon(name, x, z, yRotation = 0, newParentNode){
+    let weapon = weaponAssets.meshes.find(m => m.name === name);
+    if (weapon) {
+        let clone = weapon.clone(name + "_clone", null, true);
+        for (let i = 0; i < weapon.getChildMeshes().length; i++) {
+            let child = weapon.getChildMeshes()[i];
+            let childClone = child.clone(child.name + "_clone", clone, true);
+            childClone.setEnabled(true);
+            baseMesh.material.reflectionTexture.renderList.push(childClone); //Add to render list for reflections
+
+            //Convert Z up to Y up
+            childClone.rotation.x = -(90) * (Math.PI / 180);
+
+            //Scale up cause it's tiny
+            childClone.scaling.y = 40;
+            childClone.scaling.x = 40;
+            childClone.scaling.z = 40;
+            childClone.position.x = x;
+            childClone.position.z = z;
+
+            childClone.defaultMaterial = childClone.material;
+        }
+        clone.parent = newParentNode;
+        newParentNode.turret = clone;
+        clone.position.x = 0;
+        clone.position.z = 0;
+        clone.position.y = 0;
+        return clone;
+    }
+}
+
 export function updateBuildingGraphicPosition(building) {
     //Get Mouse Position in Grid
     const gridX = getPointerGridLocation().x+(building.rotationAdjustment.x*4);
@@ -300,13 +335,6 @@ export function updateBuildingGraphicPosition(building) {
     } else {
         building.buildingGraphic.targetPosition.x = getPointerScreenLocation().x;
         building.buildingGraphic.targetPosition.z = getPointerScreenLocation().y;
-    }
-    
-    //Rotate Meshes
-    building.buildingGraphic.rotation.y = building.rotation;
-    for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
-        let child = building.buildingGraphic.getChildMeshes()[i];
-        child.rotation.y = building.rotation;
     }
 }
 
@@ -350,4 +378,34 @@ export function createBuildingGraphicFromCard(building) {
     building.buildingGraphic.position.x = gridLoc.x;
     building.buildingGraphic.position.z = gridLoc.y;
     building.buildingGraphic.setEnabled(true);
+
+    // Add weapons
+
+    // Find anchor point
+    let anchorPointLocation = {x:0,y:0};
+    for (let x = 0; x < building.width; x++) {
+        for (let y = 0; y < building.height; y++) {
+            const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
+            if (shapeKey.startsWith("anchorPoint")) {
+                anchorPointLocation = {x,y};
+            }
+        }
+    }
+
+    // Clone weapons
+    for (let x = 0; x < building.width; x++) {
+        for (let y = 0; y < building.height; y++) {
+            const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
+            // If weapon is already on the anchor point clone it at the center of the building
+            if (shapeKey.endsWith("Weapon") && shapeKey.startsWith("anchorPoint")) {
+                cloneWeapon(building.keyName + "Weapon", 0, 0, 0, building.buildingGraphic);
+            }
+            // If weapon is not on the anchor point clone it at the relative position to the anchor point
+            if (shapeKey.endsWith("Weapon") && !shapeKey.startsWith("anchorPoint")) {
+                const weaponX = anchorPointLocation.x-x;
+                const weaponY = anchorPointLocation.y-y;
+                cloneWeapon(building.keyName + "Weapon", weaponX*400, -weaponY*400, 0, building.buildingGraphic);
+            }
+        }
+    }
 }
