@@ -4465,6 +4465,25 @@
 		</m_endTime>
 	</ObjectProcessEvent>
 	<message>
+		<strData>Warning: Invalid shader node:opacity</strData>
+	</message>
+</e>
+<e class_id_reference="10">
+	<ObjectProcessEvent>
+		<Event></Event>
+		<m_role>3</m_role>
+		<m_eventSeverity>2</m_eventSeverity>
+		<m_objectId>
+			<strData></strData>
+		</m_objectId>
+		<m_startTime>
+			<timestamp></timestamp>
+		</m_startTime>
+		<m_endTime>
+			<timestamp></timestamp>
+		</m_endTime>
+	</ObjectProcessEvent>
+	<message>
 		<strData>Warning: Invalid shader node:coat</strData>
 	</message>
 </e>
@@ -4850,10 +4869,10 @@
 				<strData>false</strData>
 			</item>
 			<item>
-				<strData>3.65</strData>
+				<strData>3.76</strData>
 			</item>
 			<item>
-				<strData>25</strData>
+				<strData>24</strData>
 			</item>
 		</v2>
 	</WorkdataEvent>

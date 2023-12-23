@@ -13,6 +13,7 @@ import { drawGridTexture } from "../shaders/gridMaterial";
 import { displayBuildingInfo } from "../ui/gameGUI";
 import * as BABYLON from '@babylonjs/core';
 import { weaponIdleAnimation } from "../graphics/weaponIdleAnimation";
+import { createBoosterCellGraphic, removeBoosterCellGraphics } from "../graphics/createBoosterCellGraphic";
 
 export let allBuildingGraphics = [];
 
@@ -99,6 +100,9 @@ export function placeBuilding(building, gridX, gridY, board) {
                             } else {
                                 board.grid[cellIndex].effects[key] = newBuilding.effects[key];
                             }
+                            if (!board.grid[cellIndex].occupied) {
+                                createBoosterCellGraphic(board.grid[cellIndex], newBuilding);
+                            }
                         }
                     }
                 }
@@ -157,6 +161,7 @@ export function unplaceBuilding(building, board) {
         }
     }
 
+    removeBoosterCellGraphics(building);
     drawGridTexture();
 }
 

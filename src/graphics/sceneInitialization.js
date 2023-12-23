@@ -31,7 +31,7 @@ export let buildingAssets;
 export let weaponAssets;
 export let shadowGenerator;
 export let menuBackgrounds = [];
-export let boostedCellEffect;
+export let boostedCellGraphic;
 let lights;
 
 // Testing Plane
@@ -181,7 +181,9 @@ function importModels(scene) {
             baseMesh = meshes.find(mesh => mesh.id === "BaseMesh");
             backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
             baseBaseMesh = meshes.find(mesh => mesh.id === "baseBase");
-            boostedCellEffect = meshes.find(mesh => mesh.id === "boostedCell");
+            boostedCellGraphic = meshes.find(mesh => mesh.id === "boostedCell");
+
+            boostedCellGraphic.isPickable = false;
             backgroundMesh.isPickable = false;
             baseBaseMesh.isPickable = false;
             baseMesh.isPickable = false;
@@ -206,10 +208,12 @@ function importModels(scene) {
                 }
             }
 
-            boostedCellEffect.setEnabled(false);
+            boostedCellGraphic.setEnabled(false);
             baseMesh.setEnabled(false);
             baseBaseMesh.setEnabled(false);
             backgroundMesh.setEnabled(false);
+
+            boostedCellGraphic.material.alpha = 0.2;
 
             fadeToBlack(() => {
                 setCurrentScene("menu");
