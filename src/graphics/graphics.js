@@ -29,6 +29,9 @@ export function updateGraphics(){
         buildingGraphic.position.x += (buildingGraphic.targetPosition.x - buildingGraphic.position.x) * 0.2;
         buildingGraphic.position.z += (buildingGraphic.targetPosition.z - buildingGraphic.position.z) * 0.2;
     }
+
+    // Animate weapons
+    
 }
 
 export function updateMenuGraphics(){

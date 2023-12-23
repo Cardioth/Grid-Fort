@@ -12,6 +12,7 @@ import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
 import { displayBuildingInfo } from "../ui/gameGUI";
 import * as BABYLON from '@babylonjs/core';
+import { weaponIdleAnimation } from "../graphics/weaponIdleAnimation";
 
 export let allBuildingGraphics = [];
 
@@ -306,6 +307,9 @@ export function cloneWeapon(name, x, z, yRotation = 0, newParentNode){
         clone.position.x = 0;
         clone.position.z = 0;
         clone.position.y = 0;
+
+        weaponIdleAnimation(clone);
+        
         return clone;
     }
 }

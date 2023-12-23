@@ -12,11 +12,7 @@ export function buildRandomDeck() {
     }
     hand.push({...allBuildings.basicLaser});
     hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.basicLaser});
     hand.push({...allBuildings.miniArty});
-    hand.push({...allBuildings.miniArty});
-    hand.push({...allBuildings.damageBooster});
-    hand.push({...allBuildings.damageBooster});
     hand.push({...allBuildings.damageBooster});
 }
 

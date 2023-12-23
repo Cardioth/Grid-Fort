@@ -86,23 +86,26 @@ export function initializeGameControls(canvas) {
 
     
     canvas.addEventListener('pointerdown', function (event) {
-        if (currentScene === "build") {
-            //Clicking a card in hand
-            if (hoveredCard !== null && hoveredCard.cost <= totalCredits) {
-                selectedBuilding = hoveredCard;
-                hoveredCard.isDragged = true;
-                hoveredCard.container.isVisible = false;
-                createBuildingGraphicFromCard(hoveredCard);
-                selectedCard = hoveredCard;
-                //remove card from deck
-                removeCardFromHand(selectedCard);
-                setCardPositions();
-                setAnchorRotationAdjustment(selectedBuilding);
+        if(event.button === 0){
+            if (currentScene === "build") {
+                //Clicking a card in hand
+                if (hoveredCard !== null && hoveredCard.cost <= totalCredits) {
+                    selectedBuilding = hoveredCard;
+                    hoveredCard.isDragged = true;
+                    hoveredCard.container.isVisible = false;
+                    createBuildingGraphicFromCard(hoveredCard);
+                    selectedCard = hoveredCard;
+                    //remove card from deck
+                    removeCardFromHand(selectedCard);
+                    setCardPositions();
+                    setAnchorRotationAdjustment(selectedBuilding);
+                }
             }
+            startDrag = true;
+            startDragLocation.x = currentMouseX;
+            startDragLocation.y = currentMouseY;
         }
-        startDrag = true;
-        startDragLocation.x = currentMouseX;
-        startDragLocation.y = currentMouseY;
+
     });
 
     canvas.addEventListener('pointerup', function (event) {

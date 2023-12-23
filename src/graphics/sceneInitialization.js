@@ -31,6 +31,7 @@ export let buildingAssets;
 export let weaponAssets;
 export let shadowGenerator;
 export let menuBackgrounds = [];
+export let boostedCellEffect;
 let lights;
 
 // Testing Plane
@@ -180,6 +181,7 @@ function importModels(scene) {
             baseMesh = meshes.find(mesh => mesh.id === "BaseMesh");
             backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
             baseBaseMesh = meshes.find(mesh => mesh.id === "baseBase");
+            boostedCellEffect = meshes.find(mesh => mesh.id === "boostedCell");
             backgroundMesh.isPickable = false;
             baseBaseMesh.isPickable = false;
             baseMesh.isPickable = false;
@@ -202,9 +204,9 @@ function importModels(scene) {
                     }
                     meshes[i].setEnabled(false);
                 }
-
             }
 
+            boostedCellEffect.setEnabled(false);
             baseMesh.setEnabled(false);
             baseBaseMesh.setEnabled(false);
             backgroundMesh.setEnabled(false);
@@ -291,7 +293,7 @@ function postProcessEffects(scene, camera) {
 
     const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
     bloomPipeline.bloomEnabled = true;
-    bloomPipeline.bloomThreshold = 0.27;
+    bloomPipeline.bloomThreshold = 0.32;
     bloomPipeline.bloomWeight = 2;
     bloomPipeline.bloomKernel = 30;
     bloomPipeline.bloomScale = 4;
