@@ -30,6 +30,5 @@ export function weaponIdleAnimation(weapon) {
 
     scene.beginDirectAnimation(weapon, weapon.animations, 0, 90, false, 1, () => {
         weaponIdleAnimation(weapon);
-        weapon.parent.rotationT = undefined;
     });
 }

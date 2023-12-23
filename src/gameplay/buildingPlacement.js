@@ -90,11 +90,6 @@ export function placeBuilding(building, gridX, gridY, board) {
                                 for (let key2 in board.grid[cellIndex].building.stats) {
                                     if (key2 === key) {
                                         board.grid[cellIndex].building.stats[key] += newBuilding.effects[key];
-                                        //Boost graphics
-                                        const newBoostArrow = { ...boostArrow };
-                                        newBoostArrow.x = (gridX + x) * cellSize + board.xGridOffset + (cellSize / 2);
-                                        newBoostArrow.y = (gridY + y) * cellSize + board.yGridOffset + (cellSize / 2);
-                                        arrowGraphics.push(newBoostArrow);
                                     }
                                 }
                             }
