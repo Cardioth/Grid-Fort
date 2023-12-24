@@ -57,7 +57,6 @@ export function initializeGameControls(canvas) {
                 unplaceBuilding(hoveredBuilding, playerBoard);
                 selectedBuilding = hoveredBuilding;
                 hoveredBuilding = null;
-                selectedPlacedBuilding = null;
             }
             if (selectedCard === null) {
                 hoveredBuilding = getHoveredBuilding();
@@ -175,4 +174,8 @@ export function initializeGameControls(canvas) {
     window.addEventListener('resize', () => {
         engine.resize();
     });
+}
+
+export function setSelectedPlacedBuilding(building) {
+    selectedPlacedBuilding = building;
 }

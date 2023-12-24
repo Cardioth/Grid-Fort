@@ -31,6 +31,7 @@ const defaultQualities = {
     rotation:0,
     rotationAdjustment:{x:0, y:0},
     cardLevel:1,
+    bonuses:[],
 }
 
 const allBuildings = { 

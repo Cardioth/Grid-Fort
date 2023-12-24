@@ -53,14 +53,14 @@ export function displayBuildingInfo(building){
     container.thickness = 0;
 
     //Mask for bottom panel
-    const mask = new GUI.Rectangle();
+    const mask = new GUI.Rectangle("mask");
     mask.width = "920px";
     mask.height = "387px";
     mask.top = "20px";
     mask.thickness = 0;
 
     //Bottom panel container
-    const buildingInfoPanelBottomContainer = new GUI.Rectangle();
+    const buildingInfoPanelBottomContainer = new GUI.Rectangle("buildingInfoPanelBottomContainer");
     buildingInfoPanelBottomContainer.width = "920px";
     buildingInfoPanelBottomContainer.height = "387px";
     buildingInfoPanelBottomContainer.thickness = 0;
@@ -87,22 +87,32 @@ export function displayBuildingInfo(building){
     statsTitleText.fontFamily = "GemunuLibre-Medium";
     buildingInfoPanelBottomContainer.addControl(statsTitleText);
 
+    container.statsText = [];
     //Building stats text
     let lineHeight = 0;
     let column = 0;
     for(let key in building.stats){
         if(building.stats[key] !== 0){
-            const text = camelCaseToTitleCase(key) + ": " + building.stats[key];
+            let text = camelCaseToTitleCase(key) + ": " + building.stats[key];
+            if(building.bonuses.length > 0){
+                for(const bonus of building.bonuses){
+                    if(bonus.key === key){
+                        text += " (+" + bonus.value + ")"; 
+                    }
+                }
+            }
             const statsText = new GUI.TextBlock();
             statsText.text = text;
             statsText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             statsText.color = "#4B555C";
             statsText.fontSize = 22;
             statsText.top = 10 + lineHeight + "px";
-            statsText.left = column === 0 ? "90px" : "280px";
+            statsText.left = column === 0 ? "90px" : "320px";
             statsText.scaleX = 1;
             statsText.fontFamily = "GemunuLibre-Medium";
             buildingInfoPanelBottomContainer.addControl(statsText);
+            statsText.key = key;
+            container.statsText.push(statsText);
             lineHeight += 22;
             if (lineHeight > 100) {
                 lineHeight = 0;
@@ -110,6 +120,7 @@ export function displayBuildingInfo(building){
             }
         }
     }
+    
 
     //Building effects title text
     const effectsTitleText = new GUI.TextBlock();
@@ -118,7 +129,7 @@ export function displayBuildingInfo(building){
     effectsTitleText.color = "white";
     effectsTitleText.fontSize = 30;
     effectsTitleText.top = "-34px";
-    effectsTitleText.left = "520px";
+    effectsTitleText.left = "540px";
     effectsTitleText.scaleX = 1;
     effectsTitleText.fontFamily = "GemunuLibre-Medium";
     buildingInfoPanelBottomContainer.addControl(effectsTitleText);
@@ -234,9 +245,29 @@ export function displayBuildingInfo(building){
     container.top = "-50px";
     container.left = "-130px";
 
+    container.selectedBuilding = building;
+
     GUITexture.addControl(container);
     GUITexture.buildingInfo = container;
 
     const selectionLine = createSelectionLine({x: 643, y: 220}, building.buildingGraphic.getChildMeshes()[0]);
     container.selectionLine = selectionLine;
+}
+
+export function updateBuildingStatsText(){
+    if(GUITexture.buildingInfo){
+        const building = GUITexture.buildingInfo.selectedBuilding;
+        for(let i = 0; i < GUITexture.buildingInfo.statsText.length; i++){
+            const key = GUITexture.buildingInfo.statsText[i].key;
+            let text = camelCaseToTitleCase(key) + ": " + building.stats[key];
+            if(building.bonuses.length > 0){
+                for(const bonus of building.bonuses){
+                    if(bonus.key === key){
+                        text += " (+" + bonus.value + ")"; 
+                    }
+                }
+            }
+            GUITexture.buildingInfo.statsText[i].text = text;
+        }
+    }
 }

@@ -4,13 +4,17 @@ import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 
 export function createMenuScreen(){
+    // Create container
+    const container = new GUI.Rectangle();
+    container.thickness = 0;
+
     const menuScreen = new GUI.Rectangle();
     menuScreen.width = "100%";
     menuScreen.height = "100%";
-    menuScreen.color = "white";
     menuScreen.thickness = 0;
     menuScreen.background = "black";
     menuScreen.alpha = 0.5;
+    container.addControl(menuScreen);
 
     // Create Menu Text
     const menuText = new GUI.TextBlock();
@@ -20,7 +24,7 @@ export function createMenuScreen(){
     menuText.fontFamily = "GemunuLibre-Bold";
     menuText.top = -30;
     menuText.left = 0;
-    menuScreen.addControl(menuText);
+    container.addControl(menuText);
 
     // Create Play Button
     const playButton = GUI.Button.CreateSimpleButton("playButton", "Play");
@@ -38,7 +42,7 @@ export function createMenuScreen(){
             setCurrentScene("build");
         });
     });
-    menuScreen.addControl(playButton);
+    container.addControl(playButton);
 
     // Create Collection Button
     const collectionButton = GUI.Button.CreateSimpleButton("collectionButton", "Collection");
@@ -56,8 +60,8 @@ export function createMenuScreen(){
         //     //setCurrentScene("collection");
         // });
     });
-    menuScreen.addControl(collectionButton);
+    container.addControl(collectionButton);
 
-    GUITexture.addControl(menuScreen);
+    GUITexture.addControl(container);
     return menuScreen;
 }

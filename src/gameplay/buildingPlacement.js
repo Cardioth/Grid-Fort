@@ -1,19 +1,18 @@
-import { allBoards } from "../managers/setup";
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToPrevious, setMaterialToBlocked } from "../utilities/utils";
 import { updateTotalCredits } from "./credits";
-import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard } from "../managers/eventListeners";
+import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard, selectedPlacedBuilding } from "../managers/eventListeners";
 import { cellSize, gridHeight, gridWidth, shapeKeyLegend} from "../data/config";
-import { boostArrow, arrowGraphics } from "../graphics/testGraphics";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
 import { circularizeGrids } from "../components/grids";
-import { buildingAssets, baseMesh, shadowGenerator, canvas, weaponAssets } from '../graphics/sceneInitialization';
+import { buildingAssets, baseMesh, shadowGenerator, canvas, weaponAssets, GUITexture } from '../graphics/sceneInitialization';
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
-import { displayBuildingInfo } from "../ui/gameGUI";
+import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import * as BABYLON from '@babylonjs/core';
 import { weaponIdleAnimation } from "../graphics/weaponIdleAnimation";
-import { createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
+import { boosterRisingAnimation, createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
+import { setSelectedPlacedBuilding } from "../managers/eventListeners";
 
 export let allBuildingGraphics = [];
 
@@ -55,6 +54,14 @@ export function placeBuilding(building, gridX, gridY, board) {
                         for (let key2 in newBuilding.stats) {
                             if (key === key2) {
                                 newBuilding.stats[key] += board.grid[cellIndex].effects[key];
+                                if(newBuilding.bonuses.filter(obj => obj.key === key).length === 0){
+                                    newBuilding.bonuses.push({key:key, value:board.grid[cellIndex].effects[key]});
+                                } else {
+                                    newBuilding.bonuses.filter(obj => obj.key === key)[0].value += board.grid[cellIndex].effects[key];
+                                }
+                                if(board.grid[cellIndex].effects[key] > 0){
+                                    boosterRisingAnimation(board.grid[cellIndex]);
+                                }
                             }
                         }
                     }
@@ -85,6 +92,11 @@ export function placeBuilding(building, gridX, gridY, board) {
                                 for (let key2 in board.grid[cellIndex].building.stats) {
                                     if (key2 === key) {
                                         board.grid[cellIndex].building.stats[key] += newBuilding.effects[key];
+                                        if(board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key).length === 0){
+                                            board.grid[cellIndex].building.bonuses.push({key:key, value:newBuilding.effects[key]});
+                                        } else {
+                                            board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key)[0].value += newBuilding.effects[key];
+                                        }
                                     }
                                 }
                             }
@@ -94,9 +106,9 @@ export function placeBuilding(building, gridX, gridY, board) {
                             } else {
                                 board.grid[cellIndex].effects[key] = newBuilding.effects[key];
                             }
-                            // if (!board.grid[cellIndex].occupied) {
-                            //     createBoosterCellGraphic(board.grid[cellIndex], newBuilding);
-                            // }
+                            if (board.grid[cellIndex].occupied) {
+                                boosterRisingAnimation(board.grid[cellIndex]);
+                            }
                         }
                     }
                 }
@@ -105,6 +117,11 @@ export function placeBuilding(building, gridX, gridY, board) {
         drawGridTexture();
         updateBoardStats(board);
         updateBoostGraphics();
+        if(selectedPlacedBuilding !== null && selectedPlacedBuilding === building){
+            setSelectedPlacedBuilding(newBuilding);
+            GUITexture.buildingInfo.selectedBuilding = newBuilding;
+        }
+        updateBuildingStatsText();
     } else {
         return false;
     }
@@ -131,6 +148,12 @@ export function unplaceBuilding(building, board) {
                 for (let key in building.stats) {
                     if (board.grid[cellIndex].effects.hasOwnProperty(key)) {
                         building.stats[key] -= board.grid[cellIndex].effects[key];
+                        if(building.bonuses.filter(obj => obj.key === key).length > 0){
+                            building.bonuses.filter(obj => obj.key === key)[0].value -= board.grid[cellIndex].effects[key];
+                            if(building.bonuses.filter(obj => obj.key === key)[0].value <= 0){
+                                building.bonuses = building.bonuses.filter(obj => obj.key !== key);
+                            }
+                        }
                     }
                 }
                 board.grid[cellIndex].shapeKey = 0;
@@ -142,6 +165,12 @@ export function unplaceBuilding(building, board) {
                             for (let key2 in board.grid[cellIndex].building.stats) {
                                 if (key2 === key) {
                                     board.grid[cellIndex].building.stats[key] -= building.effects[key];
+                                    if(board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key).length > 0){
+                                        board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key)[0].value -= building.effects[key];
+                                        if(board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key)[0].value <= 0){
+                                            board.grid[cellIndex].building.bonuses = board.grid[cellIndex].building.bonuses.filter(obj => obj.key !== key);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -157,7 +186,6 @@ export function unplaceBuilding(building, board) {
     }
 
     updateBoostGraphics();
-    //removeBoosterCellGraphics(building);
     drawGridTexture();
 }
 
@@ -250,7 +278,7 @@ export function placeAIFort(AIfortIndex) {
     });
 }
 
-export function cloneBuilding(name, x, z, yRotation = 0, card) {
+export function cloneBuilding(name, x, z) {
     let building = buildingAssets.meshes.find(m => m.name === name);
     if (building) {
         let clone = building.clone(name + "_clone", null, true);
@@ -394,7 +422,7 @@ export function returnBuildingToDeck() {
 }
 
 export function createBuildingGraphicFromCard(building) {
-    building.buildingGraphic = cloneBuilding(selectedBuilding.keyName + "Building", 0, 0, 0, building);
+    building.buildingGraphic = cloneBuilding(selectedBuilding.keyName + "Building", 0, 0);
     building.buildingGraphic.isDragged = true;
     building.buildingGraphic.setEnabled(false);
     building.rotationAdjustment = { x: 0, y: 0 };
@@ -404,8 +432,6 @@ export function createBuildingGraphicFromCard(building) {
     building.buildingGraphic.position.x = gridLoc.x;
     building.buildingGraphic.position.z = gridLoc.y;
     building.buildingGraphic.setEnabled(true);
-
-    // Add weapons
 
     // Find anchor point
     let anchorPointLocation = {x:0,y:0};
