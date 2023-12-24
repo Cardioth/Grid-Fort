@@ -14,10 +14,12 @@ export function weaponIdleAnimation(weapon) {
 
     const finalRotation = weapon.rotation.z + deltaRotation;
 
+    const waitTime = Math.floor(Math.random() * 20 + 80);
+
     const animation = new BABYLON.Animation("weaponIdle", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     animation.setKeys([
         { frame: 0, value: weapon.rotation.z },
-        { frame: 90, value: finalRotation }
+        { frame: waitTime, value: finalRotation }
     ]);
 
     for(const child of weapon.getChildren()){
@@ -32,7 +34,7 @@ export function weaponIdleAnimation(weapon) {
     animation.setEasingFunction(ease);
 
     for (const child of weapon.getChildren()) {
-        scene.beginDirectAnimation(child, child.animations, 0, 90, false, 1, () => {
+        scene.beginDirectAnimation(child, child.animations, 0, waitTime, false, 1, () => {
         });
     }
 

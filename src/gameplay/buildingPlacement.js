@@ -13,7 +13,7 @@ import { drawGridTexture } from "../shaders/gridMaterial";
 import { displayBuildingInfo } from "../ui/gameGUI";
 import * as BABYLON from '@babylonjs/core';
 import { weaponIdleAnimation } from "../graphics/weaponIdleAnimation";
-import { createBoosterCellGraphic, removeBoosterCellGraphics } from "../graphics/createBoosterCellGraphic";
+import { createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
 
 export let allBuildingGraphics = [];
 
@@ -55,12 +55,6 @@ export function placeBuilding(building, gridX, gridY, board) {
                         for (let key2 in newBuilding.stats) {
                             if (key === key2) {
                                 newBuilding.stats[key] += board.grid[cellIndex].effects[key];
-                                if (board.grid[cellIndex].effects[key] > 0) {
-                                    const newBoostArrow = { ...boostArrow };
-                                    newBoostArrow.x = (gridX + x) * cellSize + board.xGridOffset + (cellSize / 2);
-                                    newBoostArrow.y = (gridY + y) * cellSize + board.yGridOffset + (cellSize / 2);
-                                    arrowGraphics.push(newBoostArrow);
-                                }
                             }
                         }
                     }
@@ -100,9 +94,9 @@ export function placeBuilding(building, gridX, gridY, board) {
                             } else {
                                 board.grid[cellIndex].effects[key] = newBuilding.effects[key];
                             }
-                            if (!board.grid[cellIndex].occupied) {
-                                createBoosterCellGraphic(board.grid[cellIndex], newBuilding);
-                            }
+                            // if (!board.grid[cellIndex].occupied) {
+                            //     createBoosterCellGraphic(board.grid[cellIndex], newBuilding);
+                            // }
                         }
                     }
                 }
@@ -110,6 +104,7 @@ export function placeBuilding(building, gridX, gridY, board) {
         }
         drawGridTexture();
         updateBoardStats(board);
+        updateBoostGraphics();
     } else {
         return false;
     }
@@ -161,7 +156,8 @@ export function unplaceBuilding(building, board) {
         }
     }
 
-    removeBoosterCellGraphics(building);
+    updateBoostGraphics();
+    //removeBoosterCellGraphics(building);
     drawGridTexture();
 }
 
@@ -312,6 +308,32 @@ export function cloneWeapon(name, x, z, yRotation = 0, newParentNode){
         
         return clone;
     }
+}
+
+function updateBoostGraphics(){
+    for (const cell of playerBoard.grid) {    
+        let hasBooster = false;
+        for (const key in cell.effects) {
+            if (cell.effects[key] > 0) {
+                hasBooster = true;
+                break;
+            }
+        }
+
+        if (!hasBooster && cell.boosterGraphic === undefined) {
+            continue;
+        }
+    
+        if (hasBooster && cell.boosterGraphic === undefined && !cell.occupied) {
+            createBoosterCellGraphic(cell);
+        }
+        
+        if ((!hasBooster && cell.boosterGraphic !== undefined) || (cell.occupied && cell.boosterGraphic !== undefined)) {
+            removeBoosterCellGraphicsByCell(cell);
+        }
+
+    }
+    
 }
 
 export function updateBuildingGraphicPosition(building) {
