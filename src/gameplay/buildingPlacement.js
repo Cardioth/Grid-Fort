@@ -54,13 +54,13 @@ export function placeBuilding(building, gridX, gridY, board) {
                         for (let key2 in newBuilding.stats) {
                             if (key === key2) {
                                 newBuilding.stats[key] += board.grid[cellIndex].effects[key];
-                                if(newBuilding.bonuses.filter(obj => obj.key === key).length === 0){
-                                    newBuilding.bonuses.push({key:key, value:board.grid[cellIndex].effects[key]});
-                                } else {
-                                    newBuilding.bonuses.filter(obj => obj.key === key)[0].value += board.grid[cellIndex].effects[key];
-                                }
                                 if(board.grid[cellIndex].effects[key] > 0){
                                     boosterRisingAnimation(board.grid[cellIndex]);
+                                    if(newBuilding.bonuses.filter(obj => obj.key === key).length === 0){
+                                        newBuilding.bonuses.push({key:key, value:board.grid[cellIndex].effects[key]});
+                                    } else {
+                                        newBuilding.bonuses.filter(obj => obj.key === key)[0].value += board.grid[cellIndex].effects[key];
+                                    }
                                 }
                             }
                         }
@@ -117,7 +117,7 @@ export function placeBuilding(building, gridX, gridY, board) {
         drawGridTexture();
         updateBoardStats(board);
         updateBoostGraphics();
-        if(selectedPlacedBuilding !== null && selectedPlacedBuilding === building){
+        if(selectedPlacedBuilding === building){
             setSelectedPlacedBuilding(newBuilding);
             GUITexture.buildingInfo.selectedBuilding = newBuilding;
         }
