@@ -46,6 +46,7 @@ export let collisionPlane;
 export let camera;
 export let GUIcamera;
 let orthoSize = 3;
+let cameraHeight = 6.5;
 
 // GUI
 export let GUITexture;
@@ -111,7 +112,7 @@ export const initGUIScene = () => {
         GUITexture.dispose();
     }
     GUIscene = new BABYLON.Scene(engine);
-    GUIcamera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(5, 6.2, 5), GUIscene);
+    GUIcamera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(5, cameraHeight, 5), GUIscene);
     GUIcamera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     GUIcamera.setTarget(BABYLON.Vector3.Zero());
     updateCameraOrtho();    
@@ -120,7 +121,6 @@ export const initGUIScene = () => {
     GUIscene.autoClearDepthAndStencil = false;
     GUITexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
 
-    //advancedTexture.idealWidth = 1600;
     return GUIscene;
 }
 
@@ -307,7 +307,7 @@ function postProcessEffects(scene, camera) {
 }
 
 function initCamera(scene) {
-    camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, 6.2, 5), scene);
+    camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, cameraHeight, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     updateCameraOrtho();
     camera.setTarget(BABYLON.Vector3.Zero());
