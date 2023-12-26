@@ -1,5 +1,5 @@
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToPrevious, setMaterialToBlocked } from "../utilities/utils";
-import { updateTotalCredits } from "./credits";
+import { updateAvailableCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard, selectedPlacedBuilding } from "../managers/eventListeners";
 import { cellSize, gridHeight, gridWidth, shapeKeyLegend} from "../data/config";
 import { playerBoard, enemyBoard } from "../managers/setup";
@@ -39,7 +39,7 @@ export function placeBuilding(building, gridX, gridY, board) {
         circularizeGrids();
 
         if (selectedCard !== null) {
-            updateTotalCredits(-newBuilding.cost);
+            updateAvailableCredits(-newBuilding.cost);
         }
 
         //Update grid
@@ -415,7 +415,7 @@ export function returnBuildingToDeck() {
     }
 
     if (selectedBuilding.placed === true) {
-        updateTotalCredits(selectedCard.cost);
+        updateAvailableCredits(selectedCard.cost);
         circularizeGrids();
         selectedBuilding.placed = false;
     }

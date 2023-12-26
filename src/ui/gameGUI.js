@@ -3,6 +3,7 @@ import * as BABYLON from "@babylonjs/core";
 import { GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
+import { totalCredits, availableCredits } from "../gameplay/credits.js";
 
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();
@@ -147,7 +148,7 @@ export function displayBuildingInfo(building){
                 effectsText.color = "#4B555C";
                 effectsText.fontSize = 22;
                 effectsText.top = 10 + lineHeight + "px";
-                effectsText.left = column === 0 ? "520px" : "700px";
+                effectsText.left = column === 0 ? "540px" : "700px";
                 effectsText.scaleX = 1;
                 effectsText.fontFamily = "GemunuLibre-Medium";
                 buildingInfoPanelBottomContainer.addControl(effectsText);
@@ -269,5 +270,113 @@ export function updateBuildingStatsText(){
             }
             GUITexture.buildingInfo.statsText[i].text = text;
         }
+    }
+}
+
+export function displayBottomUI(){
+    //Bottom panel container
+    bottomPanelContainer = new GUI.Rectangle("bottomUIContainer");
+    bottomPanelContainer.width = "596px";
+    bottomPanelContainer.height = "150px";
+    bottomPanelContainer.thickness = 0;
+    bottomPanelContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    bottomPanelContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    bottomPanelContainer.top = "0px";
+    bottomPanelContainer.left = "0px";
+
+    //Bottom panel image
+    const bottomPanel = new GUI.Image("bottomUI", "bottomUI.png");
+    bottomPanel.width = "596px";
+    bottomPanel.height = "150px";
+    bottomPanel.top = 0;
+    bottomPanel.left = 0;
+    bottomPanelContainer.addControl(bottomPanel);
+
+    //End Turn Button Backing
+    const endTurnButtonBack = new GUI.Image("endTurnButton", "endTurnButtonBack.png");
+    endTurnButtonBack.width = "186px";
+    endTurnButtonBack.height = "89px";
+    endTurnButtonBack.top = 17;
+    endTurnButtonBack.left = 157;
+    bottomPanelContainer.addControl(endTurnButtonBack);
+
+    //End Turn Button
+    const endTurnButton = new GUI.Image("endTurnButton", "endTurnButton.png");
+    endTurnButton.width = "186px";
+    endTurnButton.height = "89px";
+    endTurnButton.top = 17;
+    endTurnButton.left = 157;
+    bottomPanelContainer.addControl(endTurnButton);
+
+    //Bottom panel animation
+    const animation = new BABYLON.Animation("bottomPanelAnimation", "top", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    animation.setKeys([
+        { frame: 0, value: 150 },
+        { frame: 40, value: 0 }
+    ]);
+    bottomPanelContainer.animations = [];
+    bottomPanelContainer.animations.push(animation);
+    let ease = new BABYLON.CubicEase();
+    ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+    animation.setEasingFunction(ease);    
+    GUIscene.beginDirectAnimation(bottomPanelContainer, [bottomPanelContainer.animations[0]], 0, 40, false, 1);
+
+    //Create Game Credits Icons
+    addCreditIcon(availableCredits);
+
+    bottomPanelContainer.zIndex = 1000;
+
+    GUITexture.addControl(bottomPanelContainer);
+}
+
+let bottomPanelContainer;
+
+export function addCreditIcon(amount){
+    if(!GUITexture.creditsIcons){
+        GUITexture.creditsIcons = [];
+    }
+
+    for(let i = 0; i < amount; i++){
+        const creditIcon = new GUI.Image("creditIcon", "gameCredit.png");
+        creditIcon.width = "17px";
+        creditIcon.height = "22px";
+        creditIcon.top = "27px";
+        creditIcon.left = -240 + (GUITexture.creditsIcons.length * 13) + "px";
+        bottomPanelContainer.addControl(creditIcon);
+
+        //Credit icon fades in animation
+        const animation = new BABYLON.Animation("creditFadeIn", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        animation.setKeys([
+            { frame: 0, value: 0 },
+            { frame: 60, value: 1 }
+        ]);
+        creditIcon.animations = [];
+        creditIcon.animations.push(animation);
+        let ease = new BABYLON.CubicEase();
+        ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+        animation.setEasingFunction(ease);
+        GUIscene.beginDirectAnimation(creditIcon, [creditIcon.animations[0]], 0, 60, false, 1);
+
+        GUITexture.creditsIcons.push(creditIcon);
+    }
+}
+
+export function removeCreditIcon(amount){
+    for(let i = 0; i < Math.abs(amount); i++){
+        //Credit icon fades in animation
+        const animation = new BABYLON.Animation("creditFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        animation.setKeys([
+            { frame: 0, value: 1 },
+            { frame: 40, value: 0 }
+        ]);
+        let creditIcon = GUITexture.creditsIcons.pop();
+        creditIcon.animations = [];
+        creditIcon.animations.push(animation);
+        let ease = new BABYLON.CubicEase();
+        ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+        animation.setEasingFunction(ease);
+        GUIscene.beginDirectAnimation(creditIcon, [creditIcon.animations[0]], 0, 40, false, 1, function(){
+            creditIcon.dispose();
+        });
     }
 }

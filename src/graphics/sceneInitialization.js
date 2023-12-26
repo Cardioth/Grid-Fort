@@ -12,6 +12,7 @@ import { createMenuScreen } from '../ui/menuGUI.js';
 import WebFont from "webfontloader";
 import { createPreloadScreen } from '../ui/preloadGUI.js';
 import { fadeToBlack } from '../ui/generalGUI.js';
+import { displayBottomUI } from '../ui/gameGUI.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -105,6 +106,8 @@ export const initGameScene = () => {
     initializeGameControls(canvas); //Event listeners
 
     createCardGraphicsForHand(); //Card graphics
+
+    displayBottomUI(); //Bottom UI
 };
 
 export const initGUIScene = () => {
@@ -191,10 +194,7 @@ function importModels(scene) {
 
             //If id ends in Building add to building assets
             for (let i = 0; i < meshes.length; i++) {
-                // meshes[i].rotation = new BABYLON.Vector3(0, 0, 0);
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))) {
-                    //meshes[i].position = new BABYLON.Vector3(0, 0, 0);
-                    //if parent is not already in building assets add it
                     if (!buildingAssets.meshes.includes(meshes[i].parent)) {
                         buildingAssets.meshes.push(meshes[i].parent);
                     }
