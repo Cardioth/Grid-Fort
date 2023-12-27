@@ -56,7 +56,7 @@ export const infoBoxes = [];
 export const initPreloadScene = () => {
     scene = new BABYLON.Scene(engine);
     camera = initCamera(scene); //Camera
-
+    
     WebFont.load({
         custom: {
             families: ['GemunuLibre-Bold', 'GemunuLibre-Medium', 'RussoOne-Regular'],
@@ -118,6 +118,11 @@ export const initGUIScene = () => {
     GUIcamera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(5, cameraHeight, 5), GUIscene);
     GUIcamera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     GUIcamera.setTarget(new BABYLON.Vector3(0, 0, 0));
+
+    GUIcamera.targetPosition = new BABYLON.Vector3(5, cameraHeight, 5);
+    GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+    GUIcamera.currentSetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+    GUIcamera.setTarget(GUIcamera.currentSetTargetPosition);
     updateCameraOrtho();    
 
     GUIscene.autoClear = false;
@@ -311,7 +316,10 @@ function initCamera(scene) {
     camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, cameraHeight, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     updateCameraOrtho();
-    camera.setTarget(new BABYLON.Vector3(0, 0, 0));
+    camera.targetPosition = new BABYLON.Vector3(5, cameraHeight, 5);
+    camera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+    camera.currentSetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+    camera.setTarget(camera.currentSetTargetPosition);
     return camera;
 }
 

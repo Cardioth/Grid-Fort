@@ -21,6 +21,7 @@ export function placeBuilding(building, gridX, gridY, board) {
     //GridX and GridY are the top left corner of the building not the anchor point
     //One more check to be sure
     if (canPlaceBuilding(building, gridX, gridY, board)) {
+        console.log("Placing Building", building.keyName, "at", gridX, gridY);
         //Pre Parse Setup
         const buildingGraphicHold = building.buildingGraphic;
         building.buildingGraphic = null;

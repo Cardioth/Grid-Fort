@@ -27,7 +27,7 @@ function damageBoosterAnimation(building){
         animatedMeshes[j].rotation.z = Math.PI/2;
         animatedMeshes[j].animations = [];
         animatedMeshes[j].animations.push(animation);
-        scene.beginDirectAnimation(animatedMeshes[j], animatedMeshes[j].animations, 0, 30, true, 1);
+        scene.beginDirectAnimation(animatedMeshes[j], animatedMeshes[j].animations, 0, 40, true, 1);
     }
 }
 

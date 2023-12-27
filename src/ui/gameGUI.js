@@ -3,9 +3,8 @@ import * as BABYLON from "@babylonjs/core";
 import { GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
-import { totalCredits, availableCredits } from "../gameplay/credits.js";
+import { availableCredits } from "../gameplay/credits.js";
 import { endTurn } from "../gameplay/endTurn.js";
-import { canvas } from "../graphics/sceneInitialization.js";
 
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();

@@ -62,8 +62,8 @@ export function circularizeGrids() {
                 if (cell.occupied === true && cell.building !== undefined) {
                     hand.push(cell.building);
                     setCardPositions();
-                    cell.building.currentPosition.x = testCanvas.width / 2;
-                    cell.building.currentPosition.y = testCanvas.height / 2;
+                    cell.building.currentPosition.x = 0;
+                    cell.building.currentPosition.y = 0;
                     updateTotalCredits(cell.building.cost);
                     cell.building.placed = false;
                     unplaceBuilding(cell.building, board);
