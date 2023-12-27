@@ -42,7 +42,7 @@ function coreAnimation(building){
     mesh.animations = [];
     mesh.animations.push(animation);
 
-    scene.beginDirectAnimation(mesh, mesh.animations, 0, 300, true, 1);
+    scene.beginDirectAnimation(mesh, mesh.animations, 0, 500, true, 1);
 
     const animation2 = new BABYLON.Animation("spinny", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
     animation2.setKeys([
@@ -58,8 +58,8 @@ function coreAnimation(building){
     mesh3.animations = [];
     mesh3.animations.push(animation2);
 
-    scene.beginDirectAnimation(mesh2, mesh2.animations, 0, 240, true, 1);
-    scene.beginDirectAnimation(mesh3, mesh3.animations, 0, 240, true, 1);
+    scene.beginDirectAnimation(mesh2, mesh2.animations, 0, 300, true, 1);
+    scene.beginDirectAnimation(mesh3, mesh3.animations, 0, 300, true, 1);
 }
 
 function getMeshByMaterialName(name, building){
