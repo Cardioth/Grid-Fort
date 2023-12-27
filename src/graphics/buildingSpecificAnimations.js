@@ -11,10 +11,10 @@ export function addBuildingSpecificAnimations(building){
 }
 
 function damageBoosterAnimation(building){
-    const animation = new BABYLON.Animation("spinny", "rotation.x", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    const animation = new BABYLON.Animation("spinny", "rotation.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
     animation.setKeys([
         { frame: 0, value: 0 },
-        { frame: 30, value: Math.PI*2 }
+        { frame: 40, value: Math.PI*2 }
     ]);
     
     const animatedMeshes = [];
@@ -35,7 +35,7 @@ function coreAnimation(building){
     const animation = new BABYLON.Animation("spinny", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
     animation.setKeys([
         { frame: 0, value: 0 },
-        { frame: 300, value: Math.PI*2 }
+        { frame: 500, value: Math.PI*2 }
     ]);
 
     const mesh = getMeshByMaterialName("darkestGrippy", building);
@@ -47,7 +47,7 @@ function coreAnimation(building){
     const animation2 = new BABYLON.Animation("spinny", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
     animation2.setKeys([
         { frame: 0, value: 0 },
-        { frame: 240, value: -Math.PI*2 }
+        { frame: 300, value: -Math.PI*2 }
     ]);
 
     const mesh2 = getMeshByMaterialName("blueGlow", building);
