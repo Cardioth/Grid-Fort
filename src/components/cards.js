@@ -85,13 +85,9 @@ export function getHoveredCard(mouseX, mouseY) {
                 hand[j].isHovered = false;
             }
             hand[i].isHovered = true;
-            if (currentScene === "build") {
-                canvas.style.cursor = "grab";
-            }
             return hand[i];
         } else {
             hand[i].isHovered = false;
-            canvas.style.cursor = "default";
         }
     }
     return null;

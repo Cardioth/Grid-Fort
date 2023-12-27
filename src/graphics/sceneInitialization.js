@@ -5,7 +5,6 @@ import { getShaderMaterial } from '../shaders/gridMaterial.js';
 import { gridHeight, gridWidth } from '../data/config.js';
 import { initializeGameControls } from '../managers/eventListeners.js';
 import { drawTestPlaneTexture } from './drawTestPlaneTexture.js';
-import { createCardGraphicsForHand } from '../components/cards.js';
 import { currentScene, setCurrentScene } from '../managers/sceneManager.js';
 import { updateGraphics, updateMenuGraphics } from './graphics.js';
 import { createMenuScreen } from '../ui/menuGUI.js';
@@ -94,8 +93,6 @@ export const initGameScene = () => {
     baseBaseMesh.setEnabled(true);
     backgroundMesh.setEnabled(true);
 
-    setup();
-
     initShadows(lights);
 
     addReflectionsToBase(scene, allMeshes);    
@@ -108,9 +105,9 @@ export const initGameScene = () => {
 
     initializeGameControls(canvas); //Event listeners
 
-    createCardGraphicsForHand(); //Card graphics
-
     displayBottomUI(); //Bottom UI
+
+    setup();
 };
 
 export const initGUIScene = () => {

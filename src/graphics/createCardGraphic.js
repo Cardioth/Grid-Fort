@@ -108,6 +108,13 @@ export function createCardGraphic(card) {
 
     card.container = container;
 
+    container.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='grab'
+    });
+    container.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
     GUITexture.addControl(container);
 
     return container;

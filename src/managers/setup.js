@@ -1,8 +1,10 @@
 import { gridHeight, gridWidth } from "../data/config.js";
-import { setCardPositions } from "../components/cards.js";
+import { createCardGraphicsForHand, setCardPositions } from "../components/cards.js";
 import { buildRandomDeck } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
+import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
+import allBuildings from "../components/buildings";
 
 export const fortStats = {
     kineticFirepower: {name:"Kinetic Firepower", stat: 0},
@@ -14,7 +16,7 @@ export const fortStats = {
     powerDraw: {name:"Power Draw", stat: 0},
     ammoStorage: {name:"Ammo Storage", stat: 0},
     powerStorage: {name:"Power Storage", stat: 0},
-    radarRange: {name:"Radar Range", stat: 4},
+    radarRange: {name:"Radar Range", stat: 4.5},
 };
     
 export const playerBoard = {
@@ -43,4 +45,8 @@ export function setup(){
     setCardPositions();
     
     circularizeGrids();
+
+    placeBuildingToBoard(allBuildings.core, playerBoard, 7, 7);
+
+    createCardGraphicsForHand();
 }

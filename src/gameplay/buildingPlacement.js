@@ -1,7 +1,7 @@
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToDefault, setMaterialToBlocked } from "../utilities/utils";
 import { updateAvailableCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard, selectedPlacedBuilding } from "../managers/eventListeners";
-import { cellSize, gridHeight, gridWidth, shapeKeyLegend} from "../data/config";
+import { gridHeight, gridWidth, shapeKeyLegend} from "../data/config";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { AIforts } from "../components/AIforts";
 import { circularizeGrids } from "../components/grids";
@@ -13,12 +13,12 @@ import * as BABYLON from '@babylonjs/core';
 import { weaponIdleAnimation } from "../graphics/weaponIdleAnimation";
 import { boosterRisingAnimation, createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
 import { setSelectedPlacedBuilding } from "../managers/eventListeners";
+import { addBuildingSpecificAnimations } from "../graphics/buildingSpecificAnimations";
 
 export let allBuildingGraphics = [];
 
 export function placeBuilding(building, gridX, gridY, board) {
     //GridX and GridY are the top left corner of the building not the anchor point
-
     //One more check to be sure
     if (canPlaceBuilding(building, gridX, gridY, board)) {
         //Pre Parse Setup
@@ -267,7 +267,8 @@ export function setAnchorRotationAdjustment(building) {
 }
 
 export function placeBuildingToBoard(building, board, xLoc, yLoc) {
-    placeBuilding(JSON.parse(JSON.stringify(building)), board.xGridOffset + (gridWidth * cellSize) / 2 + (xLoc * cellSize), board.yGridOffset + (gridHeight * cellSize) / 2 + (yLoc * cellSize), board);
+    createBuildingGraphicFromCard(building);
+    placeBuilding(building, xLoc, yLoc, board);
 }
 
 export function placeAIFort(AIfortIndex) {
@@ -304,6 +305,7 @@ export function cloneBuilding(name, x, z) {
             childClone.defaultMaterial = childClone.material;
         }
         clone.targetPosition = { x: x, z: z };
+        addBuildingSpecificAnimations(clone);
         allBuildingGraphics.push(clone);
         return clone;
     }
@@ -428,9 +430,8 @@ export function returnBuildingToDeck() {
 }
 
 export function createBuildingGraphicFromCard(building) {
-    building.buildingGraphic = cloneBuilding(selectedBuilding.keyName + "Building", 0, 0);
+    building.buildingGraphic = cloneBuilding(building.keyName + "Building", 0, 0);
     building.buildingGraphic.isDragged = true;
-    building.buildingGraphic.setEnabled(false);
     building.rotationAdjustment = { x: 0, y: 0 };
     const gridLoc = { x: getPointerScreenLocation().x, y: getPointerScreenLocation().y };
     building.buildingGraphic.targetPosition.x = gridLoc.x;

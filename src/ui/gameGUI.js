@@ -5,6 +5,7 @@ import { GUIscene } from "../graphics/sceneInitialization.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { totalCredits, availableCredits } from "../gameplay/credits.js";
 import { endTurn } from "../gameplay/endTurn.js";
+import { canvas } from "../graphics/sceneInitialization.js";
 
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();
@@ -308,12 +309,14 @@ export function displayBottomUI(){
     endTurnButton.top = 17;
     endTurnButton.left = 157;
     bottomPanelContainer.addControl(endTurnButton);
-    //End Turn Button Click Event
     endTurnButton.onPointerClickObservable.add(endTurn());
-
-
-    
-
+    //Change cursor on hover
+    endTurnButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    endTurnButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
 
     //Bottom panel animation
     const animation = new BABYLON.Animation("bottomPanelAnimation", "top", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);

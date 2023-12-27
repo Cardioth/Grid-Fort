@@ -133,7 +133,6 @@ export function initializeGameControls(canvas) {
                     let placementResult = canPlaceBuildingNearest(selectedBuilding, gridX, gridY);
                     if (placementResult.canPlace) {
                         placeBuilding(selectedBuilding, gridX + placementResult.adjustedX, gridY + placementResult.adjustedY, playerBoard);
-                        canvas.style.cursor = "default";
                         drawTestPlaneTexture(testPlaneTexture);
                     } else {
                         returnBuildingToDeck();
