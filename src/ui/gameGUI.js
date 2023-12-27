@@ -4,6 +4,7 @@ import { GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { totalCredits, availableCredits } from "../gameplay/credits.js";
+import { endTurn } from "../gameplay/endTurn.js";
 
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();
@@ -307,6 +308,12 @@ export function displayBottomUI(){
     endTurnButton.top = 17;
     endTurnButton.left = 157;
     bottomPanelContainer.addControl(endTurnButton);
+    //End Turn Button Click Event
+    endTurnButton.onPointerClickObservable.add(endTurn());
+
+
+    
+
 
     //Bottom panel animation
     const animation = new BABYLON.Animation("bottomPanelAnimation", "top", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -340,8 +347,8 @@ export function addCreditIcon(amount){
         const creditIcon = new GUI.Image("creditIcon", "gameCredit.png");
         creditIcon.width = "17px";
         creditIcon.height = "22px";
-        creditIcon.top = "27px";
-        creditIcon.left = -240 + (GUITexture.creditsIcons.length * 13) + "px";
+        creditIcon.top = "28px";
+        creditIcon.left = -241 + (GUITexture.creditsIcons.length * 13) + "px";
         bottomPanelContainer.addControl(creditIcon);
 
         //Credit icon fades in animation

@@ -1,6 +1,6 @@
 import { currentScene, setCurrentScene } from "../managers/sceneManager";
 import { allBoards } from "../managers/setup";
-import { updateAvailableCredits, getAvailableCredits, setTotalCredits } from "./credits";
+import { updateAvailableCredits } from "./credits";
 import { setCardPositions, hand } from "../components/cards";
 import { getRandomBuilding } from "../components/buildings";
 import allBuildings from "../components/buildings";
@@ -56,7 +56,6 @@ function battleLoop() {
             hand.push(getRandomBuilding());
             playerBoard.targetPosition = { x: (testCanvas.width - (gridWidth * cellSize)) / 2, y: playerBoard.yGridOffset };
             updateAvailableCredits(1);
-            setTotalCredits(getAvailableCredits());
 
             setCardPositions();
             createTestBuildInterface();
@@ -182,9 +181,8 @@ function fireEnergyTurret(building, board, target, enemy) {
             if (damage < 0.1) {
                 damage = 0.1;
             }
-
             
-                target.building.stats.health -= damage;
+            target.building.stats.health -= damage;
             
             const blastRadius = building.stats.blastRadius;
             blasts.push({

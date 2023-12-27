@@ -1,5 +1,5 @@
 import { currentScene } from "./sceneManager";
-import { totalCredits } from "../gameplay/credits";
+import { availableCredits, totalCredits } from "../gameplay/credits";
 import { returnBuildingToDeck, setAnchorRotationAdjustment } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredBuilding } from "../utilities/utils";
@@ -88,7 +88,7 @@ export function initializeGameControls(canvas) {
         if(event.button === 0){
             if (currentScene === "build") {
                 //Clicking a card in hand
-                if (hoveredCard !== null && hoveredCard.cost <= totalCredits) {
+                if (hoveredCard !== null && hoveredCard.cost <= availableCredits) {
                     selectedBuilding = hoveredCard;
                     hoveredCard.isDragged = true;
                     hoveredCard.container.isVisible = false;
@@ -98,6 +98,8 @@ export function initializeGameControls(canvas) {
                     removeCardFromHand(selectedCard);
                     setCardPositions();
                     setAnchorRotationAdjustment(selectedBuilding);
+                } else if (hoveredCard !== null && hoveredCard.cost > availableCredits) {
+                    console.log("Not enough credits to place this building");
                 }
             }
             startDrag = true;

@@ -87,7 +87,7 @@ export function setMaterialToBlocked(mesh) {
     mesh.material.alpha = 0.1;
 }
 
-export function setMaterialToPrevious(mesh) {
+export function setMaterialToDefault(mesh) {
     mesh.material = mesh.defaultMaterial;
 }
 

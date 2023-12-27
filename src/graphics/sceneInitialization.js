@@ -13,6 +13,7 @@ import WebFont from "webfontloader";
 import { createPreloadScreen } from '../ui/preloadGUI.js';
 import { fadeToBlack } from '../ui/generalGUI.js';
 import { displayBottomUI } from '../ui/gameGUI.js';
+import { setup } from '../managers/setup.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -24,7 +25,7 @@ export let GUIscene;
 // Meshs
 let allMeshes;
 export let baseMesh;
-let baseBaseMesh;
+export let baseBaseMesh;
 let backgroundMesh;
 export let gridPlane;
 export let gridShaderMaterial;
@@ -93,6 +94,8 @@ export const initGameScene = () => {
     baseBaseMesh.setEnabled(true);
     backgroundMesh.setEnabled(true);
 
+    setup();
+
     initShadows(lights);
 
     addReflectionsToBase(scene, allMeshes);    
@@ -117,7 +120,7 @@ export const initGUIScene = () => {
     GUIscene = new BABYLON.Scene(engine);
     GUIcamera = new BABYLON.FreeCamera("GUIcamera", new BABYLON.Vector3(5, cameraHeight, 5), GUIscene);
     GUIcamera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-    GUIcamera.setTarget(BABYLON.Vector3.Zero());
+    GUIcamera.setTarget(new BABYLON.Vector3(0, 0, 0));
     updateCameraOrtho();    
 
     GUIscene.autoClear = false;
@@ -284,8 +287,9 @@ function initLights(scene) {
     // Fog
     scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     scene.fogColor = new BABYLON.Color3(0.2, 0.22, 0.29);
-    scene.fogStart = 9;
-    scene.fogEnd = 13;
+    scene.fogStart = 10;
+    scene.fogEnd = 15;
+
     return backLight;
 }
 
@@ -310,7 +314,7 @@ function initCamera(scene) {
     camera = new BABYLON.FreeCamera("orthoCamera", new BABYLON.Vector3(5, cameraHeight, 5), scene);
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     updateCameraOrtho();
-    camera.setTarget(BABYLON.Vector3.Zero());
+    camera.setTarget(new BABYLON.Vector3(0, 0, 0));
     return camera;
 }
 

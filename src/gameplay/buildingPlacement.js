@@ -1,4 +1,4 @@
-import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToPrevious, setMaterialToBlocked } from "../utilities/utils";
+import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToDefault, setMaterialToBlocked } from "../utilities/utils";
 import { updateAvailableCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard, selectedPlacedBuilding } from "../managers/eventListeners";
 import { cellSize, gridHeight, gridWidth, shapeKeyLegend} from "../data/config";
@@ -17,6 +17,8 @@ import { setSelectedPlacedBuilding } from "../managers/eventListeners";
 export let allBuildingGraphics = [];
 
 export function placeBuilding(building, gridX, gridY, board) {
+    //GridX and GridY are the top left corner of the building not the anchor point
+
     //One more check to be sure
     if (canPlaceBuilding(building, gridX, gridY, board)) {
         //Pre Parse Setup
@@ -106,7 +108,7 @@ export function placeBuilding(building, gridX, gridY, board) {
                             } else {
                                 board.grid[cellIndex].effects[key] = newBuilding.effects[key];
                             }
-                            if (board.grid[cellIndex].occupied) {
+                            if (board.grid[cellIndex].occupied && board.grid[cellIndex].building !== undefined && newBuilding.effects[key] > 0) {
                                 boosterRisingAnimation(board.grid[cellIndex]);
                             }
                         }
@@ -114,6 +116,7 @@ export function placeBuilding(building, gridX, gridY, board) {
                 }
             }
         }
+        //Finishing up building placement
         drawGridTexture();
         updateBoardStats(board);
         updateBoostGraphics();
@@ -122,6 +125,9 @@ export function placeBuilding(building, gridX, gridY, board) {
             GUITexture.buildingInfo.selectedBuilding = newBuilding;
         }
         updateBuildingStatsText();
+        for (let i = 0; i < newBuilding.buildingGraphic.getChildMeshes().length; i++) {
+            setMaterialToDefault(newBuilding.buildingGraphic.getChildMeshes()[i]);
+        }
     } else {
         return false;
     }
@@ -380,7 +386,7 @@ export function updateBuildingGraphicPosition(building) {
             building.buildingGraphic.targetPosition.x = getPointerScreenLocationSnappedToGrid().x-placementResult.adjustedX*0.25;
             building.buildingGraphic.targetPosition.z = getPointerScreenLocationSnappedToGrid().y+placementResult.adjustedY*0.25;
             for (let i = 0; i < building.buildingGraphic.getChildMeshes().length; i++) {
-                setMaterialToPrevious(building.buildingGraphic.getChildMeshes()[i]);
+                setMaterialToDefault(building.buildingGraphic.getChildMeshes()[i]);
             }
         } else {
             building.buildingGraphic.targetPosition.x = getPointerScreenLocation().x;
