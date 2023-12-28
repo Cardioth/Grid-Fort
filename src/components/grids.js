@@ -1,7 +1,7 @@
 import { unplaceBuilding } from "../gameplay/buildingPlacement";
 import { gridWidth, gridHeight } from "../data/config";
-import { updateTotalCredits } from "../gameplay/credits";
-import { allBoards } from "../managers/setup";
+import { updateAvailableCredits, updateTotalCredits } from "../gameplay/credits";
+import { allBoards, playerBoard } from "../managers/setup";
 import { updateBoardStats } from "../utilities/utils";
 import { hand, setCardPositions } from "./cards";
 
@@ -64,7 +64,9 @@ export function circularizeGrids() {
                     setCardPositions();
                     cell.building.currentPosition.x = 0;
                     cell.building.currentPosition.y = 0;
-                    updateTotalCredits(cell.building.cost);
+                    if(board === playerBoard){
+                        updateAvailableCredits(cell.building.cost);
+                    }
                     cell.building.placed = false;
                     unplaceBuilding(cell.building, board);
                 }

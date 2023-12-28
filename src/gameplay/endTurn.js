@@ -9,6 +9,7 @@ import { circularizeGrids } from "../components/grids.js";
 import { boardWidth } from "../data/config.js";
 import { setZoomTarget } from "../graphics/graphics.js";
 import { startBattleLoop } from "./battle.js";
+import { removeExistingCreditIcons } from "../ui/gameGUI.js";
 
 
 export function endTurn() {
@@ -16,18 +17,25 @@ export function endTurn() {
         if(currentScene === "build"){
             document.body.style.cursor='default'
             setCurrentScene("battleCountdown");
-            //Clone baseMesh
+            
+            //Create enemy board
             const newBaseMesh = baseMesh.clone();
             const newBaseBaseMesh = baseBaseMesh.clone();
             newBaseMesh.position.x += boardWidth*2;
             newBaseBaseMesh.position.x += boardWidth*2;
 
+            enemyBoard.baseMesh = newBaseMesh;
+            enemyBoard.baseBaseMesh = newBaseBaseMesh;
+
+            //Move camera
             camera.setTargetTargetPosition.x -= boardWidth;
             camera.targetPosition.x -= boardWidth;
             GUIcamera.setTargetTargetPosition.x -= boardWidth;
             GUIcamera.targetPosition.x -= boardWidth;
 
             setZoomTarget(3.5);
+
+            removeExistingCreditIcons();
 
             allBoards.push(enemyBoard);
             placeBuildingToBoard(allBuildings.core, enemyBoard, -1, -1);

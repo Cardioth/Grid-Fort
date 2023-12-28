@@ -347,7 +347,6 @@ export function addCreditIcon(amount){
     if(!GUITexture.creditsIcons){
         GUITexture.creditsIcons = [];
     }
-
     for(let i = 0; i < amount; i++){
         const creditIcon = new GUI.Image("creditIcon", "gameCredit.png");
         creditIcon.width = "17px";
@@ -375,6 +374,26 @@ export function addCreditIcon(amount){
 
 export function removeCreditIcon(amount){
     for(let i = 0; i < Math.abs(amount); i++){
+        //Credit icon fades in animation
+        const animation = new BABYLON.Animation("creditFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        animation.setKeys([
+            { frame: 0, value: 1 },
+            { frame: 40, value: 0 }
+        ]);
+        let creditIcon = GUITexture.creditsIcons.pop();
+        creditIcon.animations = [];
+        creditIcon.animations.push(animation);
+        let ease = new BABYLON.CubicEase();
+        ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+        animation.setEasingFunction(ease);
+        GUIscene.beginDirectAnimation(creditIcon, [creditIcon.animations[0]], 0, 40, false, 1, function(){
+            creditIcon.dispose();
+        });
+    }
+}
+
+export function removeExistingCreditIcons(){
+    while(GUITexture.creditsIcons.length > 0){
         //Credit icon fades in animation
         const animation = new BABYLON.Animation("creditFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
         animation.setKeys([

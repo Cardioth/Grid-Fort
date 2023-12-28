@@ -2,15 +2,10 @@
 export let availableCredits = 5;
 export let totalCredits = 5;
 
-import { addCreditIcon, removeCreditIcon } from "../ui/gameGUI";
+import { addCreditIcon, removeCreditIcon, removeExistingCreditIcons } from "../ui/gameGUI";
 
 export function updateTotalCredits(amount) {
     totalCredits += amount;
-    if(amount > 0){
-        addCreditIcon(amount);
-    } else {
-        removeCreditIcon(amount);
-    }
 }
 
 export function updateAvailableCredits(amount) {
@@ -24,19 +19,13 @@ export function updateAvailableCredits(amount) {
 
 export function setTotalCredits(amount) {
     totalCredits = amount;
-    if(amount > 0){
-        addCreditIcon(amount);
-    } else {
-        removeCreditIcon(amount);
-    }
 }
 
 export function setAvailableCredits(amount) {
     availableCredits = amount;
+    removeExistingCreditIcons();
     if(amount > 0){
         addCreditIcon(amount);
-    } else {
-        removeCreditIcon(amount);
     }
 }
 

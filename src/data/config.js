@@ -1,7 +1,7 @@
 export const gridWidth = 17;
 export const gridHeight = 17;
 export const cellSize = 18;
-export const boardWidth = 5.75/2;
+export const boardWidth = 2.875;
 
 export const shapeKeyLegend = {
     0: "empty",
