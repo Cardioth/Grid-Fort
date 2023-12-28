@@ -1,6 +1,6 @@
 import { currentScene } from "./sceneManager";
 import { availableCredits, totalCredits } from "../gameplay/credits";
-import { returnBuildingToDeck, setAnchorRotationAdjustment } from "../gameplay/buildingPlacement";
+import { returnSelectedBuildingToDeck, setAnchorRotationAdjustment } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredBuilding } from "../utilities/utils";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
@@ -12,6 +12,7 @@ import { drawTestPlaneTexture } from "../graphics/drawTestPlaneTexture";
 import { engine, testPlaneTexture } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 import { displayBuildingInfo } from "../ui/gameGUI";
+import { createHealthBarGraphic } from "../graphics/buildingHealthBar";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -101,7 +102,7 @@ export function initializeGameControls(canvas) {
         if(event.button === 0){
             if (currentScene === "build") {
                 //Clicking a card in hand
-                if (hoveredCard !== null && hoveredCard.cost <= availableCredits) {
+                if (hoveredCard !== null && hoveredCard.cost <= availableCredits && hoveredCard.container) {
                     selectedBuilding = hoveredCard;
                     hoveredCard.isDragged = true;
                     hoveredCard.container.isVisible = false;
@@ -148,10 +149,10 @@ export function initializeGameControls(canvas) {
                         placeBuilding(selectedBuilding, gridX + placementResult.adjustedX, gridY + placementResult.adjustedY, playerBoard);
                         drawTestPlaneTexture(testPlaneTexture);
                     } else {
-                        returnBuildingToDeck();
+                        returnSelectedBuildingToDeck();
                     }
                 } else {
-                    returnBuildingToDeck();
+                    returnSelectedBuildingToDeck();
                 }
 
                 selectedBuilding = null;

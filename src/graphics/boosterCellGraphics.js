@@ -40,7 +40,7 @@ function addBoosterCellIcon(mesh){
     // Define the alpha animation
     const alphaAnimation = new BABYLON.Animation("alphaAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_YOYO);
     alphaAnimation.setKeys([
-        { frame: 0, value: .5 },
+        { frame: 0, value: .2 },
         { frame: 30, value: 1 },
     ]);
 

@@ -14,6 +14,8 @@ import { weaponIdleAnimation } from "../graphics/weaponIdleAnimation";
 import { boosterRisingAnimation, createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
 import { setSelectedPlacedBuilding } from "../managers/eventListeners";
 import { addBuildingSpecificAnimations } from "../graphics/buildingSpecificAnimations";
+import allBuildings from "../components/buildings";
+import { createHealthBarGraphic } from "../graphics/buildingHealthBar";
 
 export let allBuildingGraphics = [];
 
@@ -26,9 +28,12 @@ export function placeBuilding(building, gridX, gridY, board) {
         building.buildingGraphic = null;
         const buildingContainerHold = building.container;
         building.container = null;
+        const buildingHealthBarGraphicHold = building.healthBarGraphic;
+        building.healthBarGraphic = null;
         //Parse building
         const newBuilding = JSON.parse(JSON.stringify(building));
         //Post Parse Setup
+        newBuilding.healthBarGraphic = buildingHealthBarGraphicHold;
         newBuilding.container = buildingContainerHold;
         newBuilding.buildingGraphic = buildingGraphicHold;
         newBuilding.uid = Math.random().toString(36).substring(7);
@@ -400,7 +405,7 @@ export function updateBuildingGraphicPosition(building) {
     }
 }
 
-export function returnBuildingToDeck() {
+export function returnSelectedBuildingToDeck() {
     drawGridTexture(); //Update grid texture
     displayBuildingInfo(null); //Update building info panel
     const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length); //Update this math so that it only spans the width of the cards in hand
@@ -421,7 +426,10 @@ export function returnBuildingToDeck() {
         selectedBuilding.buildingGraphic.dispose();
         allBuildingGraphics = allBuildingGraphics.filter(obj => obj !== selectedBuilding.buildingGraphic);
     }
-
+    if (selectedBuilding.healthBarGraphic !== undefined) {
+        selectedBuilding.healthBarGraphic.dispose();
+    }
+    
     if (selectedBuilding.placed === true) {
         updateAvailableCredits(selectedCard.cost);
         circularizeGrids();
@@ -439,6 +447,10 @@ export function createBuildingGraphicFromCard(building, board) {
     building.buildingGraphic.position.x = gridLoc.x+board.position.x;
     building.buildingGraphic.position.z = gridLoc.y+board.position.y;
     building.buildingGraphic.setEnabled(true);
+
+    if(building.stats.health < allBuildings[building.keyName].stats.health){
+        createHealthBarGraphic(building);
+    }
 
     // Find anchor point
     let anchorPointLocation = {x:0,y:0};

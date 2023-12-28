@@ -13,12 +13,13 @@ import { GUIcamera, camera } from "../graphics/sceneInitialization";
 import { setZoomTarget } from "../graphics/graphics";
 import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import { selectedPlacedBuilding } from "../managers/eventListeners";
+import { createHealthBarGraphic, updateHealthBarGraphic } from "../graphics/buildingHealthBar";
 
 let battleLoopInterval;
 export function startBattleLoop(){
     battleLoopInterval = setInterval(function () {
         battleLoop();
-    }, 500);
+    }, 100);
 }
 
 function battleLoop() {
@@ -76,12 +77,12 @@ function battleLoop() {
 
             setZoomTarget(2.5);
 
-            //revive all buildings
+            //restock ammo and power
             playerBoard.allPlacedBuildings.forEach((building) => {
                 building.target = undefined;
                 building.possibleCellTargets = [];
-                building.destroyed = false;
-                building.stats.health = allBuildings[building.keyName].stats.health;
+                //building.destroyed = false;
+                //building.stats.health = allBuildings[building.keyName].stats.health;
                 if (building.stats.hasOwnProperty("ammoStorage")) {
                     building.stats.ammoStorage = allBuildings[building.keyName].stats.ammoStorage;
                 }
@@ -158,10 +159,19 @@ function fireKineticTurret(building, board, target, enemy) {
                                 //     size: 1,
                                 // });
 
+                                if(!target.building.healthBarGraphic){
+                                    createHealthBarGraphic(target.building);
+                                } else {
+                                    updateHealthBarGraphic(target.building);
+                                }
+
                                 updateBuildingStatsText();
 
                                 if (target.building.stats.health <= 0) {
                                     target.building.destroyed = true;
+                                    if(target.building.healthBarGraphic){
+                                        target.building.healthBarGraphic.dispose();
+                                    }
                                 }
                             }
                         }
@@ -211,7 +221,7 @@ function fireEnergyTurret(building, board, target, enemy) {
             
             target.building.stats.health -= parseFloat(damage.toFixed(2));
             target.building.stats.health = Math.floor(target.building.stats.health*10)/10;
-            
+      
             // const blastRadius = building.stats.blastRadius;
             // blasts.push({
             //     x: (target.x * cellSize) + enemy.xGridOffset + (cellSize / 2),
@@ -223,9 +233,22 @@ function fireEnergyTurret(building, board, target, enemy) {
 
             updateBuildingStatsText();
 
-            if (target.building.stats.health <= 0) {
-                target.building.destroyed = true;
-            }
+            updateTargetHealthAndDeath(target);
+        }
+    }
+}
+
+function updateTargetHealthAndDeath(target) {
+    if (target.building.stats.health <= 0) {
+        target.building.destroyed = true;
+        if (target.building.healthBarGraphic) {
+            target.building.healthBarGraphic.dispose();
+        }
+    } else {
+        if (!target.building.healthBarGraphic) {
+            createHealthBarGraphic(target.building);
+        } else {
+            updateHealthBarGraphic(target.building);
         }
     }
 }
