@@ -28,6 +28,9 @@ export function setCurrentScene(setScene) {
         initGUIScene();
         initGameScene();
     }
+    if(setScene === "battleCountdown"  && currentScene === "build"){
+
+    }
 
     currentScene = setScene;
 }

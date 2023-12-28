@@ -14,7 +14,7 @@ let battleLoopInterval;
 export function startBattleLoop(){
     battleLoopInterval = setInterval(function () {
         battleLoop();
-    }, 100);
+    }, 500);
 }
 
 function battleLoop() {
@@ -52,7 +52,6 @@ function battleLoop() {
 
         if (allBuildingsDestroyed) {
             setCurrentScene("build");
-            hand.push(getRandomBuilding());
             hand.push(getRandomBuilding());
             playerBoard.targetPosition = { x: (testCanvas.width - (gridWidth * cellSize)) / 2, y: playerBoard.yGridOffset };
             updateAvailableCredits(1);

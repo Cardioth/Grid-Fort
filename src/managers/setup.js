@@ -5,6 +5,7 @@ import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../components/buildings";
+import { boardWidth } from "../data/config.js";
 
 export const fortStats = {
     kineticFirepower: {name:"Kinetic Firepower", stat: 0},
@@ -23,6 +24,7 @@ export const playerBoard = {
     name:"Player",
     grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
     targetPosition:{x:0,y:0},
+    position:{x:0,y:0},
     stats:JSON.parse(JSON.stringify(fortStats)),
     allPlacedBuildings:[],
     id:0,
@@ -31,7 +33,8 @@ export const playerBoard = {
 export const enemyBoard = {
     name:"Enemy",
     grid:createGridWithStructuredNeighbors(gridWidth, gridHeight),
-    targetPosition:{x:0,y:0},
+    position:{x:-boardWidth*2,y:0},
+    targetPosition:{x:-boardWidth*2,y:0},
     stats:JSON.parse(JSON.stringify(fortStats)),
     allPlacedBuildings:[],
     id:1,
@@ -46,7 +49,7 @@ export function setup(){
     
     circularizeGrids();
 
-    placeBuildingToBoard(allBuildings.core, playerBoard, 7, 7);
+    placeBuildingToBoard(allBuildings.core, playerBoard, -1, -1);
 
     createCardGraphicsForHand();
 }

@@ -5,6 +5,7 @@ import { GUIscene } from "../graphics/sceneInitialization.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { availableCredits } from "../gameplay/credits.js";
 import { endTurn } from "../gameplay/endTurn.js";
+import { currentScene } from "../managers/sceneManager.js";
 
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();
@@ -311,7 +312,9 @@ export function displayBottomUI(){
     endTurnButton.onPointerClickObservable.add(endTurn());
     //Change cursor on hover
     endTurnButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
+        if(currentScene === "build"){
+            document.body.style.cursor='pointer'
+        }
     });
     endTurnButton.onPointerOutObservable.add(function () {
         document.body.style.cursor='default'

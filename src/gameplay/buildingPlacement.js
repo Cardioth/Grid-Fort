@@ -21,7 +21,6 @@ export function placeBuilding(building, gridX, gridY, board) {
     //GridX and GridY are the top left corner of the building not the anchor point
     //One more check to be sure
     if (canPlaceBuilding(building, gridX, gridY, board)) {
-        console.log("Placing Building", building.keyName, "at", gridX, gridY);
         //Pre Parse Setup
         const buildingGraphicHold = building.buildingGraphic;
         building.buildingGraphic = null;
@@ -74,10 +73,10 @@ export function placeBuilding(building, gridX, gridY, board) {
                     
                     //set building position to anchor point
                     if(shapeKey.startsWith("anchorPoint")){
-                        newBuilding.buildingGraphic.position.x =  ((-gridX - x + 8) / 4);
-                        newBuilding.buildingGraphic.position.z = -((-gridY - y + 8) / 4);
-                        newBuilding.buildingGraphic.targetPosition.x =  ((-gridX - x + 8) / 4);
-                        newBuilding.buildingGraphic.targetPosition.z = -((-gridY - y + 8) / 4);
+                        newBuilding.buildingGraphic.position.x =  ((-gridX - x + 8) / 4)+board.position.x;
+                        newBuilding.buildingGraphic.position.z = -((-gridY - y + 8) / 4)+board.position.y;
+                        newBuilding.buildingGraphic.targetPosition.x =  ((-gridX - x + 8) / 4)+board.position.x;
+                        newBuilding.buildingGraphic.targetPosition.z = -((-gridY - y + 8) / 4)+board.position.y;
                     }
 
                     newBuilding.buildingGraphic.building = newBuilding;
@@ -268,8 +267,8 @@ export function setAnchorRotationAdjustment(building) {
 }
 
 export function placeBuildingToBoard(building, board, xLoc, yLoc) {
-    createBuildingGraphicFromCard(building);
-    placeBuilding(building, xLoc, yLoc, board);
+    createBuildingGraphicFromCard(building, board);
+    placeBuilding(building, xLoc+8, yLoc+8, board);
 }
 
 export function placeAIFort(AIfortIndex) {
@@ -430,15 +429,15 @@ export function returnBuildingToDeck() {
     }
 }
 
-export function createBuildingGraphicFromCard(building) {
+export function createBuildingGraphicFromCard(building, board) {
     building.buildingGraphic = cloneBuilding(building.keyName + "Building", 0, 0);
     building.buildingGraphic.isDragged = true;
     building.rotationAdjustment = { x: 0, y: 0 };
     const gridLoc = { x: getPointerScreenLocation().x, y: getPointerScreenLocation().y };
-    building.buildingGraphic.targetPosition.x = gridLoc.x;
-    building.buildingGraphic.targetPosition.z = gridLoc.y;
-    building.buildingGraphic.position.x = gridLoc.x;
-    building.buildingGraphic.position.z = gridLoc.y;
+    building.buildingGraphic.targetPosition.x = gridLoc.x+board.position.x;
+    building.buildingGraphic.targetPosition.z = gridLoc.y+board.position.y;
+    building.buildingGraphic.position.x = gridLoc.x+board.position.x;
+    building.buildingGraphic.position.z = gridLoc.y+board.position.y;
     building.buildingGraphic.setEnabled(true);
 
     // Find anchor point

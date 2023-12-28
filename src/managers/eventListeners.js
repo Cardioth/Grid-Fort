@@ -32,9 +32,11 @@ export function initializeGameControls(canvas) {
     let zoomTarget = 3;
     canvas.addEventListener('wheel', function (event) {
         event.preventDefault();
-        zoomTarget += event.deltaY < 0 ? -0.5 : (event.deltaY > 0 ? 0.5 : 0);
-        zoomTarget = Math.max(1, Math.min(zoomTarget, 3));
-        setZoomTarget(zoomTarget);
+        if(currentScene === "build"){
+            zoomTarget += event.deltaY < 0 ? -0.5 : (event.deltaY > 0 ? 0.5 : 0);
+            zoomTarget = Math.max(1, Math.min(zoomTarget, 3));
+            setZoomTarget(zoomTarget);
+        }
     });
 
     canvas.addEventListener('pointermove', function (e) {
@@ -67,7 +69,18 @@ export function initializeGameControls(canvas) {
                 }
             }
         }
-    
+
+        if (currentScene === "battleCountdown" || currentScene === "battle"){
+            if (selectedCard === null) {
+                hoveredBuilding = getHoveredBuilding();
+                if (hoveredBuilding) {
+                    canvas.style.cursor = "pointer";
+                } else {
+                    hoveredBuilding = null;
+                }
+            }
+        }
+  
         currentMouseX = mouseX;
         currentMouseY = mouseY;
     
@@ -92,14 +105,14 @@ export function initializeGameControls(canvas) {
                     selectedBuilding = hoveredCard;
                     hoveredCard.isDragged = true;
                     hoveredCard.container.isVisible = false;
-                    createBuildingGraphicFromCard(hoveredCard);
+                    createBuildingGraphicFromCard(hoveredCard, playerBoard);
                     selectedCard = hoveredCard;
                     //remove card from deck
                     removeCardFromHand(selectedCard);
                     setCardPositions();
                     setAnchorRotationAdjustment(selectedBuilding);
                 } else if (hoveredCard !== null && hoveredCard.cost > availableCredits) {
-                    console.log("Not enough credits to place this building");
+                    
                 }
             }
             startDrag = true;

@@ -1,5 +1,7 @@
 import * as GUI from "@babylonjs/gui";
 import { GUITexture } from './sceneInitialization.js';
+import { availableCredits } from "../gameplay/credits.js";
+import { currentScene } from "../managers/sceneManager.js";
 
 export function createCardGraphic(card) {
     var container = new GUI.Rectangle();
@@ -109,7 +111,9 @@ export function createCardGraphic(card) {
     card.container = container;
 
     container.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='grab'
+        if(card.cost <= availableCredits && currentScene === "build"){
+            document.body.style.cursor='grab'
+        }
     });
     container.onPointerOutObservable.add(function () {
         document.body.style.cursor='default'
