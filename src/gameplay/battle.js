@@ -14,6 +14,8 @@ import { setZoomTarget } from "../graphics/graphics";
 import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import { selectedPlacedBuilding } from "../managers/eventListeners";
 import { createHealthBarGraphic, updateHealthBarGraphic } from "../graphics/buildingHealthBar";
+import * as BABYLON from "@babylonjs/core";
+import { fadeOutMeshAnimation } from "../graphics/baseFadeInAnimation";
 
 let battleLoopInterval;
 export function startBattleLoop(){
@@ -66,14 +68,14 @@ function battleLoop() {
             setCardPositions();
 
             //Remove enemy board
-            enemyBoard.baseMesh.dispose();
-            enemyBoard.baseBaseMesh.dispose();
+            fadeOutMeshAnimation(enemyBoard.baseMesh);
+            fadeOutMeshAnimation(enemyBoard.baseBaseMesh);
 
             //Move camera
-            camera.setTargetTargetPosition.x += boardWidth;
-            camera.targetPosition.x += boardWidth;
-            GUIcamera.setTargetTargetPosition.x += boardWidth;
-            GUIcamera.targetPosition.x += boardWidth;
+            camera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+            camera.targetPosition = camera.defaultTargetPosition.clone();
+            GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+            GUIcamera.targetPosition = GUIcamera.defaultTargetPosition.clone();
 
             setZoomTarget(2.5);
 
@@ -97,6 +99,9 @@ function battleLoop() {
                 unplaceBuilding(building, enemyBoard);
                 if(selectedPlacedBuilding === building){
                     displayBuildingInfo(null);
+                }
+                if(building.healthBarGraphic){
+                    building.healthBarGraphic.dispose();
                 }
             });
 

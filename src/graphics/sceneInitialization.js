@@ -120,6 +120,7 @@ export const initGUIScene = () => {
     GUIcamera.setTarget(new BABYLON.Vector3(0, 0, 0));
 
     GUIcamera.targetPosition = new BABYLON.Vector3(5, cameraHeight, 5);
+    GUIcamera.defaultTargetPosition = new BABYLON.Vector3(5, cameraHeight, 5);
     GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     GUIcamera.currentSetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     GUIcamera.setTarget(GUIcamera.currentSetTargetPosition);
@@ -317,6 +318,7 @@ function initCamera(scene) {
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
     updateCameraOrtho();
     camera.targetPosition = new BABYLON.Vector3(5, cameraHeight, 5);
+    camera.defaultTargetPosition = new BABYLON.Vector3(5, cameraHeight, 5);
     camera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     camera.currentSetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     camera.setTarget(camera.currentSetTargetPosition);
