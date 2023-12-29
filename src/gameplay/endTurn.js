@@ -10,7 +10,7 @@ import { boardWidth } from "../data/config.js";
 import { setZoomTarget } from "../graphics/graphics.js";
 import { startBattleLoop } from "./battle.js";
 import { removeExistingCreditIcons } from "../ui/gameGUI.js";
-import { fadeInMeshAnimation } from "../graphics/baseFadeInAnimation.js";
+import { fadeInMeshAnimation } from "../graphics/meshFadeAnimations.js";
 
 
 export function endTurn() {

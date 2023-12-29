@@ -15,7 +15,8 @@ import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import { selectedPlacedBuilding } from "../managers/eventListeners";
 import { createHealthBarGraphic, updateHealthBarGraphic } from "../graphics/buildingHealthBar";
 import * as BABYLON from "@babylonjs/core";
-import { fadeOutMeshAnimation } from "../graphics/baseFadeInAnimation";
+import { fadeOutMeshAnimation } from "../graphics/meshFadeAnimations";
+import { getTargetRotation, weaponFireAnimation, weaponIdleAnimation } from "../graphics/weaponAnimations";
 
 let battleLoopInterval;
 export function startBattleLoop(){
@@ -42,6 +43,18 @@ function battleLoop() {
             if ((building.target === undefined || building.target.building.destroyed === true) && building.stats.energyFirepower > 0) {
                 getPossibleCellTargets(enemy, building);
                 building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
+
+                //Point at turret new target
+                if(building.target){
+                    const turretGraphics = getTurretsOfBuilding(building);
+                    if (turretGraphics.length > 0){
+                        const targetRotation = getTargetRotation(building.buildingGraphic, building.target.building.buildingGraphic);
+                        const parentRotation = building.buildingGraphic.rotationQuaternion.toEulerAngles().y;
+                        for (let turret of turretGraphics) {
+                            weaponFireAnimation(turret, targetRotation.y-parentRotation+Math.PI/2);
+                        }
+                    }
+                }
             }
             //Fire Energy
             if (building.target && building.stats.energyFirepower > 0 && building.destroyed === false && building.stats.powerStorage > building.stats.powerDraw) {
@@ -85,6 +98,17 @@ function battleLoop() {
                 building.possibleCellTargets = [];
                 //building.destroyed = false;
                 //building.stats.health = allBuildings[building.keyName].stats.health;
+
+                if(building.destroyed === false){
+                    const turretGraphics = getTurretsOfBuilding(building);
+                    if (turretGraphics.length > 0){
+                        for (let turret of turretGraphics) {
+                            weaponIdleAnimation(turret);
+                            turret.attacking = false;
+                        }
+                    }
+                }
+
                 if (building.stats.hasOwnProperty("ammoStorage")) {
                     building.stats.ammoStorage = allBuildings[building.keyName].stats.ammoStorage;
                 }
@@ -111,6 +135,16 @@ function battleLoop() {
             clearInterval(battleLoopInterval);
         }
     }
+}
+
+function getTurretsOfBuilding(building) {
+    const turretGraphics = [];
+    for (let child of building.buildingGraphic.getChildren()) {
+        if (child.name.endsWith("Weapon_clone")) {
+            turretGraphics.push(child);
+        }
+    }
+    return turretGraphics;
 }
 
 function fireKineticTurret(building, board, target, enemy) {
@@ -164,20 +198,9 @@ function fireKineticTurret(building, board, target, enemy) {
                                 //     size: 1,
                                 // });
 
-                                if(!target.building.healthBarGraphic){
-                                    createHealthBarGraphic(target.building);
-                                } else {
-                                    updateHealthBarGraphic(target.building);
-                                }
-
                                 updateBuildingStatsText();
 
-                                if (target.building.stats.health <= 0) {
-                                    target.building.destroyed = true;
-                                    if(target.building.healthBarGraphic){
-                                        target.building.healthBarGraphic.dispose();
-                                    }
-                                }
+                                updateTargetHealthAndDeath(target);
                             }
                         }
                     }

@@ -10,7 +10,7 @@ import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
 import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import * as BABYLON from '@babylonjs/core';
-import { weaponIdleAnimation } from "../graphics/weaponIdleAnimation";
+import { weaponIdleAnimation } from "../graphics/weaponAnimations";
 import { boosterRisingAnimation, createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
 import { setSelectedPlacedBuilding } from "../managers/eventListeners";
 import { addBuildingSpecificAnimations } from "../graphics/buildingSpecificAnimations";
@@ -248,6 +248,7 @@ export function rotateBuilding(building, direction = 'R') {
             }
         }
     }
+    
 
     building.shape = newShape;
     building.width = height;
@@ -346,6 +347,7 @@ export function cloneWeapon(name, x, z, yRotation = 0, newParentNode){
         clone.position.y = 0;
 
         weaponIdleAnimation(clone);
+        clone.attacking = false;
         
         return clone;
     }

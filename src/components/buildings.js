@@ -55,7 +55,7 @@ const allBuildings = {
     powerRing:{name:"Power Ring", class:"Booster", cost:9, width:6, height:6, shape:[0,1,0,0,1,0,1,1,1,1,1,1,0,1,5,5,1,0,0,1,5,5,1,0,1,1,1,1,1,1,0,1,0,0,1,0], color:"#fcc15b", 
         effects:{energyFirepower:5, powerStorage:10}},
     core:{name:"Core", class:"Core",cost:9, width:3,height:3,shape:[1,1,1,1,8,1,1,1,1], color:"#a9bcdb", moveable:false, returnable:false, 
-        stats:{health:20, energyFirepower:2, powerStorage:1000, powerDraw:0.2, fireRate:2}},
+        stats:{health:20, energyFirepower:8, powerStorage:1000, powerDraw:0.2, fireRate:2}},
     matador:{name:"Matador", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
         stats:{kineticFirepower:1, ammoStorage:15, radarRange:2}, 
         effects:{armor:1,energyResistance:1, radarRange:2}},
