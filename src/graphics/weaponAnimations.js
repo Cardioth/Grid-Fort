@@ -73,21 +73,25 @@ export function weaponFireAnimation(weapon, targetRotation) {
     weapon.animations.push(animation);
 
     let ease = new BABYLON.CubicEase();
-    ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+    ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
     animation.setEasingFunction(ease);
 
     for (const child of weapon.getChildren()) {
-        //stop existing animations
         if(child.weaponIdle){
             child.weaponIdle.stop();
-        }        
-        
+        }
+        if(child.weaponAttack){
+            child.weaponAttack.stop();
+        }
         child.weaponAttack = scene.beginDirectAnimation(child, child.animations, 0, swingSpeed, false, 1);
     }
 
     //stop existing animations
     if(weapon.weaponIdle){
         weapon.weaponIdle.stop();
+    }
+    if(weapon.weaponAttack){
+        weapon.weaponAttack.stop();
     }
     weapon.weaponAttack = scene.beginDirectAnimation(weapon, weapon.animations, 0, swingSpeed, false, 1);
 }

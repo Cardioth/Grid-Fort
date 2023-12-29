@@ -34,6 +34,7 @@ function battleLoop() {
             if (building.stats.kineticFirepower > 0) {
                 getPossibleCellTargets(enemy, building);
                 building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
+                pointTurretAtTarget(building);
             }
             //Fire Kinetic
             if (building.target && building.stats.kineticFirepower > 0 && building.destroyed === false && building.stats.ammoStorage > building.stats.ammoDraw) {
@@ -43,18 +44,7 @@ function battleLoop() {
             if ((building.target === undefined || building.target.building.destroyed === true) && building.stats.energyFirepower > 0) {
                 getPossibleCellTargets(enemy, building);
                 building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
-
-                //Point at turret new target
-                if(building.target){
-                    const turretGraphics = getTurretsOfBuilding(building);
-                    if (turretGraphics.length > 0){
-                        const targetRotation = getTargetRotation(building.buildingGraphic, building.target.building.buildingGraphic);
-                        const parentRotation = building.buildingGraphic.rotationQuaternion.toEulerAngles().y;
-                        for (let turret of turretGraphics) {
-                            weaponFireAnimation(turret, targetRotation.y-parentRotation+Math.PI/2);
-                        }
-                    }
-                }
+                pointTurretAtTarget(building);
             }
             //Fire Energy
             if (building.target && building.stats.energyFirepower > 0 && building.destroyed === false && building.stats.powerStorage > building.stats.powerDraw) {
@@ -133,6 +123,19 @@ function battleLoop() {
                 allBoards.splice(allBoards.indexOf(enemyBoard), 1);
             }
             clearInterval(battleLoopInterval);
+        }
+    }
+}
+
+function pointTurretAtTarget(building) {
+    if (building.target) {
+        const turretGraphics = getTurretsOfBuilding(building);
+        if (turretGraphics.length > 0) {
+            const targetRotation = getTargetRotation(building.buildingGraphic, building.target.building.buildingGraphic);  
+            const parentRotation = building.buildingGraphic.rotationQuaternion.toEulerAngles().y;
+            for (let turret of turretGraphics) {
+                weaponFireAnimation(turret, targetRotation.y - parentRotation + Math.PI / 2);
+            }
         }
     }
 }
