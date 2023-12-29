@@ -17,6 +17,7 @@ import { createHealthBarGraphic, updateHealthBarGraphic } from "../graphics/buil
 import * as BABYLON from "@babylonjs/core";
 import { fadeOutMeshAnimation } from "../graphics/meshFadeAnimations";
 import { getTargetRotation, weaponFireAnimation, weaponIdleAnimation } from "../graphics/weaponAnimations";
+import { createLaserGraphic } from "../graphics/laserGraphics";
 
 let battleLoopInterval;
 export function startBattleLoop(){
@@ -29,6 +30,7 @@ function battleLoop() {
     for (let board of allBoards) {
         const enemy = board === playerBoard ? enemyBoard : playerBoard;
 
+        //Weapon firing
         board.allPlacedBuildings.forEach((building) => {
             //Kinetic weapons always find a new target
             if (building.stats.kineticFirepower > 0) {
@@ -41,10 +43,14 @@ function battleLoop() {
                 fireKineticTurret(building, board, building.target, enemy);
             }
             //Energy weapons only find a new target if they don't have one or if their target is destroyed
-            if ((building.target === undefined || building.target.building.destroyed === true) && building.stats.energyFirepower > 0) {
+            if ((building.target === undefined || building.target.building.destroyed === true) && building.stats.energyFirepower > 0 && building.destroyed === false) {
                 getPossibleCellTargets(enemy, building);
                 building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
                 pointTurretAtTarget(building);
+                if(building.buildingGraphic.laserGraphic){
+                    fadeOutMeshAnimation(building.buildingGraphic.laserGraphic, 40);
+                    building.buildingGraphic.laserGraphic = null;
+                }
             }
             //Fire Energy
             if (building.target && building.stats.energyFirepower > 0 && building.destroyed === false && building.stats.powerStorage > building.stats.powerDraw) {
@@ -71,8 +77,8 @@ function battleLoop() {
             setCardPositions();
 
             //Remove enemy board
-            fadeOutMeshAnimation(enemyBoard.baseMesh);
-            fadeOutMeshAnimation(enemyBoard.baseBaseMesh);
+            fadeOutMeshAnimation(enemyBoard.baseMesh, 60);
+            fadeOutMeshAnimation(enemyBoard.baseBaseMesh, 60);
 
             //Move camera
             camera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
@@ -86,8 +92,20 @@ function battleLoop() {
             playerBoard.allPlacedBuildings.forEach((building) => {
                 building.target = undefined;
                 building.possibleCellTargets = [];
-                //building.destroyed = false;
-                //building.stats.health = allBuildings[building.keyName].stats.health;
+                if(building.class === "Core"){
+                    building.destroyed = false;
+                    building.stats.health = allBuildings[building.keyName].stats.health;
+                    if(building.healthBarGraphic){
+                        building.healthBarGraphic.dispose();
+                        building.healthBarGraphic = null;
+                    }
+                    updateBuildingStatsText();
+                }
+
+                if(building.buildingGraphic.laserGraphic){
+                    fadeOutMeshAnimation(building.buildingGraphic.laserGraphic, 40);
+                    building.buildingGraphic.laserGraphic = null;
+                }
 
                 if(building.destroyed === false){
                     const turretGraphics = getTurretsOfBuilding(building);
@@ -111,11 +129,18 @@ function battleLoop() {
             enemyBoard.allPlacedBuildings.forEach((building) => {
                 building.buildingGraphic.dispose();
                 unplaceBuilding(building, enemyBoard);
+
+                if(building.buildingGraphic.laserGraphic){
+                    fadeOutMeshAnimation(building.buildingGraphic.laserGraphic, 40);
+                    building.buildingGraphic.laserGraphic = null;
+                }
+
                 if(selectedPlacedBuilding === building){
                     displayBuildingInfo(null);
                 }
                 if(building.healthBarGraphic){
                     building.healthBarGraphic.dispose();
+                    building.healthBarGraphic = null;
                 }
             });
 
@@ -192,6 +217,8 @@ function fireKineticTurret(building, board, target, enemy) {
                                 cell.building.stats.health -= damage / Math.pow((2 * building.stats.blastRadius + 1), 2);
                                 cell.building.stats.health = parseFloat(cell.building.stats.health.toFixed(2));
                                 cell.building.stats.health = Math.floor(cell.building.stats.health*10)/10;
+
+                                cell.building.moveable = false;
                                 
                                 // blasts.push({
                                 //     x: (target.x * cellSize) + enemy.xGridOffset + (cellSize / 2),
@@ -228,6 +255,10 @@ function fireEnergyTurret(building, board, target, enemy) {
         if (currentScene === "battle") {
             building.fireRateCounter = 0;
 
+            if(!building.buildingGraphic.laserGraphic){
+                createLaserGraphic(building.buildingGraphic, target.building.buildingGraphic);
+            }
+
             // for (let x = 0; x < building.width; x++) {
             //     for (let y = 0; y < building.height; y++) {
             //         const shapeKey = building.shape[x + y * building.width];
@@ -252,6 +283,7 @@ function fireEnergyTurret(building, board, target, enemy) {
             
             target.building.stats.health -= parseFloat(damage.toFixed(2));
             target.building.stats.health = Math.floor(target.building.stats.health*10)/10;
+            target.building.moveable = false;
       
             // const blastRadius = building.stats.blastRadius;
             // blasts.push({
@@ -274,12 +306,19 @@ function updateTargetHealthAndDeath(target) {
         target.building.destroyed = true;
         if (target.building.healthBarGraphic) {
             target.building.healthBarGraphic.dispose();
+            target.building.healthBarGraphic = null;
+        }
+        if(target.building.buildingGraphic.laserGraphic){
+            fadeOutMeshAnimation(target.building.buildingGraphic.laserGraphic, 40);
+            target.building.buildingGraphic.laserGraphic = null;
         }
     } else {
         if (!target.building.healthBarGraphic) {
             createHealthBarGraphic(target.building);
         } else {
-            updateHealthBarGraphic(target.building);
+            if(target.building){
+                updateHealthBarGraphic(target.building);
+            }
         }
     }
 }

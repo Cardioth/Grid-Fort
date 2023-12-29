@@ -21,11 +21,11 @@ export function fadeInMeshAnimation(mesh){
     scene.beginDirectAnimation(mesh.material, mesh.animations, 0, 80, false, 1);
 }
 
-export function fadeOutMeshAnimation(mesh){
+export function fadeOutMeshAnimation(mesh, speed){
     const animation = new BABYLON.Animation("fadeOut", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     animation.setKeys([
         { frame: 0, value: 1 },
-        { frame: 60, value: 0 }
+        { frame: speed, value: 0 }
     ]);
     mesh.material = mesh.material.clone();
     mesh.material.alpha = 1;
@@ -38,7 +38,7 @@ export function fadeOutMeshAnimation(mesh){
     mesh.material.animations = [];
     mesh.material.animations.push(animation);
 
-    scene.beginDirectAnimation(mesh.material, mesh.material.animations, 0, 60, false, 1, function(){
+    scene.beginDirectAnimation(mesh.material, mesh.material.animations, 0, speed, false, 1, function(){
         mesh.dispose();
     });
 }
