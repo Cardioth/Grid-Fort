@@ -1,6 +1,7 @@
 
 export let availableCredits = 5;
 export let totalCredits = 5;
+const totalPossibleCredits = 18;
 
 import { addCreditIcon, removeCreditIcon, removeExistingCreditIcons } from "../ui/gameGUI";
 
@@ -9,6 +10,10 @@ export function updateTotalCredits(amount) {
 }
 
 export function updateAvailableCredits(amount) {
+    if(availableCredits + amount > totalPossibleCredits){
+        setAvailableCredits(totalPossibleCredits);
+        return;
+    }
     availableCredits += amount;
     if(amount > 0){
         addCreditIcon(amount);
