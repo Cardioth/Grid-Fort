@@ -93,7 +93,7 @@ export const initGameScene = () => {
     baseBaseMesh.setEnabled(true);
     backgroundMesh.setEnabled(true);
 
-    initShadows(lights);
+    //initShadows(lights);
 
     addReflectionsToBase(scene, allMeshes);    
 
@@ -297,20 +297,20 @@ function initLights(scene) {
 }
 
 function postProcessEffects(scene, camera) {
-    const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, { ssaoRatio: 3, combineRatio: 1 });
+    const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
     scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
     ssaoPipeline.totalStrength = 1;
     ssaoPipeline.radius = 0.00005;
 
     const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
     bloomPipeline.bloomEnabled = true;
-    bloomPipeline.bloomThreshold = 0.32;
-    bloomPipeline.bloomWeight = 2;
+    bloomPipeline.bloomThreshold = 0.34;
+    bloomPipeline.bloomWeight = 1.75;
     bloomPipeline.bloomKernel = 30;
     bloomPipeline.bloomScale = 4;
 
-    var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
-    fxaaPostProcess.samples = 2;
+    // var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
+    // fxaaPostProcess.samples = 1;
 }
 
 function initCamera(scene) {

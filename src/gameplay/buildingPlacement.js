@@ -300,7 +300,9 @@ export function cloneBuilding(name, x, z) {
             let childClone = child.clone(child.name + "_clone", clone, true);
             childClone.setEnabled(true);
             baseMesh.material.reflectionTexture.renderList.push(childClone); //Add to render list for reflections
-            shadowGenerator.addShadowCaster(childClone); //Add to shadow generator
+            if(shadowGenerator){
+                shadowGenerator.addShadowCaster(childClone); //Add to shadow generator
+            }
 
             //Convert Z up to Y up
             childClone.rotation.x = -(90) * (Math.PI / 180);

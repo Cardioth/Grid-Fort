@@ -1,6 +1,6 @@
 
-export let availableCredits = 5;
-export let totalCredits = 5;
+export let availableCredits = 2;
+export let totalCredits = 2;
 const totalPossibleCredits = 18;
 
 import { addCreditIcon, removeCreditIcon, removeExistingCreditIcons } from "../ui/gameGUI";
