@@ -64,7 +64,11 @@ export function initializeGameControls(canvas) {
             if (selectedCard === null) {
                 hoveredBuilding = getHoveredBuilding();
                 if (hoveredBuilding) {
-                    canvas.style.cursor = "grab";
+                    if(hoveredBuilding.moveable === true){
+                        canvas.style.cursor = "grab";
+                    } else {
+                        canvas.style.cursor = "pointer";
+                    }
                 } else {
                     hoveredBuilding = null;
                 }

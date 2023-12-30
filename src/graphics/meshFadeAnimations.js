@@ -27,10 +27,11 @@ export function fadeOutMeshAnimation(mesh, speed){
         { frame: 0, value: 1 },
         { frame: speed, value: 0 }
     ]);
+
     mesh.material = mesh.material.clone();
     mesh.material.alpha = 1;
     mesh.material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
-
+    
     let ease = new BABYLON.CubicEase();
     ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEIN);
     animation.setEasingFunction(ease);

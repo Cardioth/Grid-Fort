@@ -18,6 +18,7 @@ import * as BABYLON from "@babylonjs/core";
 import { fadeOutMeshAnimation } from "../graphics/meshFadeAnimations";
 import { getTargetRotation, weaponFireAnimation, weaponIdleAnimation } from "../graphics/weaponAnimations";
 import { createLaserGraphic } from "../graphics/laserGraphics";
+import { createKineticGraphic } from "../graphics/kineticGraphics";
 
 let battleLoopInterval;
 export function startBattleLoop(){
@@ -39,7 +40,7 @@ function battleLoop() {
                 pointTurretAtTarget(building);
             }
             //Fire Kinetic
-            if (building.target && building.stats.kineticFirepower > 0 && building.destroyed === false && building.stats.ammoStorage > building.stats.ammoDraw) {
+            if (building.target && building.stats.kineticFirepower > 0 && building.destroyed === false && building.stats.ammoStorage >= building.stats.ammoDraw) {
                 fireKineticTurret(building, board, building.target, enemy);
             }
             //Energy weapons only find a new target if they don't have one or if their target is destroyed
@@ -48,12 +49,14 @@ function battleLoop() {
                 building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
                 pointTurretAtTarget(building);
                 if(building.buildingGraphic.laserGraphic){
-                    fadeOutMeshAnimation(building.buildingGraphic.laserGraphic, 40);
+                    for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+                        fadeOutMeshAnimation(child, 20);
+                    }
                     building.buildingGraphic.laserGraphic = null;
                 }
             }
             //Fire Energy
-            if (building.target && building.stats.energyFirepower > 0 && building.destroyed === false && building.stats.powerStorage > building.stats.powerDraw) {
+            if (building.target && building.stats.energyFirepower > 0 && building.destroyed === false && building.stats.powerStorage >= building.stats.powerDraw) {
                 fireEnergyTurret(building, board, building.target, enemy);
             }
         });
@@ -103,7 +106,9 @@ function battleLoop() {
                 }
 
                 if(building.buildingGraphic.laserGraphic){
-                    fadeOutMeshAnimation(building.buildingGraphic.laserGraphic, 40);
+                    for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+                        fadeOutMeshAnimation(child, 20);
+                    }
                     building.buildingGraphic.laserGraphic = null;
                 }
 
@@ -111,7 +116,9 @@ function battleLoop() {
                     const turretGraphics = getTurretsOfBuilding(building);
                     if (turretGraphics.length > 0){
                         for (let turret of turretGraphics) {
-                            weaponIdleAnimation(turret);
+                            setTimeout(function () {
+                                weaponIdleAnimation(turret);
+                            }, 2000);
                             turret.attacking = false;
                         }
                     }
@@ -131,7 +138,9 @@ function battleLoop() {
                 unplaceBuilding(building, enemyBoard);
 
                 if(building.buildingGraphic.laserGraphic){
-                    fadeOutMeshAnimation(building.buildingGraphic.laserGraphic, 40);
+                    for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+                        fadeOutMeshAnimation(child, 20);
+                    }
                     building.buildingGraphic.laserGraphic = null;
                 }
 
@@ -184,6 +193,8 @@ function fireKineticTurret(building, board, target, enemy) {
     if (building.fireRateCounter >= building.stats.fireRate) {
         building.stats.ammoStorage -= building.stats.ammoDraw;
         building.fireRateCounter = 0;
+
+        createKineticGraphic(building.buildingGraphic, target.building.buildingGraphic);
 
         // for (let x = 0; x < building.width; x++) {
         //     for (let y = 0; y < building.height; y++) {
@@ -259,23 +270,6 @@ function fireEnergyTurret(building, board, target, enemy) {
                 createLaserGraphic(building.buildingGraphic, target.building.buildingGraphic);
             }
 
-            // for (let x = 0; x < building.width; x++) {
-            //     for (let y = 0; y < building.height; y++) {
-            //         const shapeKey = building.shape[x + y * building.width];
-            //         if (shapeKey === 3) {
-            //             turretOffsetX = (x * cellSize);
-            //             turretOffsetY = (y * cellSize);
-            //         }
-            //     }
-            // }
-            // lasers.push({
-            //     x: (building.x * cellSize) + board.xGridOffset + (cellSize / 2) + turretOffsetX,
-            //     y: (building.y * cellSize) + board.yGridOffset + (cellSize / 2) + turretOffsetY,
-            //     targetX: (target.x * cellSize) + enemy.xGridOffset + (cellSize / 2),
-            //     targetY: (target.y * cellSize) + enemy.yGridOffset + (cellSize / 2),
-            //     alpha: 1,
-            // });
-
             let damage = (building.stats.energyFirepower - target.building.stats.energyResistance) / 10;
             if (damage < 0.1) {
                 damage = 0.1;
@@ -309,7 +303,9 @@ function updateTargetHealthAndDeath(target) {
             target.building.healthBarGraphic = null;
         }
         if(target.building.buildingGraphic.laserGraphic){
-            fadeOutMeshAnimation(target.building.buildingGraphic.laserGraphic, 40);
+            for(let child of target.building.buildingGraphic.laserGraphic.getChildren()){
+                fadeOutMeshAnimation(child, 20);
+            }
             target.building.buildingGraphic.laserGraphic = null;
         }
     } else {

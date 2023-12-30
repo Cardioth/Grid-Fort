@@ -99,3 +99,12 @@ export function getHoveredBuilding() {
     }
     return null;
 }
+export function getMeshByMaterialName(name, building) {
+    const buildingChildren = building.getChildren();
+    for (let i = 0; i < buildingChildren.length; i++) {
+        const meshes = buildingChildren[i];
+        if (meshes.material.name === name) {
+            return buildingChildren[i];
+        }
+    }
+}

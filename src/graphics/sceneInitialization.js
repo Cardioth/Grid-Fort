@@ -276,11 +276,6 @@ function initLights(scene) {
     warmLight.diffuse = new BABYLON.Color3(1, .5, 0);
     warmLight.intensity = 120;
 
-    // Back Light
-    const backLight = new BABYLON.PointLight("backLight", new BABYLON.Vector3(-2.5, 6, -2.5), scene);
-    backLight.diffuse = new BABYLON.Color3(1, 1, 1);
-    backLight.intensity = 12;
-
     // Front Light
     const frontLight = new BABYLON.DirectionalLight("frontLight", new BABYLON.Vector3(-1, -2, -1), scene);
     frontLight.diffuse = new BABYLON.Color3(1, 1, 1);
@@ -293,7 +288,7 @@ function initLights(scene) {
     scene.fogStart = 10;
     scene.fogEnd = 15;
 
-    return backLight;
+    //return backLight;
 }
 
 function postProcessEffects(scene, camera) {
@@ -305,9 +300,9 @@ function postProcessEffects(scene, camera) {
     const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
     bloomPipeline.bloomEnabled = true;
     bloomPipeline.bloomThreshold = 0.34;
-    bloomPipeline.bloomWeight = 1.75;
+    bloomPipeline.bloomWeight = 1.65;
     bloomPipeline.bloomKernel = 30;
-    bloomPipeline.bloomScale = 4;
+    bloomPipeline.bloomScale = 2;
 
     // var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
     // fxaaPostProcess.samples = 1;

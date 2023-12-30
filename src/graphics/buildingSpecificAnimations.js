@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { scene } from '../graphics/sceneInitialization';
+import { getMeshByMaterialName } from '../utilities/utils';
 
 export function addBuildingSpecificAnimations(building){
     if(building.name.startsWith("core")){
@@ -62,12 +63,3 @@ function coreAnimation(building){
     scene.beginDirectAnimation(mesh3, mesh3.animations, 0, 300, true, 1);
 }
 
-function getMeshByMaterialName(name, building){
-    const buildingChildren = building.getChildren();
-    for(let i = 0; i<buildingChildren.length; i++){
-        const meshes = buildingChildren[i];
-        if(meshes.material.name === name){
-            return buildingChildren[i];
-        }
-    }
-}

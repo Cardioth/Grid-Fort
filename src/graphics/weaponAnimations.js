@@ -14,7 +14,7 @@ export function weaponIdleAnimation(weapon) {
 
     const finalRotation = weapon.rotation.z + deltaRotation;
 
-    const waitTime = Math.floor(Math.random() * 20 + 80);
+    const waitTime = Math.floor(Math.random() * 50 + 70);
 
     const animation = new BABYLON.Animation("weaponIdle", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     animation.setKeys([
