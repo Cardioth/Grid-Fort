@@ -1,5 +1,5 @@
 import { currentScene } from "./sceneManager";
-import { availableCredits, totalCredits } from "../gameplay/credits";
+import { availableCredits } from "../gameplay/credits";
 import { returnSelectedBuildingToDeck, setAnchorRotationAdjustment } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredBuilding } from "../utilities/utils";
@@ -12,7 +12,6 @@ import { drawTestPlaneTexture } from "../graphics/drawTestPlaneTexture";
 import { engine, testPlaneTexture } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 import { displayBuildingInfo } from "../ui/gameGUI";
-import { createHealthBarGraphic } from "../graphics/buildingHealthBar";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;

@@ -4,7 +4,7 @@ import { getMeshByMaterialName } from '../utilities/utils';
 
 export function createKineticGraphic(startTarget,endTarget){
     let startPosition = new BABYLON.Vector3(startTarget.position.x+0.001, startTarget.position.y+0.5, startTarget.position.z+0.001);
-    let endPosition = new BABYLON.Vector3(endTarget.position.x, endTarget.position.y+0.2, endTarget.position.z);
+    let endPosition = new BABYLON.Vector3(endTarget.x, endTarget.y+0.2, endTarget.z);
 
     if(startTarget.turret){
         startPosition = getMeshByMaterialName("greyGradientRadial", startTarget.turret).getBoundingInfo().boundingBox.centerWorld

@@ -6,7 +6,7 @@ export function createLaserGraphic(startTarget,endTarget){
     const laserContainer = new BABYLON.TransformNode("laserContainer", scene);
 
     let startPosition = new BABYLON.Vector3(startTarget.position.x, startTarget.position.y+0.2, startTarget.position.z);
-    let endPosition = new BABYLON.Vector3(endTarget.position.x, endTarget.position.y+0.2, endTarget.position.z);
+    let endPosition = new BABYLON.Vector3(endTarget.x, endTarget.y+0.2, endTarget.z);
 
     if(startTarget.turret){
         startTarget.turret.getChildren()[0].computeWorldMatrix(true);

@@ -19,6 +19,10 @@ import { fadeOutMeshAnimation } from "../graphics/meshFadeAnimations";
 import { getTargetRotation, weaponFireAnimation, weaponIdleAnimation } from "../graphics/weaponAnimations";
 import { createLaserGraphic } from "../graphics/laserGraphics";
 import { createKineticGraphic } from "../graphics/kineticGraphics";
+import { createBuildingExplosion } from "../graphics/buildingExplosion";
+import { createLaserExplosion } from "../graphics/laserExplosion";
+import { createKineticExplosion } from "../graphics/kineticExplosion";
+import { darkenBuilding } from "../graphics/darkenBuilding";
 
 let battleLoopInterval;
 export function startBattleLoop(){
@@ -34,7 +38,7 @@ function battleLoop() {
         //Weapon firing
         board.allPlacedBuildings.forEach((building) => {
             //Kinetic weapons always find a new target
-            if (building.stats.kineticFirepower > 0) {
+            if (building.stats.kineticFirepower > 0  && building.destroyed === false) {
                 getPossibleCellTargets(enemy, building);
                 building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
                 pointTurretAtTarget(building);
@@ -194,18 +198,13 @@ function fireKineticTurret(building, board, target, enemy) {
         building.stats.ammoStorage -= building.stats.ammoDraw;
         building.fireRateCounter = 0;
 
-        createKineticGraphic(building.buildingGraphic, target.building.buildingGraphic);
+        const targetPosition = new BABYLON.Vector3(
+            ((-target.x + 8) / 4)+enemy.position.x, 
+            0, 
+            -((-target.y + 8) / 4)+enemy.position.y
+        );
 
-        // for (let x = 0; x < building.width; x++) {
-        //     for (let y = 0; y < building.height; y++) {
-        //         const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
-        //         if (shapeKey === 2) {
-        //             const turretOffsetX = (x * cellSize);
-        //             const turretOffsetY = (y * cellSize);
-        //             spawnProjectile(building, board, target, enemy, turretOffsetX, turretOffsetY);
-        //         }
-        //     }
-        // }
+        createKineticGraphic(building.buildingGraphic, targetPosition);
 
         setTimeout(function () {
             //Adjust damage for crits
@@ -230,14 +229,8 @@ function fireKineticTurret(building, board, target, enemy) {
                                 cell.building.stats.health = Math.floor(cell.building.stats.health*10)/10;
 
                                 cell.building.moveable = false;
-                                
-                                // blasts.push({
-                                //     x: (target.x * cellSize) + enemy.xGridOffset + (cellSize / 2),
-                                //     y: (target.y * cellSize) + enemy.yGridOffset + (cellSize / 2),
-                                //     radius: blastRadius + 1,
-                                //     alpha: 1,
-                                //     size: 1,
-                                // });
+
+                                createKineticExplosion(targetPosition, building.buildingGraphic.position);
 
                                 updateBuildingStatsText();
 
@@ -247,7 +240,7 @@ function fireKineticTurret(building, board, target, enemy) {
                     }
                 }
             }
-        }, 750);
+        }, 1400);
     }
 }
 
@@ -257,8 +250,6 @@ function fireEnergyTurret(building, board, target, enemy) {
         building.windUpCounter++;
         return;
     }
-    let turretOffsetX = 0;
-    let turretOffsetY = 0;
     building.fireRateCounter++;
     building.stats.powerStorage -= building.stats.powerDraw;
     building.stats.powerStorage = parseFloat(building.stats.powerStorage.toFixed(2));
@@ -266,8 +257,14 @@ function fireEnergyTurret(building, board, target, enemy) {
         if (currentScene === "battle") {
             building.fireRateCounter = 0;
 
+            const targetPosition = new BABYLON.Vector3(
+                ((-target.x + 8) / 4)+enemy.position.x, 
+                0, 
+                -((-target.y + 8) / 4)+enemy.position.y
+            );
+
             if(!building.buildingGraphic.laserGraphic){
-                createLaserGraphic(building.buildingGraphic, target.building.buildingGraphic);
+                createLaserGraphic(building.buildingGraphic, targetPosition);
             }
 
             let damage = (building.stats.energyFirepower - target.building.stats.energyResistance) / 10;
@@ -278,15 +275,10 @@ function fireEnergyTurret(building, board, target, enemy) {
             target.building.stats.health -= parseFloat(damage.toFixed(2));
             target.building.stats.health = Math.floor(target.building.stats.health*10)/10;
             target.building.moveable = false;
-      
-            // const blastRadius = building.stats.blastRadius;
-            // blasts.push({
-            //     x: (target.x * cellSize) + enemy.xGridOffset + (cellSize / 2),
-            //     y: (target.y * cellSize) + enemy.yGridOffset + (cellSize / 2),
-            //     radius: blastRadius + 1,
-            //     alpha: 1,
-            //     size: 1,
-            // });
+
+            setTimeout(function () {
+            createLaserExplosion(targetPosition, building.buildingGraphic.position);
+            }, 800);
 
             updateBuildingStatsText();
 
@@ -298,6 +290,10 @@ function fireEnergyTurret(building, board, target, enemy) {
 function updateTargetHealthAndDeath(target) {
     if (target.building.stats.health <= 0) {
         target.building.destroyed = true;
+
+        createBuildingExplosion(target.building.buildingGraphic.position);
+        darkenBuilding(target.building);
+
         if (target.building.healthBarGraphic) {
             target.building.healthBarGraphic.dispose();
             target.building.healthBarGraphic = null;
