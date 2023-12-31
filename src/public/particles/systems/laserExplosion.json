@@ -145,7 +145,7 @@
             "particleEmitterType":
             {
                 "type": "HemisphericParticleEmitter",
-                "radius": 0.1,
+                "radius": 0.02,
                 "radiusRange": 1,
                 "directionRandomizer": 0
             },
@@ -166,14 +166,14 @@
                             "frame": 0,
                             "values":
                             [
-                                0
+                                0.2
                             ]
                         },
                         {
                             "frame": 60,
                             "values":
                             [
-                                0.1
+                                0.3
                             ]
                         }
                     ],
@@ -196,15 +196,15 @@
             "maxScaleX": 0.1,
             "minScaleY": 0.1,
             "maxScaleY": 0.1,
-            "minEmitPower": 0.03,
-            "maxEmitPower": 0.04,
+            "minEmitPower": 0.02,
+            "maxEmitPower": 0.03,
             "minLifeTime": 2,
             "maxLifeTime": 3,
             "emitRate": 400,
             "gravity":
             [
                 0,
-                0.05,
+                0,
                 0
             ],
             "noiseStrength":
