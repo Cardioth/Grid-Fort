@@ -11,10 +11,9 @@ export function buildRandomDeck() {
         deck.push(getRandomBuilding());
     }
     hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.basicLaser});
     hand.push({...allBuildings.miniArty});
     hand.push({...allBuildings.damageBooster});
+    hand.push({...allBuildings.powerStation});
 }
 
 export function pickFromCards(){

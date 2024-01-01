@@ -34,6 +34,20 @@ const defaultQualities = {
     bonuses:[],
 }
 
+/*  Shape Key Guide:
+    0: empty
+    1: occupied
+    2: anchorPoint
+    3: kineticWeapon
+    4: energyWeapon
+    5: missileWeapon
+    6: booster
+    7: anchorPointKineticWeapon
+    8: anchorPointEnergyWeapon
+    9: anchorPointMissileWeapon
+    10: anchorPointBooster
+*/
+
 const allBuildings = { 
     miniArty:{name:"Artillery", class:"Weapon", description:"",cost:1, width:3, height:2, shape:[1,7,1,0,1,0], color:"#3ca9c8", 
         stats:{health:30, kineticFirepower:1, blastRadius:1, ammoStorage:12, fireRate:8}},
@@ -41,7 +55,7 @@ const allBuildings = {
         stats:{health:25, energyFirepower:2, powerStorage:15, powerDraw:0.2, fireRate:2}},
     damageBooster:{name:"Damage Booster", class:"Booster",cost:2, width:3,height:3,shape:[6,1,6,6,2,6,6,1,6], color:"#487fb6", 
         effects:{energyFirepower:1, kineticFirepower:1}},
-    powerStation:{name:"Power Station", class:"Booster",cost:3, width:4,height:4,shape:[0,5,5,0,5,3,1,5,5,1,1,5,0,5,5,0], color:"#5497e3", 
+    powerStation:{name:"Power Station", class:"Booster",cost:3, width:4,height:4,shape:[0,6,6,0,6,8,1,6,6,1,1,6,0,6,6,0], color:"#5497e3", 
         stats:{energyFirepower:1, fireRate:3, powerStorage:30, powerDraw:0.1},effects:{powerStorage:100}},
     ammoStation:{name:"Ammo Station", class:"Booster",cost:3, width:4,height:4,shape:[0,5,5,0,5,2,1,5,5,1,1,5,0,5,5,0], color:"#35608a", 
         stats:{kineticFirepower:1, ammoStorage:30, fireRate:12, ammoStorage:50}, effects:{ammoStorage:100}},

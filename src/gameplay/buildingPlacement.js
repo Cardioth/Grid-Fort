@@ -201,6 +201,10 @@ export function unplaceBuilding(building, board) {
 }
 
 function canPlaceBuilding(building, gridX, gridY, board) {
+    if(building.destroyed){
+        return false;
+    }
+
     for (let x = 0; x < building.width; x++) {
         for (let y = 0; y < building.height; y++) {
             const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
@@ -399,35 +403,40 @@ export function updateBuildingGraphicPosition(building) {
 }
 
 export function returnSelectedBuildingToDeck() {
-    drawGridTexture(); //Update grid texture
-    displayBuildingInfo(null); //Update building info panel
-    const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length); //Update this math so that it only spans the width of the cards in hand
-    if (selectedCard === null) {
-        setSelectedCard(selectedBuilding);
-    }
-    hand.splice(arrayIndex, 0, selectedCard);
-    selectedCard.container.isVisible = true;
-    selectedCard.shape = [...selectedCard.originalShape];
-    selectedCard.width = selectedCard.originalWidth;
-    selectedCard.height = selectedCard.originalHeight;
-
-    setCardPositions();
-    selectedCard.currentPosition.x = currentMouseX - canvas.width / 2;
-    selectedCard.currentPosition.y = currentMouseY - canvas.height / 2;
-
     if (selectedBuilding.buildingGraphic !== undefined) {
         selectedBuilding.buildingGraphic.dispose();
         allBuildingGraphics = allBuildingGraphics.filter(obj => obj !== selectedBuilding.buildingGraphic);
     }
-    if (selectedBuilding.healthBarGraphic !== undefined) {
+    if (selectedBuilding.healthBarGraphic) {
         selectedBuilding.healthBarGraphic.dispose();
     }
+
+
+    drawGridTexture(); //Update grid texture
+    displayBuildingInfo(null); //Update building info panel
+
+    if (!selectedBuilding.destroyed){
+        const arrayIndex = Math.floor(((currentMouseX) / (canvas.width - 50)) * hand.length); //Update this math so that it only spans the width of the cards in hand
+        if (selectedCard === null) {
+            setSelectedCard(selectedBuilding);
+        }
+        hand.splice(arrayIndex, 0, selectedCard);
+        selectedCard.container.isVisible = true;
+        selectedCard.shape = [...selectedCard.originalShape];
+        selectedCard.width = selectedCard.originalWidth;
+        selectedCard.height = selectedCard.originalHeight;
     
-    if (selectedBuilding.placed === true) {
-        updateAvailableCredits(selectedCard.cost);
-        circularizeGrids();
-        selectedBuilding.placed = false;
+        setCardPositions();
+        selectedCard.currentPosition.x = currentMouseX - canvas.width / 2;
+        selectedCard.currentPosition.y = currentMouseY - canvas.height / 2;
+    
+        if (selectedBuilding.placed === true) {
+            updateAvailableCredits(selectedCard.cost);
+            circularizeGrids();
+            selectedBuilding.placed = false;
+        }
     }
+    
 }
 
 export function createBuildingGraphicFromCard(building, board, rotation) {

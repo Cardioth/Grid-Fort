@@ -12,6 +12,7 @@ import { drawTestPlaneTexture } from "../graphics/drawTestPlaneTexture";
 import { engine, testPlaneTexture } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 import { displayBuildingInfo } from "../ui/gameGUI";
+import { createBuildingExplosion } from "../graphics/buildingExplosion";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -134,6 +135,8 @@ export function initializeGameControls(canvas) {
                 if (clickedBuilding) {
                     selectedPlacedBuilding = clickedBuilding;
                     displayBuildingInfo(clickedBuilding);
+                    //createBuildingExplosion(clickedBuilding.buildingGraphic.position)
+                    //console.log(clickedBuilding);
                 } else {
                     selectedPlacedBuilding = null;
                     displayBuildingInfo(null);

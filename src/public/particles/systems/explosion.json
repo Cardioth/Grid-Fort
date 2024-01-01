@@ -4,7 +4,7 @@
         {
             "name": "flash",
             "id": "flash",
-            "capacity": 60,
+            "capacity": 20,
             "emitter":
             [
                 0,
@@ -135,7 +135,7 @@
         {
             "name": "fireball",
             "id": "fireball",
-            "capacity": 100,
+            "capacity": 30,
             "emitter":
             [
                 0,
@@ -453,7 +453,7 @@
         {
             "name": "debris",
             "id": "debris",
-            "capacity": 6,
+            "capacity": 5,
             "emitter":
             [
                 0,
@@ -474,7 +474,7 @@
             "beginAnimationFrom": 0,
             "beginAnimationTo": 60,
             "beginAnimationLoop": false,
-            "startDelay": 100,
+            "startDelay": 1,
             "renderingGroupId": 0,
             "isBillboardBased": true,
             "billboardMode": 7,
@@ -581,7 +581,7 @@
                         {
                             "name": "fireSubEmitter",
                             "id": "fireSubEmitter",
-                            "capacity": 200,
+                            "capacity": 40,
                             "emitter":
                             [
                                 0,
@@ -763,7 +763,7 @@
                         {
                             "name": "smokeSubEmitter",
                             "id": "smokeSubEmitter",
-                            "capacity": 600,
+                            "capacity": 40,
                             "emitter":
                             [
                                 0,

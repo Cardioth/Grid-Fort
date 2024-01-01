@@ -6,7 +6,7 @@ import allBuildings from "../components/buildings";
 import { gridWidth, gridHeight } from "../data/config";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
-import { GUIcamera, camera } from "../graphics/sceneInitialization";
+import { GUIcamera, camera, scene } from "../graphics/sceneInitialization";
 import { setZoomTarget } from "../graphics/graphics";
 import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import { selectedPlacedBuilding } from "../managers/eventListeners";
@@ -71,98 +71,102 @@ function battleLoop() {
         });
 
         if (allBuildingsDestroyed) {
-            setCurrentScene("build");
-
-            if(getTotalCredits() < 18){
-                updateTotalCredits(1);
-            }
-            setAvailableCredits(getTotalCredits());
-
-            setCardPositions();
-
-            //Remove enemy board
-            fadeOutMeshAnimation(enemyBoard.baseMesh, 60);
-            fadeOutMeshAnimation(enemyBoard.baseBaseMesh, 60);
-
-            //Move camera
-            camera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
-            camera.targetPosition = camera.defaultTargetPosition.clone();
-            GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
-            GUIcamera.targetPosition = GUIcamera.defaultTargetPosition.clone();
-
-            setZoomTarget(2.5);
-
-            //restock ammo and power
-            playerBoard.allPlacedBuildings.forEach((building) => {
-                building.target = undefined;
-                building.possibleCellTargets = [];
-                if(building.class === "Core"){
-                    building.destroyed = false;
-                    building.stats.health = allBuildings[building.keyName].stats.health;
-                    if(building.healthBarGraphic){
-                        building.healthBarGraphic.dispose();
-                        building.healthBarGraphic = null;
-                    }
-                    updateBuildingStatsText();
-                    if(building.darkened){
-                        undarkenBuilding(building);
-                    }
-                }
-
-                if(building.buildingGraphic.laserGraphic){
-                    for(let child of building.buildingGraphic.laserGraphic.getChildren()){
-                        fadeOutMeshAnimation(child, 20);
-                    }
-                    building.buildingGraphic.laserGraphic = null;
-                }
-
-                if(building.destroyed === false){
-                    const turretGraphics = getTurretsOfBuilding(building);
-                    if (turretGraphics.length > 0){
-                        for (let turret of turretGraphics) {
-                            setTimeout(function () {
-                                weaponIdleAnimation(turret);
-                            }, 2000);
-                            turret.attacking = false;
-                        }
-                    }
-                }
-
-                if (building.stats.hasOwnProperty("ammoStorage")) {
-                    building.stats.ammoStorage = allBuildings[building.keyName].stats.ammoStorage;
-                }
-                if (building.stats.hasOwnProperty("powerStorage")) {
-                    building.stats.powerStorage = allBuildings[building.keyName].stats.powerStorage;
-                }
-            });
-
-            //clear enemy board
-            enemyBoard.allPlacedBuildings.forEach((building) => {
-                building.buildingGraphic.dispose();
-                unplaceBuilding(building, enemyBoard);
-
-                if(building.buildingGraphic.laserGraphic){
-                    for(let child of building.buildingGraphic.laserGraphic.getChildren()){
-                        fadeOutMeshAnimation(child, 20);
-                    }
-                    building.buildingGraphic.laserGraphic = null;
-                }
-
-                if(selectedPlacedBuilding === building){
-                    displayBuildingInfo(null);
-                }
-                if(building.healthBarGraphic){
-                    building.healthBarGraphic.dispose();
-                    building.healthBarGraphic = null;
-                }
-            });
-
-            if (allBoards.indexOf(enemyBoard) !== -1) {
-                allBoards.splice(allBoards.indexOf(enemyBoard), 1);
-            }
-            clearInterval(battleLoopInterval);
+            endBattle();
         }
     }
+}
+
+function endBattle() {
+    setCurrentScene("build");
+
+    if (getTotalCredits() < 18) {
+        updateTotalCredits(1);
+    }
+    setAvailableCredits(getTotalCredits());
+
+    setCardPositions();
+
+    //Remove enemy board
+    fadeOutMeshAnimation(enemyBoard.baseMesh, 60);
+    fadeOutMeshAnimation(enemyBoard.baseBaseMesh, 60);
+
+    //Move camera
+    camera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+    camera.targetPosition = camera.defaultTargetPosition.clone();
+    GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
+    GUIcamera.targetPosition = GUIcamera.defaultTargetPosition.clone();
+
+    setZoomTarget(2.5);
+
+    //restock ammo and power
+    playerBoard.allPlacedBuildings.forEach((building) => {
+        building.target = undefined;
+        building.possibleCellTargets = [];
+        if (building.class === "Core") {
+            building.destroyed = false;
+            building.stats.health = allBuildings[building.keyName].stats.health;
+            if (building.healthBarGraphic) {
+                building.healthBarGraphic.dispose();
+                building.healthBarGraphic = null;
+            }
+            updateBuildingStatsText();
+            if (building.darkened) {
+                undarkenBuilding(building);
+            }
+        }
+
+        if (building.buildingGraphic.laserGraphic) {
+            for (let child of building.buildingGraphic.laserGraphic.getChildren()) {
+                fadeOutMeshAnimation(child, 20);
+            }
+            building.buildingGraphic.laserGraphic = null;
+        }
+
+        if (building.destroyed === false) {
+            const turretGraphics = getTurretsOfBuilding(building);
+            if (turretGraphics.length > 0) {
+                for (let turret of turretGraphics) {
+                    setTimeout(function () {
+                        weaponIdleAnimation(turret);
+                    }, 2000);
+                    turret.attacking = false;
+                }
+            }
+        }
+
+        if (building.stats.hasOwnProperty("ammoStorage")) {
+            building.stats.ammoStorage = allBuildings[building.keyName].stats.ammoStorage;
+        }
+        if (building.stats.hasOwnProperty("powerStorage")) {
+            building.stats.powerStorage = allBuildings[building.keyName].stats.powerStorage;
+        }
+    });
+
+    //clear enemy board
+    enemyBoard.allPlacedBuildings.forEach((building) => {
+        building.buildingGraphic.dispose();
+        unplaceBuilding(building, enemyBoard);
+
+        if (building.buildingGraphic.laserGraphic) {
+            for (let child of building.buildingGraphic.laserGraphic.getChildren()) {
+                fadeOutMeshAnimation(child, 20);
+            }
+            building.buildingGraphic.laserGraphic = null;
+        }
+
+        if (selectedPlacedBuilding === building) {
+            displayBuildingInfo(null);
+        }
+        if (building.healthBarGraphic) {
+            building.healthBarGraphic.dispose();
+            building.healthBarGraphic = null;
+        }
+    });
+
+    if (allBoards.indexOf(enemyBoard) !== -1) {
+        allBoards.splice(allBoards.indexOf(enemyBoard), 1);
+    }
+    clearInterval(battleLoopInterval);
 }
 
 function pointTurretAtTarget(building) {
@@ -206,8 +210,14 @@ function fireKineticTurret(building, board, target, enemy) {
 
         createKineticGraphic(building.buildingGraphic, targetPosition);
 
-        setTimeout(function () {
-            //Adjust damage for crits
+        let frameCounter = 0;
+        const targetFrame = 140;
+        
+        const observable = scene.onBeforeRenderObservable.add(() => {
+            frameCounter++;
+        
+            if (frameCounter >= targetFrame) {
+                            //Adjust damage for crits
             if (currentScene === "battle") {
                 let damage = building.stats.kineticFirepower - target.building.stats.armor;
                 if (Math.random() * 100 < building.stats.critChance) {
@@ -228,7 +238,9 @@ function fireKineticTurret(building, board, target, enemy) {
                                 cell.building.stats.health = parseFloat(cell.building.stats.health.toFixed(2));
                                 cell.building.stats.health = Math.floor(cell.building.stats.health*10)/10;
 
-                                cell.building.moveable = false;
+                                if(cell.building.destroyed === false){ //In cases where it is hit after death it needs to remain moveable
+                                    cell.building.moveable = false;
+                                }
 
                                 createKineticExplosion(targetPosition, building.buildingGraphic.position);
 
@@ -240,7 +252,11 @@ function fireKineticTurret(building, board, target, enemy) {
                     }
                 }
             }
-        }, 1400);
+        
+                // Remove the observable to prevent further execution
+                scene.onBeforeRenderObservable.remove(observable);
+            }
+        });
     }
 }
 
@@ -274,11 +290,25 @@ function fireEnergyTurret(building, board, target, enemy) {
             
             target.building.stats.health -= parseFloat(damage.toFixed(2));
             target.building.stats.health = Math.floor(target.building.stats.health*10)/10;
-            target.building.moveable = false;
 
-            setTimeout(function () {
-            createLaserExplosion(targetPosition, building.buildingGraphic.position);
-            }, 800);
+            if(target.building.destroyed === false){ //In cases where it is hit after death it needs to remain moveable
+                target.building.moveable = false;
+            }
+            
+
+            let frameCounter = 0;
+            const targetFrame = 48; // Equivalent to 800 ms at 60 fps
+            
+            const observable = scene.onBeforeRenderObservable.add(() => {
+                frameCounter++;
+            
+                if (frameCounter >= targetFrame) {
+                    createLaserExplosion(targetPosition, building.buildingGraphic.position);
+            
+                    // Remove the observable to prevent further execution
+                    scene.onBeforeRenderObservable.remove(observable);
+                }
+            });
 
             updateBuildingStatsText();
 
@@ -289,10 +319,23 @@ function fireEnergyTurret(building, board, target, enemy) {
 
 function updateTargetHealthAndDeath(target) {
     if (target.building.stats.health <= 0) {
+        if(target.building.destroyed === false){
+            setTimeout(function () { // desperate attempt to prevent stuttering when buildings die
+                if(target.building.buildingGraphic){
+                    createBuildingExplosion(target.building.buildingGraphic.position);
+                }
+            }, 50);
+            setTimeout(function () { // desperate attempt to prevent stuttering when buildings die
+                if(target.building.buildingGraphic && target.building.destroyed === true){
+                    darkenBuilding(target.building);
+                }
+            }, 100);
+            
+        }
+        if(target.building.name !== "Core"){
+            target.building.moveable = true;
+        }
         target.building.destroyed = true;
-
-        createBuildingExplosion(target.building.buildingGraphic.position);
-        darkenBuilding(target.building);
 
         if (target.building.healthBarGraphic) {
             target.building.healthBarGraphic.dispose();

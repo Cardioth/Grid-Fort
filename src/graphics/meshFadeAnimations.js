@@ -5,7 +5,7 @@ export function fadeInMeshAnimation(mesh){
     const animation = new BABYLON.Animation("fadeIn", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     animation.setKeys([
         { frame: 0, value: 0 },
-        { frame: 80, value: 1 }
+        { frame: 80, value: 0.99}
     ]);
     mesh.material = mesh.material.clone();
     mesh.material.alpha = 0;
