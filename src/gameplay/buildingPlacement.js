@@ -232,7 +232,9 @@ export function rotateBuilding(building, direction = 'R') {
     const { width, height, shape } = building;
 
     if (direction === 'R') {
-        building.buildingGraphic.rotate(BABYLON.Axis.Y, Math.PI / 2, BABYLON.Space.WORLD);
+        if(building.buildingGraphic){
+            building.buildingGraphic.rotate(BABYLON.Axis.Y, Math.PI / 2, BABYLON.Space.WORLD);
+        }
         // Transpose and reverse rows for clockwise rotation
         for (let x = 0; x < width; x++) {
             for (let y = height - 1; y >= 0; y--) {
@@ -240,7 +242,9 @@ export function rotateBuilding(building, direction = 'R') {
             }
         }
     } else {
-        building.buildingGraphic.rotate(BABYLON.Axis.Y, -Math.PI / 2, BABYLON.Space.WORLD);
+        if(building.buildingGraphic){
+            building.buildingGraphic.rotate(BABYLON.Axis.Y, -Math.PI / 2, BABYLON.Space.WORLD);
+        }
         // Transpose and reverse columns for counterclockwise rotation
         for (let x = width - 1; x >= 0; x--) {
             for (let y = 0; y < height; y++) {
@@ -248,16 +252,13 @@ export function rotateBuilding(building, direction = 'R') {
             }
         }
     }
-    
 
     building.shape = newShape;
     building.width = height;
     building.height = width;
 
     // Adjustments for building graphic rotation
-    setAnchorRotationAdjustment(building);
-
-    
+    setAnchorRotationAdjustment(building);    
 }
 
 export function setAnchorRotationAdjustment(building) {
@@ -272,23 +273,11 @@ export function setAnchorRotationAdjustment(building) {
     }
 }
 
-export function placeBuildingToBoard(building, board, xLoc, yLoc) {
-    createBuildingGraphicFromCard(building, board);
-    placeBuilding(building, xLoc+8, yLoc+8, board);
-}
-
-export function placeAIFort(AIfortIndex) {
-    const AIfort = AIforts[AIfortIndex];
-    AIfort.layout.forEach((building) => {
-        const newBuilding = { ...building.building };
-        if (building.rotation === "R" || building.rotation === "L") {
-            rotateBuilding(newBuilding, building.rotation);
-        } else if (building.rotation === "RR") {
-            rotateBuilding(newBuilding, building.rotation);
-            rotateBuilding(newBuilding, building.rotation);
-        }
-        placeBuildingToBoard(newBuilding, enemyBoard, building.x, building.y);
-    });
+export function placeBuildingToBoard(building, board, xLoc, yLoc, rotation = "N") {
+    if(canPlaceBuilding(building, xLoc+8, yLoc+8, board)){
+        createBuildingGraphicFromCard(building, board, rotation);
+        placeBuilding(building, xLoc+8, yLoc+8, board);
+    }
 }
 
 export function cloneBuilding(name, x, z) {
@@ -441,7 +430,7 @@ export function returnSelectedBuildingToDeck() {
     }
 }
 
-export function createBuildingGraphicFromCard(building, board) {
+export function createBuildingGraphicFromCard(building, board, rotation) {
     building.buildingGraphic = cloneBuilding(building.keyName + "Building", 0, 0);
     building.buildingGraphic.isDragged = true;
     building.rotationAdjustment = { x: 0, y: 0 };
@@ -483,4 +472,25 @@ export function createBuildingGraphicFromCard(building, board) {
             }
         }
     }
+
+    // Rotate building graphic
+    if (rotation === "R" || rotation === "L") {
+        rotateBuilding(building, building.rotation);
+    } else if (rotation === "RR") {
+        rotateBuilding(building, building.rotation);
+        rotateBuilding(building, building.rotation);
+    }
+}
+export function placeAIFort(AIfortIndex) {
+    const AIfort = AIforts[AIfortIndex];
+    AIfort.layout.forEach((building) => {
+        const newBuilding = { ...building.building };
+        if (building.rotation === "R" || building.rotation === "L") {
+            rotateBuilding(newBuilding, building.rotation);
+        } else if (building.rotation === "RR") {
+            rotateBuilding(newBuilding, building.rotation);
+            rotateBuilding(newBuilding, building.rotation);
+        }
+        placeBuildingToBoard(newBuilding, enemyBoard, building.x, building.y, building.rotation);
+    });
 }

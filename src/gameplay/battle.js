@@ -1,14 +1,11 @@
 import { currentScene, setCurrentScene } from "../managers/sceneManager";
 import { allBoards } from "../managers/setup";
 import { getTotalCredits, setAvailableCredits, updateTotalCredits } from "./credits";
-import { setCardPositions, hand } from "../components/cards";
-import { getRandomBuilding } from "../components/buildings";
+import { setCardPositions } from "../components/cards";
 import allBuildings from "../components/buildings";
-import { gridWidth, gridHeight, cellSize, boardWidth } from "../data/config";
-import { spawnProjectile, blasts } from "../graphics/testGraphics";
+import { gridWidth, gridHeight } from "../data/config";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
-import { shapeKeyLegend } from "../data/config";
 import { GUIcamera, camera } from "../graphics/sceneInitialization";
 import { setZoomTarget } from "../graphics/graphics";
 import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
@@ -22,7 +19,7 @@ import { createKineticGraphic } from "../graphics/kineticGraphics";
 import { createBuildingExplosion } from "../graphics/buildingExplosion";
 import { createLaserExplosion } from "../graphics/laserExplosion";
 import { createKineticExplosion } from "../graphics/kineticExplosion";
-import { darkenBuilding } from "../graphics/darkenBuilding";
+import { darkenBuilding, undarkenBuilding } from "../graphics/darkenBuilding";
 
 let battleLoopInterval;
 export function startBattleLoop(){
@@ -107,6 +104,9 @@ function battleLoop() {
                         building.healthBarGraphic = null;
                     }
                     updateBuildingStatsText();
+                    if(building.darkened){
+                        undarkenBuilding(building);
+                    }
                 }
 
                 if(building.buildingGraphic.laserGraphic){
@@ -253,7 +253,7 @@ function fireEnergyTurret(building, board, target, enemy) {
     building.fireRateCounter++;
     building.stats.powerStorage -= building.stats.powerDraw;
     building.stats.powerStorage = parseFloat(building.stats.powerStorage.toFixed(2));
-    if (building.fireRateCounter >= building.stats.fireRate) {
+    if (building.fireRateCounter >= building.stats.fireRate && building.stats.powerStorage >= building.stats.powerDraw) {
         if (currentScene === "battle") {
             building.fireRateCounter = 0;
 

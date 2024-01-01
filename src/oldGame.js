@@ -324,8 +324,8 @@ function placeAIFort(AIfortIndex) {
 
 const AIforts = [
 
-    {name:"Yuan Lee", description:"My little fortress.",layout:
-        [{building:allBuildings.core, x:0, y:0, rotation:"N"},
+    {name:"Yuan Lee", description:"My little fortress.",layout:[
+        {building:allBuildings.core, x:0, y:0, rotation:"N"},
         {building:allBuildings.miniArty, x:0, y:-2, rotation:"R"},
         {building:allBuildings.protector, x:-2, y:-1, rotation:"N"},
         {building:allBuildings.radar, x:1, y:1, rotation:"N"},

@@ -109,7 +109,7 @@ export function initializeGameControls(canvas) {
                     selectedBuilding = hoveredCard;
                     hoveredCard.isDragged = true;
                     hoveredCard.container.isVisible = false;
-                    createBuildingGraphicFromCard(hoveredCard, playerBoard);
+                    createBuildingGraphicFromCard(hoveredCard, playerBoard, "N");
                     selectedCard = hoveredCard;
                     //remove card from deck
                     removeCardFromHand(selectedCard);
