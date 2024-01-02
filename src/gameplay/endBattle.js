@@ -1,7 +1,6 @@
 import { setCurrentScene } from "../managers/sceneManager";
 import { allBoards } from "../managers/setup";
 import { getTotalCredits, setAvailableCredits, updateTotalCredits } from "./credits";
-import { setCardPositions } from "../components/cards";
 import allBuildings from "../components/buildings";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { unplaceBuilding } from "./buildingPlacement";
@@ -15,6 +14,7 @@ import { weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
 import { undarkenBuilding } from "../graphics/darkenBuilding";
 import { getTurretsOfBuilding, battleLoopInterval } from "./battle";
 import { drawCardFromDeckToHand } from "../components/deck";
+import { hand } from "../components/cards";
 
 export function endBattle() {
     setCurrentScene("build");
@@ -24,8 +24,12 @@ export function endBattle() {
     }
     setAvailableCredits(getTotalCredits());
 
-    drawCardFromDeckToHand();
-    drawCardFromDeckToHand();
+    if(hand.length <= 7){
+        drawCardFromDeckToHand();
+    }
+    if(hand.length <= 7){
+        drawCardFromDeckToHand();
+    }
 
     //Remove enemy board
     fadeOutMeshAnimation(enemyBoard.baseMesh, 60);
