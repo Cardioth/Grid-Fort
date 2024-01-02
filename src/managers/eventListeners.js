@@ -8,8 +8,7 @@ import { playerBoard } from "./setup";
 import { setZoomTarget } from "../graphics/graphics";
 import { getPointerGridLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
-import { drawTestPlaneTexture } from "../graphics/drawTestPlaneTexture";
-import { engine, testPlaneTexture } from "../graphics/sceneInitialization";
+import { engine } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 import { displayBuildingInfo } from "../ui/gameGUI";
 import { createExplosion } from "../graphics/particleEffects/createExplosion";
@@ -153,7 +152,6 @@ export function initializeGameControls(canvas) {
                     let placementResult = canPlaceBuildingNearest(selectedBuilding, gridX, gridY);
                     if (placementResult.canPlace) {
                         placeBuilding(selectedBuilding, gridX + placementResult.adjustedX, gridY + placementResult.adjustedY, playerBoard);
-                        drawTestPlaneTexture(testPlaneTexture);
                     } else {
                         returnSelectedBuildingToDeck();
                     }

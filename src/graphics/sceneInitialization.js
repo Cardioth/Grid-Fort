@@ -104,7 +104,7 @@ export const initGameScene = () => {
 
     collisionPlane = createCollisionPlane(); // For raycasting
 
-    createTestingPlane(); // For visualising building placement
+    //createTestingPlane(); // For visualising building placement
 
     initializeGameControls(canvas); //Event listeners
 
@@ -307,8 +307,8 @@ function postProcessEffects(scene, camera) {
     bloomPipeline.bloomKernel = 30;
     bloomPipeline.bloomScale = 2;
 
-    // var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
-    // fxaaPostProcess.samples = 1;
+    var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
+    fxaaPostProcess.samples = 1;
 }
 
 function initCamera(scene) {
