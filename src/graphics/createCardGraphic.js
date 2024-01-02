@@ -2,6 +2,7 @@ import * as GUI from "@babylonjs/gui";
 import { GUITexture } from './sceneInitialization.js';
 import { availableCredits } from "../gameplay/credits.js";
 import { currentScene } from "../managers/sceneManager.js";
+import { getImage } from "./loadImages.js";
 
 export function createCardGraphic(card) {
     var container = new GUI.Rectangle();
@@ -10,7 +11,7 @@ export function createCardGraphic(card) {
     container.thickness = 0;
 
     //Card Backing
-    var cardBack = new GUI.Image("but", "cardArtwork.png");
+    var cardBack = new GUI.Image("but", getImage("cardArtwork.png"));
     cardBack.width = "620px";
     cardBack.height = "920px";
     container.addControl(cardBack);
@@ -55,7 +56,7 @@ export function createCardGraphic(card) {
 
     //Card Damage
     if (card.stats.hasOwnProperty("kineticFirepower") || card.stats.hasOwnProperty("energyFirepower")) {
-        var healthImage = new GUI.Image("but", "cardDamage.png");
+        var healthImage = new GUI.Image("but", getImage("cardDamage.png"));
         healthImage.width = "147px";
         healthImage.height = "219px";
         healthImage.top = "350px";
@@ -73,7 +74,7 @@ export function createCardGraphic(card) {
 
     //Card Health
     if (card.stats.hasOwnProperty("health")) {
-        var healthImage = new GUI.Image("but", "cardHealth.png");
+        var healthImage = new GUI.Image("but", getImage("cardHealth.png"));
         healthImage.width = "147px";
         healthImage.height = "219px";
         healthImage.top = "350px";
@@ -91,7 +92,7 @@ export function createCardGraphic(card) {
 
     //Card Level
     if(card.cardLevel >= 1){
-        const imageName = "cardLevel"+card.cardLevel+".png";
+        const imageName = getImage("cardLevel"+card.cardLevel+".png");
         var levelImage = new GUI.Image("but", imageName);
         levelImage.width = "323px";
         levelImage.height = "44px";

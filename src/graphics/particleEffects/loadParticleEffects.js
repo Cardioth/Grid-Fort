@@ -2,7 +2,7 @@ import * as BABYLON from '@babylonjs/core';
 
 export let loadedParticleSystems = [];
 
-export function loadExplosionTemplate(scene) {
+export function loadParticleSystems(scene) {
     BABYLON.ParticleHelper.BaseAssetsUrl = "particles/";
 
     BABYLON.ParticleHelper.CreateAsync("explosion", scene).then((set) => {

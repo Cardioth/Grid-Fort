@@ -1,8 +1,8 @@
 
 
 import { getRandomBuilding } from "./buildings";
-import allBuildings from "./buildings";
 import { hand } from "./cards";
+import { setCardPositions, createCardGraphicsForHand } from "./cards";
 
 export const deck = [];
 
@@ -10,10 +10,14 @@ export function buildRandomDeck() {
     for(let i = 0; i < 30; i++){
         deck.push(getRandomBuilding());
     }
-    hand.push({...allBuildings.basicLaser});
-    hand.push({...allBuildings.miniArty});
-    hand.push({...allBuildings.damageBooster});
-    hand.push({...allBuildings.powerStation});
+}
+
+export function drawCardFromDeckToHand(){
+    if(deck.length > 0){
+        hand.push(deck.pop());
+    }
+    setCardPositions();
+    createCardGraphicsForHand();
 }
 
 export function pickFromCards(){

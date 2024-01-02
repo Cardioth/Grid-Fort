@@ -171,6 +171,50 @@ export function unplaceBuilding(building, board) {
             }
             if (shapeKey === "booster") {
                 if (board.grid[cellIndex]) {
+                    if (board.grid[cellIndex].occupied && board.grid[cellIndex].building !== undefined && !building.destroyed) {
+                        for (let key in building.effects) {
+                            for (let key2 in board.grid[cellIndex].building.stats) {
+                                if (key2 === key) {
+                                    board.grid[cellIndex].building.stats[key] -= building.effects[key];
+                                    if(board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key).length > 0){
+                                        board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key)[0].value -= building.effects[key];
+                                        if(board.grid[cellIndex].building.bonuses.filter(obj => obj.key === key)[0].value <= 0){
+                                            board.grid[cellIndex].building.bonuses = board.grid[cellIndex].building.bonuses.filter(obj => obj.key !== key);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (let key in building.effects) {
+                        if (board.grid[cellIndex].effects.hasOwnProperty(key) && !building.destroyed) {
+                            board.grid[cellIndex].effects[key] -= building.effects[key];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    updateBuildingStatsText();
+    updateBoostGraphics();
+    drawGridTexture();
+}
+
+export function removeBuldingEffectsFromBoard(building, board) {
+    const gridX = building.x;
+    const gridY = building.y;
+    if (building.x === undefined || building.y === undefined) {
+        return;
+    }
+    //Update grid
+    for (let x = 0; x < building.width; x++) {
+        for (let y = 0; y < building.height; y++) {
+            const cellIndex = (gridY + y) * gridWidth + (gridX + x);
+            const shapeKey = shapeKeyLegend[building.shape[x + y * building.width]];
+           
+            if (shapeKey === "booster") {
+                if (board.grid[cellIndex]) {
                     if (board.grid[cellIndex].occupied && board.grid[cellIndex].building !== undefined) {
                         for (let key in building.effects) {
                             for (let key2 in board.grid[cellIndex].building.stats) {
@@ -197,7 +241,6 @@ export function unplaceBuilding(building, board) {
     }
 
     updateBoostGraphics();
-    drawGridTexture();
 }
 
 function canPlaceBuilding(building, gridX, gridY, board) {

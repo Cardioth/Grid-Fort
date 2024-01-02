@@ -13,11 +13,17 @@ import { createPreloadScreen } from '../ui/preloadGUI.js';
 import { fadeToBlack } from '../ui/generalGUI.js';
 import { displayBottomUI } from '../ui/gameGUI.js';
 import { setup } from '../managers/setup.js';
-import { loadExplosionTemplate } from './particleEffects/loadParticleEffects.js';
+import { loadParticleSystems } from './particleEffects/loadParticleEffects.js';
+import { loadImages as loadImages } from './loadImages.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
 export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
+
+engine.loadingScreen = {
+    displayLoadingUI: function() {},
+    hideLoadingUI: function() {}
+};
 
 export let scene;
 export let GUIscene;
@@ -68,9 +74,11 @@ export const initPreloadScene = () => {
         }
     });
 
-    loadExplosionTemplate(scene); //Particle effects
+    loadParticleSystems(scene); //Particle effects
 
-    importModels(scene); //Game meshes
+    loadImages(scene); //Preload images and models
+
+    loadModels(scene);
 
     return scene;
 }
@@ -183,7 +191,7 @@ function createGridGraphic() {
     return plane;
 }
 
-function importModels(scene) {
+function loadModels(scene) {
     buildingAssets = new BABYLON.AssetContainer(scene);
     weaponAssets = new BABYLON.AssetContainer(scene);
 

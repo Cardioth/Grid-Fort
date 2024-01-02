@@ -49,31 +49,31 @@ const defaultQualities = {
 */
 
 const allBuildings = { 
-    miniArty:{name:"Artillery", class:"Weapon", description:"",cost:1, width:3, height:2, shape:[1,7,1,0,1,0], color:"#3ca9c8", 
+    miniArty:{name:"Artillery", class:"Weapon", description:"",cost:1, width:3, height:2, shape:[1,7,1,0,1,0], color:"#3ca9c8", drawable:true, 
         stats:{health:30, kineticFirepower:1, blastRadius:1, ammoStorage:12, fireRate:8}},
-    basicLaser:{name:"Basic Laser", class:"Weapon", cost:1, width:2, height:2, shape:[8,1,1,0], color:"#5497e3", 
+    basicLaser:{name:"Basic Laser", class:"Weapon", cost:1, width:2, height:2, shape:[8,1,1,0], color:"#5497e3", drawable:true, 
         stats:{health:25, energyFirepower:2, powerStorage:15, powerDraw:0.2, fireRate:2}},
-    damageBooster:{name:"Damage Booster", class:"Booster",cost:2, width:3,height:3,shape:[6,1,6,6,2,6,6,1,6], color:"#487fb6", 
+    damageBooster:{name:"Damage Booster", class:"Booster",cost:2, width:3,height:3,shape:[6,1,6,6,2,6,6,1,6], color:"#487fb6", drawable:true, 
         effects:{energyFirepower:1, kineticFirepower:1}},
-    powerStation:{name:"Power Station", class:"Booster",cost:3, width:4,height:4,shape:[0,6,6,0,6,8,1,6,6,1,1,6,0,6,6,0], color:"#5497e3", 
+    powerStation:{name:"Power Station", class:"Booster",cost:3, width:4,height:4,shape:[0,6,6,0,6,8,1,6,6,1,1,6,0,6,6,0], color:"#5497e3", drawable:true, 
         stats:{energyFirepower:1, fireRate:3, powerStorage:30, powerDraw:0.1},effects:{powerStorage:100}},
-    ammoStation:{name:"Ammo Station", class:"Booster",cost:3, width:4,height:4,shape:[0,5,5,0,5,2,1,5,5,1,1,5,0,5,5,0], color:"#35608a", 
+    ammoStation:{name:"Ammo Station", class:"Booster",cost:3, width:4,height:4,shape:[0,5,5,0,5,2,1,5,5,1,1,5,0,5,5,0], color:"#35608a", drawable:false, 
         stats:{kineticFirepower:1, ammoStorage:30, fireRate:12, ammoStorage:50}, effects:{ammoStorage:100}},
-    protector:{name:"Protector", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
+    protector:{name:"Protector", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", drawable:false, 
         stats:{kineticFirepower:1, ammoStorage:15}, 
         effects:{armor:1,energyResistance:1}},
-    energyResistance:{name:"Energy Shield", class:"Shield",cost:2, width:6,height:3,shape:[0,5,5,5,5,0,5,5,1,1,5,5,5,1,1,1,1,5], color:"#546572", 
+    energyResistance:{name:"Energy Shield", class:"Shield",cost:2, width:6,height:3,shape:[0,5,5,5,5,0,5,5,1,1,5,5,5,1,1,1,1,5], color:"#546572", drawable:false, 
         effects:{energyResistance:1}},
-    radar:{name:"Radar", class:"Radar",cost:2, width:3,height:3,shape:[0,1,0,1,1,1,0,1,0], color:"#546572", 
+    radar:{name:"Radar", class:"Radar",cost:2, width:3,height:3,shape:[0,1,0,1,1,1,0,1,0], color:"#546572", drawable:false, 
         stats:{radarRange:2, health:10}, effects:{radarRange:2}},
-    powerRing:{name:"Power Ring", class:"Booster", cost:9, width:6, height:6, shape:[0,1,0,0,1,0,1,1,1,1,1,1,0,1,5,5,1,0,0,1,5,5,1,0,1,1,1,1,1,1,0,1,0,0,1,0], color:"#fcc15b", 
+    powerRing:{name:"Power Ring", class:"Booster", cost:9, width:6, height:6, shape:[0,1,0,0,1,0,1,1,1,1,1,1,0,1,5,5,1,0,0,1,5,5,1,0,1,1,1,1,1,1,0,1,0,0,1,0], color:"#fcc15b", drawable:false, 
         effects:{energyFirepower:5, powerStorage:10}},
-    core:{name:"Core", class:"Core",cost:9, width:3,height:3,shape:[1,1,1,1,8,1,1,1,1], color:"#a9bcdb", moveable:false, returnable:false, 
+    core:{name:"Core", class:"Core",cost:9, width:3,height:3,shape:[1,1,1,1,8,1,1,1,1], color:"#a9bcdb", moveable:false, returnable:false, drawable:false, 
         stats:{health:40, energyFirepower:8, powerStorage:1000, powerDraw:0.2, fireRate:2}},
-    matador:{name:"Matador", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", 
+    matador:{name:"Matador", class:"Booster",cost:1,  width:2,height:3,shape:[1,5,1,5,2,1], color:"#324d62", drawable:false, 
         stats:{kineticFirepower:1, ammoStorage:15, radarRange:2}, 
         effects:{armor:1,energyResistance:1, radarRange:2}},
-    salvador:{name:"Salvador", class:"Weapon",cost:5,  width:4,height:3,shape:[0,1,1,1,2,1], color:"#324d62",
+    salvador:{name:"Salvador", class:"Weapon",cost:5,  width:4,height:3,shape:[0,1,1,1,2,1], color:"#324d62", drawable:false,
         stats:{kineticFirepower:1, ammoStorage:20, fireRate:1, blastRadius:2, health:30},
     }
 }
@@ -113,11 +113,7 @@ for (let key in allBuildings) {
 export default allBuildings;
 
 export function getRandomBuilding() {
-    const cards = Object.values(allBuildings);
-    const randomNumber = Math.floor(Math.random() * cards.length);
-    // exclude core building from random selection
-    if (cards[randomNumber].name === "Core") {
-        return getRandomBuilding();
-    }
-    return { ...cards[randomNumber] };
+    const drawableCards = Object.values(allBuildings).filter(card => card.drawable);
+    const randomNumber = Math.floor(Math.random() * drawableCards.length);
+    return { ...drawableCards[randomNumber] };
 }

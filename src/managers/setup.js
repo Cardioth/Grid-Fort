@@ -1,6 +1,6 @@
 import { gridHeight, gridWidth } from "../data/config.js";
 import { createCardGraphicsForHand, setCardPositions } from "../components/cards.js";
-import { buildRandomDeck } from "../components/deck.js";
+import { buildRandomDeck, drawCardFromDeckToHand } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
@@ -45,11 +45,10 @@ export const allBoards = [playerBoard];
 export function setup(){
     buildRandomDeck();
 
-    setCardPositions();
-    
+    for(let i = 0; i < 5; i++){
+        drawCardFromDeckToHand();
+    }
     circularizeGrids();
 
     placeBuildingToBoard(allBuildings.core, playerBoard, -1, -1);
-
-    createCardGraphicsForHand();
 }

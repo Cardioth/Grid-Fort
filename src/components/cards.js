@@ -95,6 +95,8 @@ export function getHoveredCard(mouseX, mouseY) {
 
 export function createCardGraphicsForHand(){
     hand.forEach(card => {
-        createCardGraphic(card);
+        if(card.container === undefined){
+            createCardGraphic(card);
+        }
     });
 }

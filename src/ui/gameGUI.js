@@ -6,6 +6,7 @@ import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { availableCredits } from "../gameplay/credits.js";
 import { endTurn } from "../gameplay/endTurn.js";
 import { currentScene } from "../managers/sceneManager.js";
+import { getImage } from "../graphics/loadImages.js";
 
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();
@@ -69,7 +70,7 @@ export function displayBuildingInfo(building){
     buildingInfoPanelBottomContainer.thickness = 0;
 
     //Bottom panel image
-    const buildingInfoPanelBottom = new GUI.Image("buildingInfo", "buildingStatsPanelBottom.png");
+    const buildingInfoPanelBottom = new GUI.Image("buildingInfo", getImage("buildingStatsPanelBottom.png"));
     buildingInfoPanelBottom.width = "920px";
     buildingInfoPanelBottom.height = "387px";
     buildingInfoPanelBottom.top = 0;
@@ -177,7 +178,7 @@ export function displayBuildingInfo(building){
     GUIscene.beginDirectAnimation(buildingInfoPanelBottomContainer, [buildingInfoPanelBottomContainer.animations[0]], 0, 40, false, 1);
 
     //Building info image panel
-    const buildingInfoPanel = new GUI.Image("buildingInfo", "buildingStatsPanel.png");
+    const buildingInfoPanel = new GUI.Image("buildingInfo", getImage("buildingStatsPanel.png"));
     buildingInfoPanel.width = "920px";
     buildingInfoPanel.height = "387px";
     buildingInfoPanel.top = 0;
@@ -231,7 +232,7 @@ export function displayBuildingInfo(building){
 
     //Building Level image
     if(building.cardLevel >= 1){
-        const imageName = "cardLevel"+building.cardLevel+".png"
+        const imageName = getImage("cardLevel"+building.cardLevel+".png");
         var levelImage = new GUI.Image("but", imageName);
         levelImage.width = "323px";
         levelImage.height = "44px";
@@ -287,7 +288,7 @@ export function displayBottomUI(){
     bottomPanelContainer.left = "0px";
 
     //Bottom panel image
-    const bottomPanel = new GUI.Image("bottomUI", "bottomUI.png");
+    const bottomPanel = new GUI.Image("bottomUI", getImage("bottomUI.png"));
     bottomPanel.width = "596px";
     bottomPanel.height = "150px";
     bottomPanel.top = 0;
@@ -295,7 +296,7 @@ export function displayBottomUI(){
     bottomPanelContainer.addControl(bottomPanel);
 
     //End Turn Button Backing
-    const endTurnButtonBack = new GUI.Image("endTurnButton", "endTurnButtonBack.png");
+    const endTurnButtonBack = new GUI.Image("endTurnButton", getImage("endTurnButtonBack.png"));
     endTurnButtonBack.width = "186px";
     endTurnButtonBack.height = "89px";
     endTurnButtonBack.top = 17;
@@ -303,7 +304,7 @@ export function displayBottomUI(){
     bottomPanelContainer.addControl(endTurnButtonBack);
 
     //End Turn Button
-    const endTurnButton = new GUI.Image("endTurnButton", "endTurnButton.png");
+    const endTurnButton = new GUI.Image("endTurnButton", getImage("endTurnButton.png"));
     endTurnButton.width = "186px";
     endTurnButton.height = "89px";
     endTurnButton.top = 17;
@@ -348,7 +349,7 @@ export function addCreditIcon(amount){
         GUITexture.creditsIcons = [];
     }
     for(let i = 0; i < amount; i++){
-        const creditIcon = new GUI.Image("creditIcon", "gameCredit.png");
+        const creditIcon = new GUI.Image("creditIcon", getImage("gameCredit.png"));
         creditIcon.width = "17px";
         creditIcon.height = "22px";
         creditIcon.top = "28px";
