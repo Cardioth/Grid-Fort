@@ -2,7 +2,7 @@ import { gridShaderMaterial, camera, GUIcamera } from './sceneInitialization.js'
 import { setOrthoSize} from "./sceneInitialization.js";
 import { updateCardAnimation } from "../components/cards.js";
 import { allBuildingGraphics } from '../gameplay/buildingPlacement.js';
-import { menuBackgroundAnimation } from './menuBackgroundAnimation.js';
+import { menuBackgroundAnimation } from './animations/menuBackgroundAnimation.js';
 
 // Camera Zoom
 let zoomTarget = 3;

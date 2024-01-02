@@ -10,7 +10,7 @@ import { boardWidth } from "../data/config.js";
 import { setZoomTarget } from "../graphics/graphics.js";
 import { startBattleLoop } from "./battle.js";
 import { removeExistingCreditIcons } from "../ui/gameGUI.js";
-import { fadeInMeshAnimation } from "../graphics/meshFadeAnimations.js";
+import { fadeInMeshAnimation } from "../graphics/animations/meshFadeAnimations.js";
 import { AIforts } from "../components/AIforts.js";
 import { placeAIFort } from "./buildingPlacement.js";
 

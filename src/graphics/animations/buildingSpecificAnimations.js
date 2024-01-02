@@ -1,6 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
-import { scene } from '../graphics/sceneInitialization';
-import { getMeshByMaterialName } from '../utilities/utils';
+import { scene } from '../sceneInitialization';
+import { getMeshByMaterialName } from '../../utilities/utils';
 
 export function addBuildingSpecificAnimations(building){
     if(building.name.startsWith("core")){

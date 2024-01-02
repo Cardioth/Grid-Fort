@@ -13,6 +13,7 @@ import { createPreloadScreen } from '../ui/preloadGUI.js';
 import { fadeToBlack } from '../ui/generalGUI.js';
 import { displayBottomUI } from '../ui/gameGUI.js';
 import { setup } from '../managers/setup.js';
+import { loadExplosionTemplate } from './particleEffects/loadParticleEffects.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -66,6 +67,8 @@ export const initPreloadScene = () => {
             createPreloadScreen();
         }
     });
+
+    loadExplosionTemplate(scene); //Particle effects
 
     importModels(scene); //Game meshes
 

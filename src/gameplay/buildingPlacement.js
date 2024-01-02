@@ -10,10 +10,10 @@ import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
 import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import * as BABYLON from '@babylonjs/core';
-import { weaponIdleAnimation } from "../graphics/weaponAnimations";
+import { weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
 import { boosterRisingAnimation, createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
 import { setSelectedPlacedBuilding } from "../managers/eventListeners";
-import { addBuildingSpecificAnimations } from "../graphics/buildingSpecificAnimations";
+import { addBuildingSpecificAnimations } from "../graphics/animations/buildingSpecificAnimations";
 import allBuildings from "../components/buildings";
 import { createHealthBarGraphic } from "../graphics/buildingHealthBar";
 
@@ -436,7 +436,7 @@ export function returnSelectedBuildingToDeck() {
             selectedBuilding.placed = false;
         }
     }
-    
+
 }
 
 export function createBuildingGraphicFromCard(building, board, rotation) {

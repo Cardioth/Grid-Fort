@@ -1,4 +1,4 @@
-import { menuBackgrounds } from "./sceneInitialization";
+import { menuBackgrounds } from "../sceneInitialization";
 
 export function menuBackgroundAnimation() {
     if(menuBackgrounds && menuBackgrounds.length > 0){

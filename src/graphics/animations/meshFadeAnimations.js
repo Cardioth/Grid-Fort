@@ -1,5 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
-import { scene } from './sceneInitialization';
+import { scene } from '../sceneInitialization';
 
 export function fadeInMeshAnimation(mesh){
     const animation = new BABYLON.Animation("fadeIn", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);

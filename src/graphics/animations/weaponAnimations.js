@@ -1,5 +1,5 @@
 import * as BABYLON from "@babylonjs/core";
-import { scene } from "./sceneInitialization";
+import { scene } from "../sceneInitialization";
 
 // Weapon idle animation, picks a random rotation and rotates weapon to that rotation
 export function weaponIdleAnimation(weapon) {
