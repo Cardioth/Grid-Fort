@@ -16,9 +16,7 @@ import { fadeOutMeshAnimation } from "../graphics/animations/meshFadeAnimations"
 import { getTargetRotation, weaponFireAnimation, weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
 import { createLaserGraphic } from "../graphics/laserGraphics";
 import { createKineticGraphic } from "../graphics/kineticGraphics";
-import { createBuildingExplosion } from "../graphics/particleEffects/buildingExplosion";
-import { createLaserExplosion } from "../graphics/particleEffects/laserExplosion";
-import { createKineticExplosion } from "../graphics/particleEffects/kineticExplosion";
+import { createExplosion } from "../graphics/particleEffects/createExplosion";
 import { darkenBuilding, undarkenBuilding } from "../graphics/darkenBuilding";
 
 let battleLoopInterval;
@@ -235,7 +233,7 @@ function fireKineticTurret(building, board, target, enemy) {
                                     cell.building.moveable = false;
                                 }
 
-                                createKineticExplosion(targetPosition, building.buildingGraphic.position);
+                                createExplosion(targetPosition, "kineticExplosion");
 
                                 updateBuildingStatsText();
 
@@ -285,7 +283,7 @@ function fireEnergyTurret(building, board, target, enemy) {
             }
 
             setTimeout(function () {
-                createLaserExplosion(targetPosition, building.buildingGraphic.position);
+                createExplosion(targetPosition, "laserExplosion");
             },500);
 
             updateBuildingStatsText();
@@ -298,17 +296,8 @@ function fireEnergyTurret(building, board, target, enemy) {
 function updateTargetHealthAndDeath(target) {
     if (target.building.stats.health <= 0) {
         if(target.building.destroyed === false){
-            // setTimeout(function () { // desperate attempt to prevent stuttering when buildings die
-            //     if(target.building.buildingGraphic){
-                    createBuildingExplosion(target.building.buildingGraphic.position);
-            //     }
-            // }, 50);
-            // setTimeout(function () { // desperate attempt to prevent stuttering when buildings die
-            //     if(target.building.buildingGraphic && target.building.destroyed === true){
-                    darkenBuilding(target.building);
-            //     }
-            // }, 100);
-            
+            createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
+            darkenBuilding(target.building);
         }
         if(target.building.name !== "Core"){
             target.building.moveable = true;

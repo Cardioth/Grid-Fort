@@ -1,8 +1,7 @@
 import { loadedParticleSystems } from "./loadParticleEffects";
-import * as BABYLON from '@babylonjs/core';
 
-export function createKineticExplosion(position, startPosition) {
-    let explosionTemplate = loadedParticleSystems.find(system => system.name === "kineticExplosion");
+export function createExplosion(position, explosionName) {
+    let explosionTemplate = loadedParticleSystems.find(system => system.name === explosionName);
 
     if (explosionTemplate && explosionTemplate.systems) {
         explosionTemplate.systems.forEach(originalSystem => {
@@ -10,8 +9,7 @@ export function createKineticExplosion(position, startPosition) {
 
             if (clonedSystem) {
                 let newPosition = position.clone();
-                newPosition.y += 0.1; // Adjust the height offset as needed
-                newPosition = BABYLON.Vector3.Lerp(newPosition, startPosition, 0.01);
+                newPosition.y += 0.2; // Adjust the height offset as needed
                 clonedSystem.emitter = newPosition;
                 
                 clonedSystem.start();
