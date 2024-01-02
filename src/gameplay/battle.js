@@ -199,7 +199,7 @@ function fireEnergyTurret(building, board, target, enemy) {
 function updateTargetHealthAndDeath(target, board) {
     if (target.building.stats.health <= 0) {
         if(target.building.destroyed === false){
-            //createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
+            createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
             darkenBuilding(target.building);
             removeBuldingEffectsFromBoard(target.building, board);
         }
