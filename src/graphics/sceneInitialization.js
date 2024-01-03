@@ -15,6 +15,7 @@ import { displayBottomUI } from '../ui/gameGUI.js';
 import { setup } from '../managers/setup.js';
 import { loadParticleSystems } from './particleEffects/loadParticleEffects.js';
 import { loadImages as loadImages } from './loadImages.js';
+import { setDarkenedMaterial } from './darkenBuilding.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -214,13 +215,15 @@ function loadModels(scene) {
             for (let i = 0; i < meshes.length; i++) {
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))) {
                     if (!buildingAssets.meshes.includes(meshes[i].parent)) {
-                        buildingAssets.meshes.push(meshes[i].parent);
+                        buildingAssets.meshes.push(meshes[i].parent);     
+                        setDarkenedMaterial(meshes[i].parent);                   
                     }
                     meshes[i].setEnabled(false);
                 }
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Weapon"))) {
                     if (!weaponAssets.meshes.includes(meshes[i].parent)) {
                         weaponAssets.meshes.push(meshes[i].parent);
+                        setDarkenedMaterial(meshes[i].parent);
                     }
                     meshes[i].setEnabled(false);
                 }

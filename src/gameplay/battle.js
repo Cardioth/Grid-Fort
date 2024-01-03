@@ -200,8 +200,8 @@ function fireEnergyTurret(building, board, target, enemy) {
 function updateTargetHealthAndDeath(target, board) {
     if (target.building.stats.health <= 0) {
         if(target.building.destroyed === false){
-            //createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
-            //darkenBuilding(target.building);
+            createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
+            darkenBuilding(target.building);
             removeBuldingEffectsFromBoard(target.building, board);
         }
         if(target.building.name !== "Core"){
@@ -218,7 +218,7 @@ function updateTargetHealthAndDeath(target, board) {
             //     fadeOutMeshAnimation(child, 20);
             // }
             target.building.buildingGraphic.laserGraphic.dispose();
-            //target.building.buildingGraphic.laserGraphic = null;
+            target.building.buildingGraphic.laserGraphic = null;
         }
     } else {
         if (!target.building.healthBarGraphic) {
