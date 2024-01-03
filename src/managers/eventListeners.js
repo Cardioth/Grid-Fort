@@ -134,8 +134,7 @@ export function initializeGameControls(canvas) {
                 if (clickedBuilding) {
                     selectedPlacedBuilding = clickedBuilding;
                     displayBuildingInfo(clickedBuilding);
-                    createExplosion(clickedBuilding.buildingGraphic.position)
-                    //console.log(clickedBuilding);
+                    console.log(clickedBuilding);
                 } else {
                     selectedPlacedBuilding = null;
                     displayBuildingInfo(null);

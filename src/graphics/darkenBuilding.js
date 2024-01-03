@@ -28,6 +28,7 @@ export function setDarkenedMaterial(mesh){
         if (child.material) {
             child.originalMaterial = child.material;
             child.darkenedMaterial = createDarkenedMaterial(child.material);
+            child.darkenedMaterial.freeze();
         }
     }
 }
