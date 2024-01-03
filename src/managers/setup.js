@@ -1,5 +1,4 @@
-import { gridHeight, gridWidth } from "../data/config.js";
-import { createCardGraphicsForHand, setCardPositions } from "../components/cards.js";
+import { gridHeight, gridWidth, startingCardCount } from "../data/config.js";
 import { buildRandomDeck, drawCardFromDeckToHand } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
@@ -45,7 +44,7 @@ export const allBoards = [playerBoard];
 export function setup(){
     buildRandomDeck();
 
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < startingCardCount; i++){
         drawCardFromDeckToHand();
     }
     circularizeGrids();

@@ -44,10 +44,11 @@ function battleLoop() {
                 building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
                 pointTurretAtTarget(building);
                 if(building.buildingGraphic.laserGraphic){
-                    for(let child of building.buildingGraphic.laserGraphic.getChildren()){
-                        fadeOutMeshAnimation(child, 20);
-                    }
-                    building.buildingGraphic.laserGraphic = null;
+                    // for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+                    //     fadeOutMeshAnimation(child, 20);
+                    // }
+                    // building.buildingGraphic.laserGraphic = null;
+                    building.buildingGraphic.laserGraphic.dispose();
                 }
             }
             //Fire Energy
@@ -199,8 +200,12 @@ function fireEnergyTurret(building, board, target, enemy) {
 function updateTargetHealthAndDeath(target, board) {
     if (target.building.stats.health <= 0) {
         if(target.building.destroyed === false){
-            createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
-            darkenBuilding(target.building);
+            setTimeout(function () {
+                createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
+            }, 489);
+            setTimeout(function () {
+                darkenBuilding(target.building);
+            }, 123);
             removeBuldingEffectsFromBoard(target.building, board);
         }
         if(target.building.name !== "Core"){
@@ -213,10 +218,11 @@ function updateTargetHealthAndDeath(target, board) {
             target.building.healthBarGraphic = null;
         }
         if(target.building.buildingGraphic.laserGraphic){
-            for(let child of target.building.buildingGraphic.laserGraphic.getChildren()){
-                fadeOutMeshAnimation(child, 20);
-            }
-            target.building.buildingGraphic.laserGraphic = null;
+            // for(let child of target.building.buildingGraphic.laserGraphic.getChildren()){
+            //     fadeOutMeshAnimation(child, 20);
+            // }
+            target.building.buildingGraphic.laserGraphic.dispose();
+            //target.building.buildingGraphic.laserGraphic = null;
         }
     } else {
         if (!target.building.healthBarGraphic) {

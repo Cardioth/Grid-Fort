@@ -62,6 +62,7 @@ export const infoBoxes = [];
 
 export const initPreloadScene = () => {
     scene = new BABYLON.Scene(engine);
+
     camera = initCamera(scene); //Camera
     
     WebFont.load({

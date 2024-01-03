@@ -1,9 +1,10 @@
 
-export let availableCredits = 5;
-export let totalCredits = 5;
-const totalPossibleCredits = 18;
-
+import { startingCredits } from "../data/config";
 import { addCreditIcon, removeCreditIcon, removeExistingCreditIcons } from "../ui/gameGUI";
+
+export let availableCredits = startingCredits;
+export let totalCredits = startingCredits;
+const totalPossibleCredits = 18;
 
 export function updateTotalCredits(amount) {
     totalCredits += amount;

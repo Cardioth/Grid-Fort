@@ -17,7 +17,7 @@ export function createExplosion(position, explosionName) {
                 setTimeout(() => {
                     clonedSystem.stop();
                     clonedSystem.dispose();
-                }, clonedSystem.maxLifeTime * 1000); // Adjust timing based on the system's lifespan
+                }, 1000); // Adjust timing based on the system's lifespan
             }
         });
     }
