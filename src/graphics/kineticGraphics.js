@@ -3,6 +3,7 @@ import { scene } from './sceneInitialization';
 import { getMeshByMaterialName } from '../utilities/utils';
 
 export function createKineticGraphic(startTarget,endTarget){
+    //positioning
     let startPosition = new BABYLON.Vector3(startTarget.position.x+0.001, startTarget.position.y+0.5, startTarget.position.z+0.001);
     let endPosition = new BABYLON.Vector3(endTarget.x, endTarget.y+0.2, endTarget.z);
 
@@ -10,33 +11,50 @@ export function createKineticGraphic(startTarget,endTarget){
         startPosition = getMeshByMaterialName("greyGradientRadial", startTarget.turret).getBoundingInfo().boundingBox.centerWorld
     }
 
-    //create billboard glow at startPoint
-    const muzzleFlash = BABYLON.MeshBuilder.CreatePlane("glow", {height:0.1,width:0.1}, scene);
-    muzzleFlash.position = startPosition;
-    muzzleFlash.isPickable = false;
-    muzzleFlash.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-    const muzzleFlashMaterial = new BABYLON.PBRMaterial("glowMaterial", scene);
-    muzzleFlashMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-    muzzleFlashMaterial.disableLighting = true;
-    muzzleFlashMaterial.albedoTexture = new BABYLON.Texture("textures/laserTextureGlow.png", scene);
-    muzzleFlashMaterial.albedoTexture.hasAlpha = true;
-    muzzleFlashMaterial.useAlphaFromAlbedoTexture = true;
-    muzzleFlashMaterial.alphaMode = BABYLON.Engine.ALPHA_ADD;
-    muzzleFlash.material = muzzleFlashMaterial;
+    //muzzle flash
+    //createMuzzleFlash(startPosition);
 
-    //create glow animation
-    const muzzleFlashAnimation = new BABYLON.Animation("glowAnimation", "material.alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-    muzzleFlashAnimation.setKeys([
-        { frame: 0, value: 1 },
-        { frame: 10, value: 0 },
-    ]);
+    //create projectile
+    const projectile = createProjectile(startPosition, endPosition);
 
-    muzzleFlash.glowAnimation = scene.beginDirectAnimation(muzzleFlash, [muzzleFlashAnimation], 0, 10, false, 1, function(){
-        muzzleFlash.dispose();
+    //create projectile trail
+    //createProjectileTrail(startPosition, projectile);
+}
+
+
+function createProjectileTrail(startPosition, projectile) {
+    let trailPoints = [startPosition.clone()];
+    let trailLines = [];
+
+    // Update the trail in each frame
+    projectile.Observable = scene.onBeforeRenderObservable.add(() => {
+        // Add the new position
+        if (!projectile.isDisposed()) {
+            trailPoints.push(projectile.position.clone());
+            var trail = BABYLON.MeshBuilder.CreateLines("trail", { points: trailPoints, instance: trail }, scene);
+            trailPoints.shift();
+            trail.isPickable = false;
+            trailLines.push(trail);
+            trail.lifeSpan = 20;
+        }
+
+        for (let i = 0; i < trailLines.length; i++) {
+            trailLines[i].lifeSpan -= 1;
+            trailLines[i].alpha -= 0.05;
+            if (trailLines[i].lifeSpan <= 0) {
+                trailLines[i].dispose();
+                trailLines.splice(i, 1);
+            }
+        }
+
+        if (trailLines.length === 0) {
+            scene.onBeforeRenderObservable.remove(projectile.Observable);
+        }
     });
+}
 
-    //create projectile mesh
-    const projectile = BABYLON.MeshBuilder.CreateSphere("projectile", {diameter:0.03}, scene);
+function createProjectile(startPosition, endPosition) {
+    const projectile = BABYLON.MeshBuilder.CreateSphere("projectile", { segments: 1, diameter: 0.03 }, scene);
     projectile.position = startPosition;
     projectile.isPickable = false;
     projectile.isVisible = true;
@@ -53,48 +71,42 @@ export function createKineticGraphic(startTarget,endTarget){
 
     //calculate parabolic arc positions
     const projectilePath = generateProjectilePath(startPosition, endPosition, 0.7);
-    for(let i = 0; i < projectilePath.length; i++){
-        keys.push({frame: i+1, value: projectilePath[i]});
+    for (let i = 0; i < projectilePath.length; i++) {
+        keys.push({ frame: i + 1, value: projectilePath[i] });
     }
 
     projectileAnimation.setKeys(keys);
 
     //create projectile animation
-    projectile.projectileAnimation = scene.beginDirectAnimation(projectile, [projectileAnimation], 0, projectilePath.length, false, 1, function(){
+    projectile.projectileAnimation = scene.beginDirectAnimation(projectile, [projectileAnimation], 0, projectilePath.length, false, 1, function () {
         projectile.dispose();
     });
-
-    // Create the initial trail line
-    let trailPoints = [startPosition.clone()];
-    let trailLines = [];
-
-    // Update the trail in each frame
-    projectile.Observable = scene.onBeforeRenderObservable.add(() => {
-        // Add the new position
-            if(!projectile.isDisposed()){
-                trailPoints.push(projectile.position.clone());
-                var trail = BABYLON.MeshBuilder.CreateLines("trail", { points: trailPoints, instance: trail}, scene);
-                trailPoints.shift();
-                trail.isPickable = false;
-                trailLines.push(trail);
-                trail.lifeSpan = 20;
-            }
-    
-            for(let i = 0; i < trailLines.length; i++){
-                trailLines[i].lifeSpan -= 1;
-                trailLines[i].alpha -= 0.05;
-                if(trailLines[i].lifeSpan <= 0){
-                    trailLines[i].dispose();
-                    trailLines.splice(i, 1);
-                }
-            }
-
-            if(trailLines.length === 0){
-                scene.onBeforeRenderObservable.remove(projectile.Observable);
-            }
-    });
+    return projectile;
 }
 
+function createMuzzleFlash(startPosition) {
+    const muzzleFlash = BABYLON.MeshBuilder.CreatePlane("glow", { height: 0.1, width: 0.1 }, scene);
+    muzzleFlash.position = startPosition;
+    muzzleFlash.isPickable = false;
+    muzzleFlash.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+    const muzzleFlashMaterial = new BABYLON.StandardMaterial("glowMaterial", scene);
+    muzzleFlashMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+    muzzleFlashMaterial.disableLighting = true;
+    muzzleFlashMaterial.diffuseTexture = new BABYLON.Texture("textures/laserTextureGlow.png", scene);
+    muzzleFlashMaterial.diffuseTexture.hasAlpha = true;
+    muzzleFlash.material = muzzleFlashMaterial;
+
+    //create glow animation
+    const muzzleFlashAnimation = new BABYLON.Animation("glowAnimation", "material.alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    muzzleFlashAnimation.setKeys([
+        { frame: 0, value: 1 },
+        { frame: 10, value: 0 },
+    ]);
+
+    muzzleFlash.glowAnimation = scene.beginDirectAnimation(muzzleFlash, [muzzleFlashAnimation], 0, 10, false, 1, function () {
+        muzzleFlash.dispose();
+    });
+}
 
 function generateProjectilePath(start, end, duration) {
     var keyframeData = [];

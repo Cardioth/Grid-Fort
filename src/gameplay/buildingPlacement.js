@@ -346,7 +346,12 @@ export function cloneBuilding(name, x, z) {
 
             childClone.position.x = x;
             childClone.position.z = z;
+
+            //const nameStore = childClone.material.name;
+            //childClone.material = childClone.material.clone();
+            //childClone.material.name = nameStore;
             childClone.defaultMaterial = childClone.material;
+            
         }
         clone.targetPosition = { x: x, z: z };
         addBuildingSpecificAnimations(clone);
@@ -376,7 +381,11 @@ export function cloneWeapon(name, x, z, yRotation = 0, newParentNode){
             childClone.position.x = x;
             childClone.position.z = z;
 
+            const nameStore = childClone.material.name;
+            childClone.material = childClone.material.clone();
+            childClone.material.name = nameStore;
             childClone.defaultMaterial = childClone.material;
+            
         }
         clone.parent = newParentNode;
         newParentNode.turret = clone;

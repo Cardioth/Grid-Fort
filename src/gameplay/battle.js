@@ -47,8 +47,9 @@ function battleLoop() {
                     // for(let child of building.buildingGraphic.laserGraphic.getChildren()){
                     //     fadeOutMeshAnimation(child, 20);
                     // }
-                    // building.buildingGraphic.laserGraphic = null;
+                    
                     building.buildingGraphic.laserGraphic.dispose();
+                    building.buildingGraphic.laserGraphic = null;
                 }
             }
             //Fire Energy

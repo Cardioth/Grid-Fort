@@ -1,6 +1,6 @@
 import { loadedParticleSystems } from "./loadParticleEffects";
 
-/*
+
 export function createExplosion(position, explosionName) {
     let explosionTemplate = loadedParticleSystems.find(system => system.name === explosionName);
 
@@ -18,14 +18,13 @@ export function createExplosion(position, explosionName) {
                 setTimeout(() => {
                     clonedSystem.stop();
                     clonedSystem.dispose();
-                }, 2000); // Adjust timing based on the system's lifespan
+                }, 2500); // Adjust timing based on the system's lifespan
             }
         });
     }
 }
-*/
 
-
+/*
 export function createExplosion(position, explosionName) {
     let explosionTemplate = loadedParticleSystems.find(system => system.name === explosionName);
 
@@ -40,3 +39,4 @@ export function createExplosion(position, explosionName) {
         });
     }
 }
+*/
