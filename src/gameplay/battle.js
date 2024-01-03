@@ -200,12 +200,8 @@ function fireEnergyTurret(building, board, target, enemy) {
 function updateTargetHealthAndDeath(target, board) {
     if (target.building.stats.health <= 0) {
         if(target.building.destroyed === false){
-            setTimeout(function () {
-                createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
-            }, 489);
-            setTimeout(function () {
-                darkenBuilding(target.building);
-            }, 123);
+            createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
+            darkenBuilding(target.building);
             removeBuldingEffectsFromBoard(target.building, board);
         }
         if(target.building.name !== "Core"){

@@ -4,7 +4,7 @@
         {
             "name": "flash",
             "id": "flash",
-            "capacity": 4,
+            "capacity": 6,
             "emitter":
             [
                 0,
@@ -135,7 +135,7 @@
         {
             "name": "fireball",
             "id": "fireball",
-            "capacity": 6,
+            "capacity": 10,
             "emitter":
             [
                 0,

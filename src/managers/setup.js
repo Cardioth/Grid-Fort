@@ -5,6 +5,7 @@ import { circularizeGrids } from "../components/grids.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../components/buildings";
 import { boardWidth } from "../data/config.js";
+import { createCardGraphicsForHand, hand, setCardPositions } from "../components/cards.js";
 
 export const fortStats = {
     kineticFirepower: {name:"Kinetic Firepower", stat: 0},
@@ -47,6 +48,7 @@ export function setup(){
     for(let i = 0; i < startingCardCount; i++){
         drawCardFromDeckToHand();
     }
+
     circularizeGrids();
 
     placeBuildingToBoard(allBuildings.core, playerBoard, -1, -1);

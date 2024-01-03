@@ -1,6 +1,6 @@
 
 
-import { getRandomBuilding } from "./buildings";
+import allBuildings, { getRandomBuilding } from "./buildings";
 import { hand } from "./cards";
 import { setCardPositions, createCardGraphicsForHand } from "./cards";
 
@@ -16,6 +16,8 @@ export function drawCardFromDeckToHand(){
     if(deck.length > 0){
         hand.push(deck.pop());
     }
+    //hand.push(allBuildings.miniArty);
+
     setCardPositions();
     createCardGraphicsForHand();
 }

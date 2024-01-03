@@ -7,6 +7,7 @@ export function loadParticleSystems(scene) {
 
     BABYLON.ParticleHelper.CreateAsync("explosion", scene).then((set) => {
         set.name = "buildingExplosion";
+        set.disposeOnStop = false;
         loadedParticleSystems.push(set);
     }).catch(error => {
         console.error("Error loading explosion template:", error);
@@ -14,6 +15,7 @@ export function loadParticleSystems(scene) {
 
     BABYLON.ParticleHelper.CreateAsync("kineticExplosion", scene).then((set) => {
         set.name = "kineticExplosion";
+        set.disposeOnStop = false;
         loadedParticleSystems.push(set);
     }).catch(error => {
         console.error("Error loading explosion template:", error);
@@ -21,6 +23,7 @@ export function loadParticleSystems(scene) {
 
     BABYLON.ParticleHelper.CreateAsync("laserExplosion", scene).then((set) => {
         set.name = "laserExplosion";
+        set.disposeOnStop = false;
         loadedParticleSystems.push(set);
     }).catch(error => {
         console.error("Error loading explosion template:", error);
