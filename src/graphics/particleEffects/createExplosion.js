@@ -27,16 +27,16 @@ export function createExplosion(position, explosionName) {
 
 
 export function createExplosion(position, explosionName) {
-    let explosionTemplate = loadedParticleSystems.find(system => system.name === explosionName);
+    // let explosionTemplate = loadedParticleSystems.find(system => system.name === explosionName);
 
-    if (explosionTemplate && explosionTemplate.systems) {
-        explosionTemplate.systems.forEach(system => {
+    // if (explosionTemplate && explosionTemplate.systems) {
+    //     explosionTemplate.systems.forEach(system => {
 
-            let newPosition = position.clone();
-            newPosition.y += 0.2; // Adjust the height offset as needed
-            system.emitter = newPosition;
+    //         let newPosition = position.clone();
+    //         newPosition.y += 0.2; // Adjust the height offset as needed
+    //         system.emitter = newPosition;
             
-            system.start();
-        });
-    }
+    //         system.start();
+    //     });
+    // }
 }
