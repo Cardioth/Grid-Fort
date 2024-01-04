@@ -1,4 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
+import { materialAtlas } from './sceneInitialization';
 
 export function darkenBuilding(building) {
     building.darkened = true;
@@ -20,7 +21,12 @@ export function darkenBuilding(building) {
             if (frameCounter % framesPerChange === 0) {
                 const child = children[index];
                 if (child.material) {
-                    child.material = child.darkenedMaterial;
+                    const darkenedMaterialName = child.material.name + "_darkened";
+                    for(const material of materialAtlas){
+                        if(material.name === darkenedMaterialName){
+                            child.material = material;
+                        }
+                    }
                     index++;
                 }
             }
@@ -33,16 +39,7 @@ export function darkenBuilding(building) {
 
 }
 
-export function setDarkenedMaterial(mesh){
-    for (const child of mesh.getChildren()) {
-        if (child.material) {
-            child.originalMaterial = child.material;
-            child.darkenedMaterial = createDarkenedMaterial(child.material);
-        }
-    }
-}
-
-function createDarkenedMaterial(material){
+export function createDarkenedMaterial(material){
     const darkenedMaterial = material.clone();
     darkenedMaterial.albedoColor = new BABYLON.Color3(0.2, 0.2, 0.2);
     darkenedMaterial.emissiveColor = new BABYLON.Color3(0, 0, 0);

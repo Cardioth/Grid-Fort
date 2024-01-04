@@ -15,7 +15,7 @@ import { displayBottomUI } from '../ui/gameGUI.js';
 import { setup } from '../managers/setup.js';
 import { loadParticleSystems } from './particleEffects/loadParticleEffects.js';
 import { loadImages as loadImages } from './loadImages.js';
-import { setDarkenedMaterial } from './darkenBuilding.js';
+import { createDarkenedMaterial } from './darkenBuilding.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -42,6 +42,9 @@ export let shadowGenerator;
 export let menuBackgrounds = [];
 export let boostedCellGraphic;
 let lights;
+
+// Material Atlas
+export const materialAtlas = [];
 
 // Testing Plane
 let testPlane;
@@ -193,6 +196,25 @@ function createGridGraphic() {
     return plane;
 }
 
+function addMeshMaterialsToMaterialAtlas(mesh) {
+    for (const child of mesh.getChildren()) {
+        if (child.material) {
+            if(!materialAtlas.includes(child.material)){
+                materialAtlas.push(child.material);
+                const darkenedMaterial = createDarkenedMaterial(child.material);
+                darkenedMaterial.name = child.material.name + "_darkened";
+                materialAtlas.push(darkenedMaterial);
+            }
+        }
+    }
+}
+
+function preWarmMaterials() {
+    for (let i = 0; i < materialAtlas.length; i++) {
+        materialAtlas[i].freeze();
+    }
+}
+
 function loadModels(scene) {
     buildingAssets = new BABYLON.AssetContainer(scene);
     weaponAssets = new BABYLON.AssetContainer(scene);
@@ -215,15 +237,15 @@ function loadModels(scene) {
             for (let i = 0; i < meshes.length; i++) {
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))) {
                     if (!buildingAssets.meshes.includes(meshes[i].parent)) {
-                        buildingAssets.meshes.push(meshes[i].parent);     
-                        setDarkenedMaterial(meshes[i].parent);                   
+                        buildingAssets.meshes.push(meshes[i].parent);
+                        addMeshMaterialsToMaterialAtlas(meshes[i].parent);                  
                     }
                     meshes[i].setEnabled(false);
                 }
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Weapon"))) {
                     if (!weaponAssets.meshes.includes(meshes[i].parent)) {
                         weaponAssets.meshes.push(meshes[i].parent);
-                        setDarkenedMaterial(meshes[i].parent);
+                        addMeshMaterialsToMaterialAtlas(meshes[i].parent); 
                     }
                     meshes[i].setEnabled(false);
                 }
@@ -238,6 +260,7 @@ function loadModels(scene) {
 
             fadeToBlack(() => {
                 setCurrentScene("menu");
+                preWarmMaterials();
             });
         }
     );
