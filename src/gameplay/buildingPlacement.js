@@ -16,6 +16,7 @@ import { setSelectedPlacedBuilding } from "../managers/eventListeners";
 import { addBuildingSpecificAnimations } from "../graphics/animations/buildingSpecificAnimations";
 import allBuildings from "../components/buildings";
 import { createHealthBarGraphic } from "../graphics/buildingHealthBar";
+import { darkenBuilding } from "../graphics/darkenBuilding";
 
 export let allBuildingGraphics = [];
 
@@ -347,12 +348,9 @@ export function cloneBuilding(name, x, z) {
             childClone.position.x = x;
             childClone.position.z = z;
 
-            //const nameStore = childClone.material.name;
-            //childClone.material = childClone.material.clone();
-            //childClone.material.name = nameStore;
             childClone.defaultMaterial = childClone.material;
-            
         }
+
         clone.targetPosition = { x: x, z: z };
         addBuildingSpecificAnimations(clone);
         allBuildingGraphics.push(clone);
@@ -381,9 +379,9 @@ export function cloneWeapon(name, x, z, yRotation = 0, newParentNode){
             childClone.position.x = x;
             childClone.position.z = z;
 
-            const nameStore = childClone.material.name;
-            childClone.material = childClone.material.clone();
-            childClone.material.name = nameStore;
+            // const nameStore = childClone.material.name;
+            // childClone.material = childClone.material.clone();
+            // childClone.material.name = nameStore;
             childClone.defaultMaterial = childClone.material;
             
         }

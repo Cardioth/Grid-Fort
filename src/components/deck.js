@@ -13,14 +13,10 @@ export function buildRandomDeck() {
 }
 
 export function drawCardFromDeckToHand(){
-
-    /*
     if(deck.length > 0){
         hand.push(deck.pop());
     }
-    */
-    hand.push({...allBuildings.miniArty});
-
+    
     setCardPositions();
     createCardGraphicsForHand();
 }
