@@ -18,37 +18,41 @@ export function createKineticGraphic(startTarget,endTarget){
     const projectile = createProjectile(startPosition, endPosition);
 
     //create projectile trail
-    //createProjectileTrail(startPosition, projectile);
+    createProjectileTrail(startPosition, projectile);
 }
 
 
 function createProjectileTrail(startPosition, projectile) {
     let trailPoints = [startPosition.clone()];
     let trailLines = [];
+    let frameCounter = 0;
 
     // Update the trail in each frame
     projectile.Observable = scene.onBeforeRenderObservable.add(() => {
-        // Add the new position
-        if (!projectile.isDisposed()) {
-            trailPoints.push(projectile.position.clone());
-            var trail = BABYLON.MeshBuilder.CreateLines("trail", { points: trailPoints, instance: trail }, scene);
-            trailPoints.shift();
-            trail.isPickable = false;
-            trailLines.push(trail);
-            trail.lifeSpan = 20;
-        }
-
-        for (let i = 0; i < trailLines.length; i++) {
-            trailLines[i].lifeSpan -= 1;
-            trailLines[i].alpha -= 0.05;
-            if (trailLines[i].lifeSpan <= 0) {
-                trailLines[i].dispose();
-                trailLines.splice(i, 1);
+        frameCounter++;
+        if (frameCounter % 2 !== 0) {
+            // Add the new position
+            if (!projectile.isDisposed()) {
+                trailPoints.push(projectile.position.clone());
+                var trail = BABYLON.MeshBuilder.CreateLines("trail", { points: trailPoints, instance: trail }, scene);
+                trailPoints.shift();
+                trail.isPickable = false;
+                trailLines.push(trail);
+                trail.lifeSpan = 20;
             }
-        }
 
-        if (trailLines.length === 0) {
-            scene.onBeforeRenderObservable.remove(projectile.Observable);
+            for (let i = 0; i < trailLines.length; i++) {
+                trailLines[i].lifeSpan -= 1;
+                trailLines[i].alpha -= 0.05;
+                if (trailLines[i].lifeSpan <= 0) {
+                    trailLines[i].dispose();
+                    trailLines.splice(i, 1);
+                }
+            }
+
+            if (trailLines.length === 0) {
+                scene.onBeforeRenderObservable.remove(projectile.Observable);
+            }
         }
     });
 }

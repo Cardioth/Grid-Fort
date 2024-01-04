@@ -47,7 +47,6 @@ function battleLoop() {
                     // for(let child of building.buildingGraphic.laserGraphic.getChildren()){
                     //     fadeOutMeshAnimation(child, 20);
                     // }
-                    
                     building.buildingGraphic.laserGraphic.dispose();
                     building.buildingGraphic.laserGraphic = null;
                 }
@@ -142,7 +141,7 @@ function fireKineticTurret(building, board, target, enemy) {
 
                                 updateBuildingStatsText();
 
-                                updateTargetHealthAndDeath(target, enemy);
+                                updateTargetHealthAndDeath(cell, enemy);
                             }
                         }
                     }

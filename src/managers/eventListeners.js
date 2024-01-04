@@ -135,6 +135,7 @@ export function initializeGameControls(canvas) {
                 if (clickedBuilding) {
                     selectedPlacedBuilding = clickedBuilding;
                     displayBuildingInfo(clickedBuilding);
+                    //darkenBuilding(clickedBuilding);
                 } else {
                     selectedPlacedBuilding = null;
                     displayBuildingInfo(null);

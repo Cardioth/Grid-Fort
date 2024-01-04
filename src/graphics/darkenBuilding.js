@@ -4,16 +4,36 @@ import { materialAtlas } from './sceneInitialization';
 export function darkenBuilding(building) {
     building.darkened = true;
 
-    let index = 0;
-    let frameCounter = 0;
-    let children;
+    let children = building.buildingGraphic.getChildren();
 
-    children = building.buildingGraphic.getChildren();
+    for (const child of children) {
+        if (child.material) {
+            const darkenedMaterialName = child.material.name + "_darkened";
+            for(const material of materialAtlas){
+                if(material.name === darkenedMaterialName){
+                    child.material = material;
+                }
+            }
+        }
+    }
 
     if(building.buildingGraphic.turret){
-        building.buildingGraphic.turret.dispose();
+        for (const child of building.buildingGraphic.turret.getChildren()) {
+            if (child.material) {
+                const darkenedMaterialName = child.material.name + "_darkened";
+                for(const material of materialAtlas){
+                    if(material.name === darkenedMaterialName){
+                        child.material = material;
+                    }
+                }
+            }
+        }
     }
-        
+
+    /* // Spread out the darkening of the building over a few frames
+
+    let index = 0;
+    let frameCounter = 0;
     const framesPerChange = 2;
     
     function changeMaterial() {
@@ -35,7 +55,8 @@ export function darkenBuilding(building) {
         }
     }
     
-    changeMaterial();  
+    changeMaterial();
+    */ 
 
 }
 
@@ -50,13 +71,13 @@ export function undarkenBuilding(building){
     building.darkened = false;
     for (const child of building.buildingGraphic.getChildren()) {
         if (child.material) {
-            child.material = child.originalMaterial;
+            child.material = child.defaultMaterial;
         }
     }
     if(building.buildingGraphic.turret){
         for (const child of building.buildingGraphic.turret.getChildren()) {
             if (child.material) {
-                child.material = child.originalMaterial;
+                child.material = child.defaultMaterial;
             }
         }
     }

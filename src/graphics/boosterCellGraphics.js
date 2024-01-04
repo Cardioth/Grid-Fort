@@ -9,23 +9,24 @@ export function createBoosterCellGraphic(cell){
     clone.position.x = (cell.x-8)/4;
     clone.position.y = -(cell.y-8)/4;
     cell.boosterGraphic = clone;
+    clone.material.alpha = 0.35;
     clone.cell = cell;
     clone.setEnabled(true);
-    clone.boosterIcon = addBoosterCellIcon(clone);
 }
 
 export function removeBoosterCellGraphicsByCell(cell){
-    cell.boosterGraphic.dispose();
-    cell.boosterGraphic.boosterIcon.dispose();
-    cell.boosterGraphic = undefined;
+    if(cell.boosterGraphic){
+        cell.boosterGraphic.dispose();
+        cell.boosterGraphic = undefined;
+    }
 }
 
 function addBoosterCellIcon(mesh){
     const cellIcon = new GUI.Image("boostSymbol", "boostSymbol.png");
     cellIcon.width = "32px";
     cellIcon.height = "32px";
-    cellIcon.scaleX = 0.75;
-    cellIcon.scaleY = 0.75;
+    cellIcon.scaleX = 0.5;
+    cellIcon.scaleY = 0.5;
 
     GUITexture.addControl(cellIcon);
     cellIcon.linkWithMesh(mesh);

@@ -256,8 +256,6 @@ function loadModels(scene) {
             baseBaseMesh.setEnabled(false);
             backgroundMesh.setEnabled(false);
 
-            boostedCellGraphic.material.alpha = 0.2;
-
             fadeToBlack(() => {
                 setCurrentScene("menu");
                 preWarmMaterials();
