@@ -7,6 +7,7 @@ export function createExplosion(position, explosionName) {
     if (explosionTemplate && explosionTemplate.systems) {
         explosionTemplate.systems.forEach(originalSystem => {
             let clonedSystem = originalSystem.clone(originalSystem.name + "Clone", originalSystem.emitter);
+            //let clonedSystem = originalSystem;
 
             if (clonedSystem) {
                 let newPosition = position.clone();

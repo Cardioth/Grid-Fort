@@ -3,8 +3,9 @@ import { materialAtlas } from './sceneInitialization';
 
 export function darkenBuilding(building) {
     building.darkened = true;
-
     let children = building.buildingGraphic.getChildren();
+
+    /* // Darken the building in one frame
 
     for (const child of children) {
         if (child.material) {
@@ -30,11 +31,17 @@ export function darkenBuilding(building) {
         }
     }
 
-    /* // Spread out the darkening of the building over a few frames
+    */
+
+    // Spread out the darkening of the building over a few frames
+
+    if(building.buildingGraphic.turret){
+        building.buildingGraphic.turret.dispose();
+    }
 
     let index = 0;
     let frameCounter = 0;
-    const framesPerChange = 2;
+    const framesPerChange = 10;
     
     function changeMaterial() {
         if (index < children.length) {
@@ -56,7 +63,6 @@ export function darkenBuilding(building) {
     }
     
     changeMaterial();
-    */ 
 
 }
 

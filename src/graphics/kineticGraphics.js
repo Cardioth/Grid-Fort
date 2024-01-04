@@ -30,7 +30,7 @@ function createProjectileTrail(startPosition, projectile) {
     // Update the trail in each frame
     projectile.Observable = scene.onBeforeRenderObservable.add(() => {
         frameCounter++;
-        if (frameCounter % 2 !== 0) {
+        if (frameCounter % 4 !== 0) {
             // Add the new position
             if (!projectile.isDisposed()) {
                 trailPoints.push(projectile.position.clone());
@@ -38,7 +38,7 @@ function createProjectileTrail(startPosition, projectile) {
                 trailPoints.shift();
                 trail.isPickable = false;
                 trailLines.push(trail);
-                trail.lifeSpan = 20;
+                trail.lifeSpan = 10;
             }
 
             for (let i = 0; i < trailLines.length; i++) {

@@ -23,7 +23,7 @@ export function createHealthBarGraphic(building){
     const healthBar = new GUI.Rectangle();
     healthBar.width = healthBarWidth + "px";
     healthBar.height = "7px";
-    healthBar.background = "cyan";
+    healthBar.background = "#4AD4EE";
     healthBar.thickness = 0;
     //align health bar to the left
     healthBar.horizontalAlignment = -20;

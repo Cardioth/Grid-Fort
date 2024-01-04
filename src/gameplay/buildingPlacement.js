@@ -379,8 +379,7 @@ export function cloneWeapon(name, x, z, yRotation = 0, newParentNode){
             childClone.position.x = x;
             childClone.position.z = z;
 
-            childClone.defaultMaterial = childClone.material;
-            
+            childClone.defaultMaterial = childClone.material;            
         }
         clone.parent = newParentNode;
         newParentNode.turret = clone;
