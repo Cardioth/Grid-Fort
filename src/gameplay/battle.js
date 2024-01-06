@@ -1,6 +1,6 @@
 import { currentScene } from "../managers/sceneManager";
 import { allBoards } from "../managers/setup";
-import { gridWidth, gridHeight } from "../data/config";
+import { gridWidth, gridHeight, battleLoopTimeLength } from "../data/config";
 import { playerBoard, enemyBoard } from "../managers/setup";
 import { removeBuldingEffectsFromBoard } from "./buildingPlacement";
 import { scene } from "../graphics/sceneInitialization";
@@ -19,20 +19,22 @@ export let battleLoopInterval;
 export function startBattleLoop(){
     battleLoopInterval = setInterval(function () {
         battleLoop();
-    }, 100);
+    }, battleLoopTimeLength);
 }
 
 function battleLoop() {
+    //Loop through player and enemy boards
     for (let board of allBoards) {
         const enemy = board === playerBoard ? enemyBoard : playerBoard;
 
         //Weapon firing
         board.allPlacedBuildings.forEach((building) => {
-            //Kinetic weapons always find a new target
+            //Kinetic weapons always finds a new target
             if (building.stats.kineticFirepower > 0  && building.destroyed === false) {
-                getPossibleCellTargets(enemy, building);
-                building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
-                pointTurretAtTarget(building);
+                getPossibleCellTargets(enemy, building).then( targets => {
+                    building.target = targets[Math.floor(Math.random() * targets.length)];
+                    pointTurretAtTarget(building);
+                });
             }
             //Fire Kinetic
             if (building.target && building.stats.kineticFirepower > 0 && building.destroyed === false && building.stats.ammoStorage >= building.stats.ammoDraw) {
@@ -40,16 +42,17 @@ function battleLoop() {
             }
             //Energy weapons only find a new target if they don't have one or if their target is destroyed
             if ((building.target === undefined || building.target.building.destroyed === true) && building.stats.energyFirepower > 0 && building.destroyed === false) {
-                getPossibleCellTargets(enemy, building);
-                building.target = building.possibleCellTargets[Math.floor(Math.random() * building.possibleCellTargets.length)];
-                pointTurretAtTarget(building);
-                if(building.buildingGraphic.laserGraphic){
-                    // for(let child of building.buildingGraphic.laserGraphic.getChildren()){
-                    //     fadeOutMeshAnimation(child, 20);
-                    // }
-                    building.buildingGraphic.laserGraphic.dispose();
-                    building.buildingGraphic.laserGraphic = null;
-                }
+                getPossibleCellTargets(enemy, building).then( targets => {
+                    building.target = targets[Math.floor(Math.random() * targets.length)];
+                    pointTurretAtTarget(building);
+                    if(building.buildingGraphic.laserGraphic){
+                        // for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+                        //     fadeOutMeshAnimation(child, 20);
+                        // }
+                        building.buildingGraphic.laserGraphic.dispose();
+                        building.buildingGraphic.laserGraphic = null;
+                    }
+                });
             }
             //Fire Energy
             if (building.target && building.stats.energyFirepower > 0 && building.destroyed === false && building.stats.powerStorage >= building.stats.powerDraw) {
@@ -66,7 +69,23 @@ function battleLoop() {
         });
 
         if (allBuildingsDestroyed) {
-            endBattle();
+            let victory = board === enemyBoard;
+            removalAllLasers();
+            endBattle(victory);
+            clearInterval(battleLoopInterval);
+        }
+    }
+}
+
+function removalAllLasers(){
+    for(let board of allBoards){
+        for(let building of board.allPlacedBuildings){
+            if(building.buildingGraphic.laserGraphic){
+                for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+                    fadeOutMeshAnimation(child, 20);
+                }
+                building.buildingGraphic.laserGraphic = null;
+            }
         }
     }
 }
@@ -195,6 +214,11 @@ function fireEnergyTurret(building, board, target, enemy) {
             updateTargetHealthAndDeath(target, enemy);
         }
     }
+    
+    if(building.buildingGraphic.laserGraphic && building.stats.powerStorage < building.stats.powerDraw){
+        building.buildingGraphic.laserGraphic.dispose();
+        building.buildingGraphic.laserGraphic = null;
+    }
 }
 
 function updateTargetHealthAndDeath(target, board) {
@@ -232,26 +256,27 @@ function updateTargetHealthAndDeath(target, board) {
 }
 
 function getPossibleCellTargets(board, building) {
-    building.possibleCellTargets = [];
-    if (building.preferredTarget.length === 0) {
-        board.grid.forEach((cell) => {
-            if (cell.occupied && cell.building !== undefined && cell.building.destroyed === false) { //&& cell.building.name !== "Core"
-                building.possibleCellTargets.push(cell);
-            }
-        });
-        return null;
-    } else {
-        for (let targetClass of building.preferredTarget) {
-            for (let cell of board.grid) {
-                if (cell.occupied && cell.building !== undefined && cell.building.destroyed === false && targetClass === cell.building.class) {
-                    building.possibleCellTargets.push(cell);
+    return new Promise(resolve => {
+        const possibleCellTargets = [];
+        if (building.preferredTarget.length === 0) {
+            console.log("No preferred target");
+            board.grid.forEach((cell) => {
+                if (cell.occupied && cell.building !== undefined && cell.building.destroyed === false) {
+                    possibleCellTargets.push(cell);
+                }
+            });
+        } else {
+            for (let targetClass of building.preferredTarget) {
+                for (let cell of board.grid) {
+                    if (cell.occupied && cell.building !== undefined && cell.building.destroyed === false && targetClass === cell.building.class) {
+                        possibleCellTargets.push(cell);
+                    }
+                }
+                if (possibleCellTargets.length > 0) {
+                    break;
                 }
             }
-            if (building.possibleCellTargets.length > 0) {
-                break;
-            }
         }
-        return null;
-    }
+        resolve(possibleCellTargets);
+    });
 }
-

@@ -13,6 +13,7 @@ import { removeExistingCreditIcons } from "../ui/gameGUI.js";
 import { fadeInMeshAnimation } from "../graphics/animations/meshFadeAnimations.js";
 import { AIforts } from "../components/AIforts.js";
 import { placeAIFort } from "./buildingPlacement.js";
+import { drawBattleCountdown } from "../graphics/drawBattleCountdown.js";
 
 
 export function endTurn() {
@@ -77,12 +78,14 @@ export function endTurn() {
             let countDownNumber = 4;
             let countDownInterval = setInterval(function () {
                 countDownNumber--;
+
+                drawBattleCountdown(countDownNumber);
                 if (countDownNumber === 0) {
                     setCurrentScene("battle");
                     startBattleLoop();
                     clearInterval(countDownInterval);
                 }
-            }, 500);
+            }, 800);
         }
     };
 }

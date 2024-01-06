@@ -3,8 +3,9 @@ export const gridHeight = 17;
 export const cellSize = 18;
 export const boardWidth = 2.875;
 
-export const startingCredits = 18;
-export const startingCardCount = 8;
+export const startingCredits = 2;
+export const startingCardCount = 2;
+export const battleLoopTimeLength = 20;
 
 export const shapeKeyLegend = {
     0: "empty",

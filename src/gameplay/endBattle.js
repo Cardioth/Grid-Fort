@@ -12,11 +12,19 @@ import * as BABYLON from "@babylonjs/core";
 import { fadeOutMeshAnimation } from "../graphics/animations/meshFadeAnimations";
 import { weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
 import { undarkenBuilding } from "../graphics/darkenBuilding";
-import { getTurretsOfBuilding, battleLoopInterval } from "./battle";
+import { getTurretsOfBuilding } from "./battle";
 import { drawCardFromDeckToHand } from "../components/deck";
 import { hand } from "../components/cards";
+import { createEndBattleScreen } from "../graphics/endBattleScreen";
 
-export function endBattle() {
+export function endBattle(victory) {
+
+    setCurrentScene("endBattle");
+
+    createEndBattleScreen(victory);
+}
+
+export function returnToBuildScene() {
     setCurrentScene("build");
 
     if (getTotalCredits() < 18) {
@@ -51,7 +59,7 @@ export function endBattle() {
     if (allBoards.indexOf(enemyBoard) !== -1) {
         allBoards.splice(allBoards.indexOf(enemyBoard), 1);
     }
-    clearInterval(battleLoopInterval);
+
 }
 
 function updatePlayerBuildings() {
@@ -67,15 +75,10 @@ function updatePlayerBuildings() {
             }
             updateBuildingStatsText();
             if (building.darkened) {
-                undarkenBuilding(building);
+                setTimeout(function () {
+                    undarkenBuilding(building);
+                }, 2000);
             }
-        }
-
-        if (building.buildingGraphic.laserGraphic) {
-            for (let child of building.buildingGraphic.laserGraphic.getChildren()) {
-                fadeOutMeshAnimation(child, 20);
-            }
-            building.buildingGraphic.laserGraphic = null;
         }
 
         if (building.destroyed === false) {

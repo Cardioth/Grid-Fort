@@ -41,7 +41,7 @@ export function darkenBuilding(building) {
 
     let index = 0;
     let frameCounter = 0;
-    const framesPerChange = 10;
+    const framesPerChange = 5;
     
     function changeMaterial() {
         if (index < children.length) {

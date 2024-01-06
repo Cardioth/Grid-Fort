@@ -21,7 +21,11 @@ export function loadImages(scene) {
         "endTurnButton.png",
         "endTurnButtonBack.png",
         "gameCredit.png",
-        "gameCreditIcon.png"
+        "gameCreditIcon.png",
+        "countdown_one.png",
+        "countdown_two.png",
+        "countdown_three.png",
+        "countdown_background.png",
     ];
     
     paths.forEach(path => {

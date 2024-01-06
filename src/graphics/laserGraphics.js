@@ -29,42 +29,16 @@ export function createLaserGraphic(startTarget,endTarget){
     laserGraphic.lookAt(endPosition);
 
     //create billboard glow at startPoint
-    const glow = BABYLON.MeshBuilder.CreatePlane("glow", {height:0.2,width:0.2}, scene);
-    glow.position = startPosition;
-    glow.isPickable = false;
-    glow.isVisible = true;
-    glow.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-    const glowMaterial = new BABYLON.PBRMaterial("glowMaterial", scene);
-    glowMaterial.emissiveColor = new BABYLON.Color3(.4, .65, .65);
-    glowMaterial.disableLighting = true;
-    glowMaterial.albedoTexture = new BABYLON.Texture("textures/laserTextureGlow.png", scene);
-    glowMaterial.albedoTexture.hasAlpha = true;
-    glowMaterial.useAlphaFromAlbedoTexture = true;
-    glowMaterial.alphaMode = BABYLON.Engine.ALPHA_ADD;
-    glow.material = glowMaterial;
-
-    //offset billboard position towards midpoint
-    const glowPosition = BABYLON.Vector3.Lerp(startPosition, midpoint, 0.07);
-    glow.position = glowPosition;
-
-    //create glow animation
-    const glowAnimation = new BABYLON.Animation("glowAnimation", "material.alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-    glowAnimation.setKeys([
-        { frame: 0, value: 0 },
-        { frame: 20, value: 0},
-        { frame: 40, value: 0.8 },
-    ]);
-
-    glow.glowAnimation = scene.beginDirectAnimation(glow, [glowAnimation], 0, 40, false);
+    const glow = createLaserGlow(startPosition, midpoint);
         
     //create material
-    const laserMaterial = new BABYLON.PBRMaterial("laserMaterial", scene);
+    const laserMaterial = new BABYLON.StandardMaterial("laserMaterial", scene);
     laserMaterial.emissiveColor = new BABYLON.Color3(.7, 1, 1);
     laserMaterial.disableLighting = true;
-    laserMaterial.albedoTexture = new BABYLON.Texture("textures/laserTexture.png", scene);
-    laserMaterial.albedoTexture.hasAlpha = true;
+    laserMaterial.diffuseTexture = new BABYLON.Texture("textures/laserTexture.png", scene);
+    laserMaterial.diffuseTexture.hasAlpha = true;
     laserMaterial.alpha = 0;
-    laserMaterial.useAlphaFromAlbedoTexture = true;
+    laserMaterial.useAlphaFromDiffuseTexture = true;
     laserMaterial.alphaMode = BABYLON.Engine.ALPHA_ADD;
     laserGraphic.material = laserMaterial;
 
@@ -90,4 +64,35 @@ export function createLaserGraphic(startTarget,endTarget){
     glow.parent = laserContainer;
 
     startTarget.laserGraphic = laserContainer;
+}
+
+function createLaserGlow(startPosition, midpoint) {
+    const glow = BABYLON.MeshBuilder.CreatePlane("glow", { height: 0.2, width: 0.2 }, scene);
+    glow.position = startPosition;
+    glow.isPickable = false;
+    glow.isVisible = true;
+    glow.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+    const glowMaterial = new BABYLON.StandardMaterial("glowMaterial", scene);
+    glowMaterial.emissiveColor = new BABYLON.Color3(.4, .65, .65);
+    glowMaterial.disableLighting = true;
+    glowMaterial.diffuseTexture = new BABYLON.Texture("textures/laserTextureGlow.png", scene);
+    glowMaterial.diffuseTexture.hasAlpha = true;
+    glowMaterial.useAlphaFromDiffuseTexture = true;
+    glowMaterial.alphaMode = BABYLON.Engine.ALPHA_ADD;
+    glow.material = glowMaterial;
+
+    //offset billboard position towards midpoint
+    const glowPosition = BABYLON.Vector3.Lerp(startPosition, midpoint, 0.07);
+    glow.position = glowPosition;
+
+    //create glow animation
+    const glowAnimation = new BABYLON.Animation("glowAnimation", "material.alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    glowAnimation.setKeys([
+        { frame: 0, value: 0 },
+        { frame: 20, value: 0 },
+        { frame: 40, value: 0.8 },
+    ]);
+
+    glow.glowAnimation = scene.beginDirectAnimation(glow, [glowAnimation], 0, 40, false);
+    return glow;
 }

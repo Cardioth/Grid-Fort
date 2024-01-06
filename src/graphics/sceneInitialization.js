@@ -390,7 +390,7 @@ engine.runRenderLoop(() => {
         updateMenuGraphics();
     }
 
-    if (currentScene === "build" || currentScene === "battle" || currentScene === "battleCountdown") {
+    if (currentScene === "build" || currentScene === "battle" || currentScene === "battleCountdown" || currentScene === "endBattle") {
         scene.render();
         GUIscene.render();
         updateGraphics();
