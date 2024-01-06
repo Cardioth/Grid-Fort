@@ -11,8 +11,6 @@ import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
 import { engine } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 import { displayBuildingInfo } from "../ui/gameGUI";
-import { createExplosion } from "../graphics/particleEffects/createExplosion";
-import { darkenBuilding } from "../graphics/darkenBuilding";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -46,7 +44,7 @@ export function initializeGameControls(canvas) {
         const mouseY = e.clientY - rect.top;
 
         //Hovering over a card
-        if (selectedCard === null) {            
+        if (selectedCard === null && (currentScene === "build" || currentScene === "battleCountdown"  || currentScene === "battle")) {            
             hoveredCard = getHoveredCard(mouseX, mouseY);
         }
 
@@ -135,7 +133,6 @@ export function initializeGameControls(canvas) {
                 if (clickedBuilding) {
                     selectedPlacedBuilding = clickedBuilding;
                     displayBuildingInfo(clickedBuilding);
-                    //darkenBuilding(clickedBuilding);
                 } else {
                     selectedPlacedBuilding = null;
                     displayBuildingInfo(null);

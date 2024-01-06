@@ -46,6 +46,9 @@ let lights;
 // Material Atlas
 export const materialAtlas = [];
 
+// Laser Material Pool
+export const laserMaterialPool = [];
+
 // Testing Plane
 let testPlane;
 export let testPlaneContext;
@@ -84,6 +87,8 @@ export const initPreloadScene = () => {
     loadImages(scene); //Preload images and models
 
     loadModels(scene);
+
+    addLaserMaterialsToMaterialPool(20);
 
     return scene;
 }
@@ -207,6 +212,30 @@ function addMeshMaterialsToMaterialAtlas(mesh) {
             }
         }
     }
+}
+
+function addLaserMaterialsToMaterialPool(poolSize) {
+    for(let i = 0; i < poolSize; i++){
+        const laserMaterial = new BABYLON.StandardMaterial("laserMaterial", scene);
+        laserMaterial.emissiveColor = new BABYLON.Color3(.7, 1, 1);
+        laserMaterial.disableLighting = true;
+        laserMaterial.diffuseTexture = new BABYLON.Texture("textures/laserTexture.png", scene);
+        laserMaterial.diffuseTexture.hasAlpha = true;
+        laserMaterial.useAlphaFromDiffuseTexture = true;
+        laserMaterial.alphaMode = BABYLON.Engine.ALPHA_ADD;
+        laserMaterial.name = "laserMaterial";
+        laserMaterialPool.push(laserMaterial);
+    }
+
+    const glowMaterial = new BABYLON.StandardMaterial("glowMaterial", scene);
+    glowMaterial.emissiveColor = new BABYLON.Color3(.4, .65, .65);
+    glowMaterial.disableLighting = true;
+    glowMaterial.diffuseTexture = new BABYLON.Texture("textures/laserTextureGlow.png", scene);
+    glowMaterial.diffuseTexture.hasAlpha = true;
+    glowMaterial.useAlphaFromDiffuseTexture = true;
+    glowMaterial.alphaMode = BABYLON.Engine.ALPHA_ADD;
+    glowMaterial.name = "glowMaterial";
+    materialAtlas.push(glowMaterial);
 }
 
 function preWarmMaterials() {

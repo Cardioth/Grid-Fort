@@ -2,6 +2,7 @@ import * as BABYLON from "@babylonjs/core";
 import { scene, camera, gridPlane, collisionPlane } from '../graphics/sceneInitialization';
 import { fortStats } from "../managers/setup";
 import { currentMouseX, currentMouseY } from "../managers/eventListeners";
+import { materialAtlas } from '../graphics/sceneInitialization';
 
 export function wrapText(context, text, x, y, lineHeight) {
     const lines = text.split("\n");
@@ -110,6 +111,14 @@ export function getMeshByMaterialName(name, building) {
         const meshes = buildingChildren[i];
         if (meshes.material.name === name) {
             return buildingChildren[i];
+        }
+    }
+}
+
+export function getMaterialFromMaterialAtlas(name){
+    for(const material of materialAtlas){
+        if(material.name === name){
+            return material;
         }
     }
 }

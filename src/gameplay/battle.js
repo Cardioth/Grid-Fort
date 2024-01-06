@@ -9,7 +9,7 @@ import { createHealthBarGraphic, updateHealthBarGraphic } from "../graphics/buil
 import * as BABYLON from "@babylonjs/core";
 import { fadeOutMeshAnimation } from "../graphics/animations/meshFadeAnimations";
 import { getTargetRotation, weaponFireAnimation } from "../graphics/animations/weaponAnimations";
-import { createLaserGraphic } from "../graphics/laserGraphics";
+import { createLaserGraphic, fadeOutLaserAnimation } from "../graphics/laserGraphics";
 import { createKineticGraphic } from "../graphics/kineticGraphics";
 import { createExplosion } from "../graphics/particleEffects/createExplosion";
 import { darkenBuilding } from "../graphics/darkenBuilding";
@@ -46,10 +46,9 @@ function battleLoop() {
                     building.target = targets[Math.floor(Math.random() * targets.length)];
                     pointTurretAtTarget(building);
                     if(building.buildingGraphic.laserGraphic){
-                        // for(let child of building.buildingGraphic.laserGraphic.getChildren()){
-                        //     fadeOutMeshAnimation(child, 20);
-                        // }
-                        building.buildingGraphic.laserGraphic.dispose();
+                        for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+                            fadeOutLaserAnimation(child, 20);
+                        }
                         building.buildingGraphic.laserGraphic = null;
                     }
                 });
@@ -82,7 +81,7 @@ function removalAllLasers(){
         for(let building of board.allPlacedBuildings){
             if(building.buildingGraphic.laserGraphic){
                 for(let child of building.buildingGraphic.laserGraphic.getChildren()){
-                    fadeOutMeshAnimation(child, 20);
+                    fadeOutLaserAnimation(child, 20);
                 }
                 building.buildingGraphic.laserGraphic = null;
             }
@@ -216,7 +215,9 @@ function fireEnergyTurret(building, board, target, enemy) {
     }
     
     if(building.buildingGraphic.laserGraphic && building.stats.powerStorage < building.stats.powerDraw){
-        building.buildingGraphic.laserGraphic.dispose();
+        for(let child of building.buildingGraphic.laserGraphic.getChildren()){
+            fadeOutLaserAnimation(child, 20);
+        }
         building.buildingGraphic.laserGraphic = null;
     }
 }
@@ -238,10 +239,9 @@ function updateTargetHealthAndDeath(target, board) {
             target.building.healthBarGraphic = null;
         }
         if(target.building.buildingGraphic.laserGraphic){
-            // for(let child of target.building.buildingGraphic.laserGraphic.getChildren()){
-            //     fadeOutMeshAnimation(child, 20);
-            // }
-            target.building.buildingGraphic.laserGraphic.dispose();
+            for(let child of target.building.buildingGraphic.laserGraphic.getChildren()){
+                fadeOutLaserAnimation(child, 20);
+            }
             target.building.buildingGraphic.laserGraphic = null;
         }
     } else {
