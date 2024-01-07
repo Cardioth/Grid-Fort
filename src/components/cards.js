@@ -68,7 +68,7 @@ export function setCardPositions() {
         buildingCard.originalRotation = rotationAngle;
         buildingCard.isHovered = false;
         buildingCard.isDragged = false;
-        buildingCard.zIndex = index;
+        buildingCard.zIndex = index+100;
         buildingCard.originalZIndex = index;
     });
 }

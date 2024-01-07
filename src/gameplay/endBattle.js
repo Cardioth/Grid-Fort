@@ -1,5 +1,5 @@
 import { setCurrentScene } from "../managers/sceneManager";
-import { allBoards } from "../managers/setup";
+import { allBoards, updateMedals, updateStrikes } from "../managers/setup";
 import { getTotalCredits, setAvailableCredits, updateTotalCredits } from "./credits";
 import allBuildings from "../components/buildings";
 import { playerBoard, enemyBoard } from "../managers/setup";
@@ -18,6 +18,12 @@ import { hand } from "../components/cards";
 import { createEndBattleScreen } from "../graphics/endBattleScreen";
 
 export function endBattle(victory) {
+
+    if(victory){
+        updateMedals(1);
+    } else {
+        updateStrikes(1);
+    }
 
     setCurrentScene("endBattle");
 

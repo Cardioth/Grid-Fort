@@ -26,6 +26,14 @@ export function loadImages(scene) {
         "countdown_two.png",
         "countdown_three.png",
         "countdown_background.png",
+        "continueButton.png",
+        "defeatText.png",
+        "victoryText.png",
+        "endBattleBacking.png",
+        "medalIcon1.png",
+        "medalIcon2.png",
+        "medalIcon3.png",
+        "strikeIcon.png",
     ];
     
     paths.forEach(path => {

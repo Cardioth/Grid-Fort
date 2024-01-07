@@ -3,6 +3,10 @@ import * as BABYLON from "@babylonjs/core";
 import { GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { returnToBuildScene } from "../gameplay/endBattle.js";
+import { getImage } from "./loadImages.js";
+import { medals, strikes } from "../managers/setup.js";
+import { playerBoard, enemyBoard } from "../managers/setup.js";
+import { camelCaseToTitleCase } from "../utilities/utils.js";
 
 export function createEndBattleScreen(victory){
     //container
@@ -11,48 +15,217 @@ export function createEndBattleScreen(victory){
     container.height = "100%";
     container.thickness = 0;
 
-    const endBattleScreen = new GUI.Rectangle();
-    endBattleScreen.width = "100%";
-    endBattleScreen.height = "100%";
-    endBattleScreen.thickness = 0;
-    endBattleScreen.background = "black";
-    endBattleScreen.alpha = 0.3;
-    endBattleScreen.zIndex = 101;
+    const endBattleDarkness = new GUI.Rectangle();
+    endBattleDarkness.width = "100%";
+    endBattleDarkness.height = "100%";
+    endBattleDarkness.thickness = 0;
+    endBattleDarkness.background = "black";
+    endBattleDarkness.alpha = 0.7;
+    endBattleDarkness.zIndex = 1;
+    container.addControl(endBattleDarkness);
 
-    const victoryText = new GUI.TextBlock();
+    //Bottom panel image
+    const endBattleBacking = new GUI.Image("endBattleBacking", getImage("endBattleBacking.png"));
+    endBattleBacking.width = "929px";
+    endBattleBacking.height = "344px";
+    endBattleBacking.zIndex = 2;
+    container.addControl(endBattleBacking);
 
     if(victory){
-        victoryText.text = "Victory!";
+        const victoryText = new GUI.Image("victoryText", getImage("victoryText.png"));
+        victoryText.width = "254px";
+        victoryText.height = "51px";
+        victoryText.top = "-132px";
+        victoryText.left = "343px";
+        victoryText.zIndex = 3;
+        container.addControl(victoryText);
     } else {
-        victoryText.text = "Defeat!";
+        const defeatText = new GUI.Image("defeatText", getImage("defeatText.png"));
+        defeatText.width = "254px";
+        defeatText.height = "51px";
+        defeatText.top = "-132px";
+        defeatText.left = "343px";
+        defeatText.zIndex = 3;
+        container.addControl(defeatText);
     }
-    victoryText.color = "white";
-    victoryText.fontSize = 48;
-    victoryText.fontFamily = "GemunuLibre-Bold";
-    victoryText.zIndex = 102;
-    victoryText.alpha = 1;
-    victoryText.top = "-5%";
-    container.addControl(victoryText);
+
+    //Medals Text
+    const medalText = new GUI.TextBlock();
+    medalText.text = "Medals: " + medals;
+    medalText.color = "#92EDFF";
+    medalText.fontSize = 20;
+    medalText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    medalText.top = "-83px";
+    medalText.left = "860px";
+    medalText.fontFamily = "GemunuLibre-Bold";
+    medalText.zIndex = 4;
+    container.addControl(medalText);
+
+    //Strike Text
+    const strikeText = new GUI.TextBlock();
+    strikeText.text = "Strikes: " + strikes + "/ 7";
+    strikeText.color = "#FF5D48";
+    strikeText.fontSize = 20;
+    strikeText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    strikeText.top = "17px";
+    strikeText.left = "860px";
+    strikeText.fontFamily = "GemunuLibre-Bold";
+    strikeText.zIndex = 5;
+    container.addControl(strikeText);
+
+    //Your Stats Text
+    const yourStatsText = new GUI.TextBlock();
+    yourStatsText.text = "Your Stats:";
+    yourStatsText.color = "white";
+    yourStatsText.fontSize = 20;
+    yourStatsText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    yourStatsText.top = "-113px";
+    yourStatsText.left = "357px";
+    yourStatsText.fontFamily = "GemunuLibre-Bold";
+    yourStatsText.zIndex = 6;
+    container.addControl(yourStatsText);
+
+    //Enemy Stats Text
+    const enemyStatsText = new GUI.TextBlock();
+    enemyStatsText.text = "Opponent Stats:";
+    enemyStatsText.color = "white";
+    enemyStatsText.fontSize = 20;
+    enemyStatsText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    enemyStatsText.top = "-113px";
+    enemyStatsText.left = "603px";
+    enemyStatsText.fontFamily = "GemunuLibre-Bold";
+    enemyStatsText.zIndex = 7;
+    container.addControl(enemyStatsText);
  
 
-    const endBattleButton = GUI.Button.CreateSimpleButton("endBattleButton", "Continue");
-    endBattleButton.width = "10%";
-    endBattleButton.height = "40px";
-    endBattleButton.color = "white";
-    endBattleButton.fontSize = 30;
-    endBattleButton.fontFamily = "GemunuLibre-Bold";
-    endBattleButton.background = "black";
-    endBattleButton.thickness = 0;
-    endBattleButton.zIndex = 103;
-    endBattleButton.top = "5%";
-    endBattleButton.onPointerUpObservable.add(function(){
+    //Continue Button
+    const continueButton = new GUI.Image("continueButton", getImage("continueButton.png"));
+    continueButton.width = "137px";
+    continueButton.height = "33px";
+    continueButton.top = 118;
+    continueButton.left = 321;
+    continueButton.zIndex = 20;
+   
+    continueButton.onPointerClickObservable.add( () => {
         returnToBuildScene();
-        container.dispose();
+        const animation = new BABYLON.Animation("containerFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        animation.setKeys([
+            { frame: 0, value: 1 },
+            { frame: 30, value: 0 }
+        ]);
+        container.animations = [];
+        container.animations.push(animation);
+        let ease = new BABYLON.CubicEase();
+        ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+        animation.setEasingFunction(ease);    
+        GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
+            container.dispose();
+        });
     });
 
-    container.addControl(endBattleScreen);
-    container.addControl(endBattleButton);
+    //returnToBuildScene()
+
+    //Change cursor on hover
+    continueButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    continueButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
+    container.addControl(continueButton);
+
+    //Strike Icons
+    for (let i = 0; i < strikes; i++) {
+        const strikeIcon = new GUI.Image("strikeIcon", getImage("strikeIcon.png"));
+        strikeIcon.width = "55px";
+        strikeIcon.height = "55px";
+        strikeIcon.top = "66px";
+        strikeIcon.left = 80 + i*54;
+        strikeIcon.zIndex = 9;
+        container.addControl(strikeIcon);
+    }
+
+    //Medal Icons
+    function getMedalImage(medalCount) {
+        if (medalCount < 6) {
+            return "medalIcon1.png"; // Level 1 Medal
+        } else if (medalCount < 12) {
+            return "medalIcon2.png"; // Level 2 Medal
+        } else {
+            return "medalIcon3.png"; // Level 3 Medal
+        }
+    }
+
+    for (let i = 0; i < medals; i++) {
+        const level = Math.floor(i / 6);
+        const medalImage = getMedalImage(level * 6);
+        const medalIcon = new GUI.Image("medalIcon", getImage(medalImage));
+        medalIcon.width = "60px";
+        medalIcon.height = "45px";
+        medalIcon.top = "-36px";
+        medalIcon.left = 85 + (i % 6) * 63;
+        medalIcon.zIndex = 10;
+        container.addControl(medalIcon);
+    }
+
+    //Fort Stats
+    let lineHeight = 0;
+    for(let key in playerBoard.stats){
+        if(playerBoard.stats[key].stat !== 0){
+            let text = camelCaseToTitleCase(key) + ": " + playerBoard.stats[key].stat;
+            const statsText = new GUI.TextBlock();
+            statsText.text = text;
+            statsText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            statsText.color = "#262323";
+            statsText.fontSize = 16;
+            statsText.top = -76 + lineHeight + "px";
+            statsText.left = "357px";
+            statsText.fontFamily = "GemunuLibre-Medium";
+            statsText.zIndex = 11;
+            container.addControl(statsText);
+            lineHeight += 20;
+        }
+    }
+
+    //Enemy Stats
+    lineHeight = 0;
+    for(let key in enemyBoard.stats){
+        if(enemyBoard.stats[key].stat !== 0){
+            let text = camelCaseToTitleCase(key) + ": " + enemyBoard.stats[key].stat;
+            const statsText = new GUI.TextBlock();
+            statsText.text = text;
+            statsText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            statsText.color = "#262323";
+            statsText.fontSize = 16;
+            statsText.top = -76 + lineHeight + "px";
+            statsText.left = "603px";
+            statsText.fontFamily = "GemunuLibre-Medium";
+            statsText.zIndex = 11;
+            container.addControl(statsText);
+            lineHeight += 20;
+        }
+    }
+    
+    container.zIndex = 300;
+
     GUITexture.addControl(container);
 
-    return endBattleScreen;
+    // Animate container fade in
+    container.alpha = 0;
+    const animation = new BABYLON.Animation("containerFadeIn", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    animation.setKeys([
+        { frame: 0, value: 0 },
+        { frame: 40, value: 1 }
+    ]);
+    container.animations = [];
+    container.animations.push(animation);
+    let ease = new BABYLON.CubicEase();
+    ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+    animation.setEasingFunction(ease);    
+    GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 40, false, 1);
+    
+
+
+    return endBattleDarkness;
 }

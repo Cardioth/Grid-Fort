@@ -337,7 +337,7 @@ export function displayBottomUI(){
     //Create Game Credits Icons
     addCreditIcon(availableCredits);
 
-    bottomPanelContainer.zIndex = 1000;
+    bottomPanelContainer.zIndex = 200;
 
     GUITexture.addControl(bottomPanelContainer);
 }

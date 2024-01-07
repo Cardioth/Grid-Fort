@@ -158,10 +158,6 @@ export const disposeGameScene = () => {
     scene.dispose();
 }
 
-export const disposeGUIScene = () => {
-    
-}
-
 function createCollisionPlane() {
     const collisionPlane = BABYLON.MeshBuilder.CreatePlane("plane", { width: 50, height: 50 }, scene);
     collisionPlane.position = new BABYLON.Vector3(0, 0, 0);
