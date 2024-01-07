@@ -27,6 +27,7 @@ export function updateBoardStats(board) {
         for (let key in building.stats) {
             if (board.stats.hasOwnProperty(key)) {
                 board.stats[key].stat += building.stats[key];
+                board.stats[key].stat = Math.round(board.stats[key].stat * 100) / 100;
             }
         } 5;
     });

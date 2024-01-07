@@ -45,7 +45,7 @@ function battleLoop() {
                     pointTurretAtTarget(building);
                     if(building.buildingGraphic.laserGraphic){
                         for(let child of building.buildingGraphic.laserGraphic.getChildren()){
-                            fadeOutLaserAnimation(child, 20);
+                            fadeOutLaserAnimation(child, 40);
                         }
                         building.buildingGraphic.laserGraphic = null;
                     }
