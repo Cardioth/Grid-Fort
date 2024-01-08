@@ -1,6 +1,6 @@
 import * as BABYLON from "@babylonjs/core";
 import { scene, camera, gridPlane, collisionPlane } from '../graphics/sceneInitialization';
-import { fortStats } from "../managers/setup";
+import { fortStats } from "../managers/gameSetup";
 import { currentMouseX, currentMouseY } from "../managers/eventListeners";
 import { materialAtlas } from '../graphics/sceneInitialization';
 

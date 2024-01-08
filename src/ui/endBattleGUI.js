@@ -3,10 +3,11 @@ import * as BABYLON from "@babylonjs/core";
 import { GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { returnToBuildScene } from "../gameplay/endBattle.js";
-import { getImage } from "./loadImages.js";
-import { medals, strikes } from "../managers/setup.js";
-import { playerBoard, enemyBoard } from "../managers/setup.js";
+import { getImage } from "../graphics/loadImages.js";
+import { medals, strikes } from "../managers/gameSetup.js";
+import { playerBoard, enemyBoard } from "../managers/gameSetup.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
+import { currentScene } from "../managers/sceneManager.js";
 
 export function createEndBattleScreen(victory){
     //container
@@ -107,20 +108,22 @@ export function createEndBattleScreen(victory){
     continueButton.zIndex = 20;
    
     continueButton.onPointerClickObservable.add( () => {
-        returnToBuildScene();
-        const animation = new BABYLON.Animation("containerFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-        animation.setKeys([
-            { frame: 0, value: 1 },
-            { frame: 30, value: 0 }
-        ]);
-        container.animations = [];
-        container.animations.push(animation);
-        let ease = new BABYLON.CubicEase();
-        ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-        animation.setEasingFunction(ease);    
-        GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
-            container.dispose();
-        });
+        if(currentScene === "endBattle"){
+            returnToBuildScene();
+            const animation = new BABYLON.Animation("containerFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+            animation.setKeys([
+                { frame: 0, value: 1 },
+                { frame: 30, value: 0 }
+            ]);
+            container.animations = [];
+            container.animations.push(animation);
+            let ease = new BABYLON.CubicEase();
+            ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+            animation.setEasingFunction(ease);    
+            GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
+                container.dispose();
+            });
+        }
     });
 
     //returnToBuildScene()

@@ -1,11 +1,11 @@
 import { setCurrentScene } from "../managers/sceneManager";
-import { allBoards, updateMedals, updateStrikes } from "../managers/setup";
+import { allBoards, updateMedals, updateStrikes } from "../managers/gameSetup";
 import { getTotalCredits, setAvailableCredits, updateTotalCredits } from "./credits";
 import allBuildings from "../components/buildings";
-import { playerBoard, enemyBoard } from "../managers/setup";
+import { playerBoard, enemyBoard } from "../managers/gameSetup";
 import { unplaceBuilding } from "./buildingPlacement";
 import { GUIcamera, camera } from "../graphics/sceneInitialization";
-import { setZoomTarget } from "../graphics/graphics";
+import { setZoomTarget } from "../graphics/renderLoop";
 import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
 import { selectedPlacedBuilding } from "../managers/eventListeners";
 import * as BABYLON from "@babylonjs/core";
@@ -15,7 +15,7 @@ import { undarkenBuilding } from "../graphics/darkenBuilding";
 import { getTurretsOfBuilding } from "./battle";
 import { drawCardFromDeckToHand } from "../components/deck";
 import { hand } from "../components/cards";
-import { createEndBattleScreen } from "../graphics/endBattleScreen";
+import { createEndBattleScreen } from "../ui/endBattleGUI";
 
 export function endBattle(victory) {
 

@@ -1,7 +1,7 @@
 import { unplaceBuilding } from "../gameplay/buildingPlacement";
 import { gridWidth, gridHeight } from "../data/config";
 import { updateAvailableCredits, updateTotalCredits } from "../gameplay/credits";
-import { allBoards, playerBoard } from "../managers/setup";
+import { allBoards, playerBoard } from "../managers/gameSetup";
 import { updateBoardStats } from "../utilities/utils";
 import { hand, setCardPositions } from "./cards";
 

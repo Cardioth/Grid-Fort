@@ -2,6 +2,7 @@ import * as GUI from "@babylonjs/gui";
 import { GUITexture } from '../graphics/sceneInitialization.js';
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
+import { uniCredits, updateUniCredits } from "../data/config.js";
 
 export function createMenuScreen(){
     // Create container
@@ -39,7 +40,10 @@ export function createMenuScreen(){
     playButton.background = "black";
     playButton.onPointerClickObservable.add(() => {
         fadeToBlack(() => {
-            setCurrentScene("build");
+            if(uniCredits > 150){
+                updateUniCredits(-150);
+                setCurrentScene("build");
+            }
         });
     });
     container.addControl(playButton);

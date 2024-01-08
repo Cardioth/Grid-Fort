@@ -4,8 +4,8 @@ import { returnSelectedBuildingToDeck, setAnchorRotationAdjustment } from "../ga
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
 import { getHoveredBuilding } from "../utilities/utils";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
-import { playerBoard } from "./setup";
-import { setZoomTarget } from "../graphics/graphics";
+import { playerBoard } from "./gameSetup";
+import { setZoomTarget } from "../graphics/renderLoop";
 import { getPointerGridLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
 import { engine } from "../graphics/sceneInitialization";
@@ -70,6 +70,9 @@ export function initializeGameControls(canvas) {
                 } else {
                     hoveredBuilding = null;
                 }
+            }
+            if (hoveredBuilding !== null && distanceDragged > 5 && selectedBuilding === null && hoveredBuilding.moveable === false) {
+                canvas.style.cursor = "not-allowed";
             }
         }
 

@@ -4,15 +4,15 @@ import * as GUI from '@babylonjs/gui';
 import { getShaderMaterial } from '../shaders/gridMaterial.js';
 import { gridHeight, gridWidth } from '../data/config.js';
 import { initializeGameControls } from '../managers/eventListeners.js';
-import { drawTestPlaneTexture } from './drawTestPlaneTexture.js';
+import { drawTestPlaneTexture } from './testingGraphics/drawTestPlaneTexture.js';
 import { currentScene, setCurrentScene } from '../managers/sceneManager.js';
-import { updateGraphics, updateMenuGraphics } from './graphics.js';
+import { updateGraphics, updateMenuGraphics } from './renderLoop.js';
 import { createMenuScreen } from '../ui/menuGUI.js';
 import WebFont from "webfontloader";
 import { createPreloadScreen } from '../ui/preloadGUI.js';
 import { fadeToBlack } from '../ui/generalGUI.js';
 import { displayBottomUI } from '../ui/gameGUI.js';
-import { setup } from '../managers/setup.js';
+import { gameSetup } from '../managers/gameSetup.js';
 import { loadParticleSystems } from './particleEffects/loadParticleEffects.js';
 import { loadImages as loadImages } from './loadImages.js';
 import { createDarkenedMaterial } from './darkenBuilding.js';
@@ -88,7 +88,7 @@ export const initPreloadScene = () => {
 
     loadModels(scene);
 
-    addLaserMaterialsToMaterialPool(20);
+    addLaserMaterialsToMaterialPool(200);
 
     return scene;
 }
@@ -128,7 +128,7 @@ export const initGameScene = () => {
 
     displayBottomUI(); //Bottom UI
 
-    setup();
+    gameSetup();
 };
 
 export const initGUIScene = () => {

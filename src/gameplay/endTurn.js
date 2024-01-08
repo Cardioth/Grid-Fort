@@ -1,13 +1,13 @@
 import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { baseMesh, baseBaseMesh } from "../graphics/sceneInitialization.js";
 import { camera, GUIcamera } from "../graphics/sceneInitialization.js";
-import { allBoards, enemyBoard } from "../managers/setup.js";
+import { allBoards, enemyBoard } from "../managers/gameSetup.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../components/buildings.js";
 import { updateBoardStats } from "../utilities/utils.js";
 import { circularizeGrids } from "../components/grids.js";
 import { boardWidth } from "../data/config.js";
-import { setZoomTarget } from "../graphics/graphics.js";
+import { setZoomTarget } from "../graphics/renderLoop.js";
 import { startBattleLoop } from "./battle.js";
 import { removeExistingCreditIcons } from "../ui/gameGUI.js";
 import { fadeInMeshAnimation } from "../graphics/animations/meshFadeAnimations.js";

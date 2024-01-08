@@ -1,7 +1,7 @@
 import { currentScene } from "../managers/sceneManager";
-import { allBoards } from "../managers/setup";
+import { allBoards } from "../managers/gameSetup";
 import { gridWidth, gridHeight, battleLoopTimeLength } from "../data/config";
-import { playerBoard, enemyBoard } from "../managers/setup";
+import { playerBoard, enemyBoard } from "../managers/gameSetup";
 import { removeBuldingEffectsFromBoard } from "./buildingPlacement";
 import { updateBuildingStatsText } from "../ui/gameGUI";
 import { createHealthBarGraphic, updateHealthBarGraphic } from "../graphics/buildingHealthBar";

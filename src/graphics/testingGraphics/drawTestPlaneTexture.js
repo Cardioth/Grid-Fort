@@ -1,6 +1,6 @@
-import { gridHeight, gridWidth } from '../data/config.js';
-import { testPlaneContext } from './sceneInitialization.js';
-import { playerBoard } from '../managers/setup.js';
+import { gridHeight, gridWidth } from '../../data/config.js';
+import { testPlaneContext } from '../sceneInitialization.js';
+import { playerBoard } from '../../managers/gameSetup.js';
 
 export function drawTestPlaneTexture(testPlaneTexture) {
     const resolution = 1000;
