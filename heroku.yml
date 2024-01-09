@@ -1,0 +1,5 @@
+build:
+  docker:
+    server: Dockerfile
+  config:
+    PROJECT_PATH: server/ # This should be the path to your server directory
