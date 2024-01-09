@@ -75,7 +75,7 @@ export const initPreloadScene = () => {
     WebFont.load({
         custom: {
             families: ['GemunuLibre-Bold', 'GemunuLibre-Medium', 'RussoOne-Regular'],
-            urls: ['./style.css']
+            urls: ['style.css']
         },
         active: function () {
             createPreloadScreen();
