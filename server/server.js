@@ -29,7 +29,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
-  // Setup your socket event handlers here
 });
 
 
