@@ -14,7 +14,7 @@ const redisClient = require('./db/redis');
 const app = express();
 const server = http.createServer(app);
 app.get('/', (req, res) => {
-  res.send('Grid Fort Server');
+  res.send('Grid Fort Server is running');
 });
 
 // Express CORS
@@ -35,6 +35,7 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   proxy: true,
   cookie: {
+    domain: 'grid-fort-server-d1b61f740a9b.herokuapp.com',
     httpOnly: false,
     secure: true,
     sameSite: 'none',
