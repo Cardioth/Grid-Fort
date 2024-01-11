@@ -1,6 +1,7 @@
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
 import { connectToServer } from "./connect";
+import { createAuthMessage } from "./createAuthMessage";
 import { unhideLoginButtons } from "./loginInterface";
 import { serverUrl } from "./serverURL";
 
@@ -25,7 +26,7 @@ export function loginUser(username, password) {
         }
     })
     .catch(error => {
-      unhideLoginButtons();
+      createAuthMessage("Login failed", unhideLoginButtons);
       console.error('Login error:', error);
     });
   }
