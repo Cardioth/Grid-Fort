@@ -35,6 +35,7 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   proxy: true,
   cookie: {
+    domain: 'api.gridfort.net',
     secure: true,
     sameSite: 'none',
   }
