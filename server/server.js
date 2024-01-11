@@ -36,7 +36,6 @@ const sessionMiddleware = session({
   proxy: true,
   cookie: {
     domain: 'api.gridfort.net',
-    secure: true,
     sameSite: 'none',
   }
 });
