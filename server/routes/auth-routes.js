@@ -46,6 +46,9 @@ router.post('/login', (req, res, next) => {
         if (err) {
           return next(err);
         }
+
+        console.log("Session after save:", req.session); // Log session after save
+
         return res.json({ message: "Login successful" });
       });
     });

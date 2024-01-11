@@ -7,7 +7,7 @@ const initializePassport = require('./routes/passport-config');
 const authRoutes = require('./routes/auth-routes');
 require('dotenv').config();
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require("connect-redis").default
 const redisClient = require('./db/redis');
 
 // Express
@@ -59,6 +59,7 @@ io.use((socket, next) => {
 
 // Rejects connection if user is not authenticated
 io.on('connection', (socket) => {
+  console.log(socket.request.session);
   if(socket.request.session && socket.request.session.passport && socket.request.session.passport.user) {
     console.log('User connected:', socket.request.session.passport.user);
   } else {
