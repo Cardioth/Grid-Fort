@@ -40,7 +40,7 @@ const sessionMiddleware = session({
     sameSite: 'none',
   }
 });
-app.enable('trust proxy');
+app.set('trust proxy', 2)
 app.use(sessionMiddleware)
 app.use(passport.initialize());
 app.use(passport.session());
