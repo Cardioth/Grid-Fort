@@ -9,3 +9,5 @@
 • When you're finished building the fort, click end turn.
 
 • Watch them battle!
+
+Live at gridfort.netlify.app

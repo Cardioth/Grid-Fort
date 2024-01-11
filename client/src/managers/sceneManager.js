@@ -1,5 +1,4 @@
-import { initGameScene, initMenuScene, disposeGameScene, initGUIScene, initPreloadScene} from "../graphics/sceneInitialization";
-import { connectToServer } from "../network/connect";
+import { initGameScene, initMenuScene, disposeGameScene, initGUIScene, initPreloadScene, initAuthenticationScene} from "../graphics/sceneInitialization";
 
 export let currentScene;
 
@@ -7,10 +6,14 @@ export function setCurrentScene(setScene) {
     if(setScene === "preload" && currentScene === undefined){
         initGUIScene();
         initPreloadScene();
-        connectToServer();
     }
 
-    if(setScene === "menu" && currentScene === "preload"){
+    if(setScene === "authentication" && currentScene === "preload"){
+        initGUIScene();
+        initAuthenticationScene();
+    }
+
+    if(setScene === "menu" && currentScene === "authentication"){
         initGUIScene();
         initMenuScene();
     }

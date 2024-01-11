@@ -16,6 +16,9 @@ import { gameSetup } from '../managers/gameSetup.js';
 import { loadParticleSystems } from './particleEffects/loadParticleEffects.js';
 import { loadImages as loadImages } from './loadImages.js';
 import { createDarkenedMaterial } from './darkenBuilding.js';
+import { createRegisterInterface } from '../network/registerInterface.js';
+import { createLoginInterface } from '../network/loginInterface.js';
+import { checkAuth } from '../network/checkAuth.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -93,7 +96,7 @@ export const initPreloadScene = () => {
     return scene;
 }
 
-export const initMenuScene = () => {
+export const initAuthenticationScene = () => {
     setOrthoSize(2.45);
     
     postProcessEffects(scene, camera); //Post processing effects
@@ -102,6 +105,10 @@ export const initMenuScene = () => {
 
     importMenuBackground(scene, lights); //Game meshes
 
+    checkAuth();
+}
+
+export const initMenuScene = () => {
     createMenuScreen(); //Menu screen
 };
 
@@ -282,7 +289,7 @@ function loadModels(scene) {
             backgroundMesh.setEnabled(false);
 
             fadeToBlack(() => {
-                setCurrentScene("menu");
+                setCurrentScene("authentication");
                 preWarmMaterials();
             });
         }
@@ -409,7 +416,7 @@ function updateCameraOrtho() {
 }
 
 engine.runRenderLoop(() => {
-    if (currentScene === "menu") {
+    if (currentScene === "menu" || currentScene === "authentication") {
         scene.render();
         GUIscene.render();
         updateMenuGraphics();
