@@ -131,6 +131,7 @@ export function createLoginInterface(){
     loginButton.thickness = 0;
     loginButton.background = "black";
     loginButton.zIndex = 102;
+    loginButton.name = "loginButton";
     loginButton.onPointerClickObservable.add(() => {
         loginButton.isVisible = false;
         registerText.isVisible = false;
@@ -155,6 +156,7 @@ export function createLoginInterface(){
     registerText.top = 255;
     registerText.left = 0;
     registerText.zIndex = 9;
+    registerText.name = "registerText";
     registerText.onPointerClickObservable.add(() => {
         initGUIScene();
         createRegisterInterface();
