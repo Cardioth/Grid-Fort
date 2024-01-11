@@ -38,7 +38,6 @@ const sessionMiddleware = session({
     domain: 'grid-fort-server-d1b61f740a9b.herokuapp.com',
     secure: true,
     sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24
   }
 });
 app.enable('trust proxy');
