@@ -20,7 +20,8 @@ app.get('/', (req, res) => {
 // Express CORS
 const corsOptions = {
   origin: ['http://localhost:5173', 'https://gridfort.netlify.app'],
-  methods: ['GET', 'POST']
+  methods: ['GET', 'POST'],
+  credentials: true,
 };
 app.use(cors(corsOptions));
 
