@@ -34,12 +34,13 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   proxy: true,
   cookie: {
-    domain: 'grid-fort-server-d1b61f740a9b.herokuapp.com',
+    httpOnly: false,
     secure: true,
     sameSite: 'none',
     maxAge: 1000 * 60 * 60 * 24
   }
 });
+app.enable('trust proxy');
 app.use(sessionMiddleware)
 app.use(passport.initialize());
 app.use(passport.session());
