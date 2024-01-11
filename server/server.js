@@ -35,7 +35,6 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   proxy: true,
   cookie: {
-    domain: 'grid-fort-server-d1b61f740a9b.herokuapp.com',
     secure: true,
     sameSite: 'none',
   }
