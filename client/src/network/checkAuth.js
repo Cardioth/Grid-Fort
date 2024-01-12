@@ -1,3 +1,4 @@
+import { setUniCredits, uniCredits } from "../data/config";
 import { initGUIScene } from "../graphics/sceneInitialization";
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
@@ -16,7 +17,8 @@ export function checkAuth(){
       if (data.auth) {
         connectToServer();
         fadeToBlack(()=>{
-            setCurrentScene("menu");
+          setUniCredits(data.uniCredits);
+          setCurrentScene("menu");
         });
       } else {
         localStorage.removeItem('loggedIn');

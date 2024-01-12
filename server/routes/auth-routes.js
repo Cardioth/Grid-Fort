@@ -18,8 +18,17 @@ router.post('/register', async (req, res) => {
       return res.status(409).json({ message: "User already exists" });
     }
 
+    // Check if any invalid characters in username
+    if (!username.match(/^[A-Za-z]+$/)) {
+      return res.status(400).json({ message: "Username can only contain letters" });
+    }
+
     // Create user object
-    const newUser = { username, password: hashedPassword };
+    const newUser = { 
+      username, 
+      password: hashedPassword,
+      uniCredits: 456
+    };
 
     // Store the user data in Redis
     await redisClient.hSet(`user:${username}`, newUser);
@@ -46,7 +55,7 @@ router.post('/login', (req, res, next) => {
         if (err) {
           return next(err);
         }
-        return res.json({ message: "Login successful" });
+        return res.json({ message: "Login successful", uniCredits: user.uniCredits });
       });
     });
   })(req, res, next);
@@ -54,15 +63,13 @@ router.post('/login', (req, res, next) => {
 
 
 // Logout route
-// Logout route
 router.get('/logout', (req, res) => {
   req.logout(function(err) {
     if (err) { 
       return res.status(500).json({ message: "Error logging out" });
     }
-    req.session.destroy(err => { // Destroy the session
+    req.session.destroy(err => {
       if (err) {
-        // handle error case...
         return res.status(500).json({ message: "Error destroying session" });
       }
       res.clearCookie('connect.sid'); // Clear the session cookie
@@ -72,11 +79,10 @@ router.get('/logout', (req, res) => {
 });
 
 
-
 // Check Auth
 router.get('/checkAuth', (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({ auth: true, username: req.user.username });
+    res.json({ auth: true, username: req.user.username, uniCredits: req.user.uniCredits});
   } else {
     res.json({ auth: false });
   }

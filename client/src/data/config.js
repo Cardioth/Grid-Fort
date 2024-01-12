@@ -10,10 +10,14 @@ export const battleLoopTimeLength = 20;
 export const startingLives = 7;
 export const startingMedals = 0;
 
-export let uniCredits = 1000;
+export let uniCredits = 0;
 
 export function updateUniCredits(amount){
     uniCredits += amount;
+}
+
+export function setUniCredits(amount){
+    uniCredits = amount;
 }
 
 export const shapeKeyLegend = {

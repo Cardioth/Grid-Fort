@@ -80,7 +80,6 @@ export function createMenuScreen(){
     collectionButton.onPointerOutObservable.add(function () {
         document.body.style.cursor='default'
     });
-
     container.addControl(collectionButton);
 
     // Sign Out Button
@@ -105,9 +104,21 @@ export function createMenuScreen(){
     signOutButton.onPointerOutObservable.add(function () {
         document.body.style.cursor='default'
     });
-
     container.addControl(signOutButton);
 
+    // Create Uni Credits Text
+    const uniCreditsText = new GUI.TextBlock();
+    uniCreditsText.width = 0.09;
+    uniCreditsText.height = "40px";
+    uniCreditsText.text = "Credits: " + uniCredits;
+    uniCreditsText.color = "white";
+    uniCreditsText.fontSize = 25;
+    uniCreditsText.fontFamily = "GemunuLibre-Medium";
+    uniCreditsText.top = "45%";
+    uniCreditsText.left = "30%";
+    uniCreditsText.name = "uniCreditsText";
+    container.addControl(uniCreditsText);
+    
     GUITexture.addControl(container);
     return menuScreen;
 }

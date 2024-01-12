@@ -75,7 +75,7 @@ io.use((socket, next) => {
 });
 
 
-// Rejects connection if user is not authenticated
+// Socket.io events
 io.on('connection', (socket) => {
   if(socket.request.session && socket.request.session.passport && socket.request.session.passport.user) {
     console.log('User connected:', socket.request.session.passport.user);

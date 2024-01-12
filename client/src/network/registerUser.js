@@ -17,6 +17,10 @@ export function registerUser(username, password) {
             console.log("User already exists");
             createAuthMessage("User already exists", unhideRegisterButtons);
             throw new Error('User already exists');
+        } else if (response.status === 400) {
+            console.log("Username can only contain letters");
+            createAuthMessage("Username can only contain letters", unhideRegisterButtons);
+            throw new Error('Username can only contain letters');
         } else {
             createAuthMessage("Failed to register user: " + response.status, unhideRegisterButtons);
             throw new Error('Registration failed with status: ' + response.status);
