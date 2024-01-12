@@ -8,6 +8,7 @@ import { serverUrl } from "./serverURL";
 export function loginUser(username, password) {
     fetch(serverUrl+"/auth/login", {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -27,7 +28,6 @@ export function loginUser(username, password) {
     })
     .catch(error => {
       createAuthMessage("Login failed", unhideLoginButtons);
-      console.error('Login error:', error);
     });
   }
   
