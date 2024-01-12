@@ -12,7 +12,7 @@ export function checkAuth(){
     },})
     .then(response => response.json())
     .then(data => {
-      if (data.authenticated) {
+      if (data.auth) {
         connectToServer();
         fadeToBlack(setCurrentScene("menu"));
       } else {
