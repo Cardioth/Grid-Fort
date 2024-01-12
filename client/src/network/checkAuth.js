@@ -5,7 +5,11 @@ import { createLoginInterface } from "./loginInterface";
 import { serverUrl } from "./serverURL";
 
 export function checkAuth(){
-    fetch(serverUrl + "/auth/checkAuth")
+    fetch(serverUrl + "/auth/checkAuth", {
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },})
     .then(response => response.json())
     .then(data => {
       if (data.authenticated) {
