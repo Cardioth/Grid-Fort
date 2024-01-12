@@ -54,16 +54,23 @@ router.post('/login', (req, res, next) => {
 
 
 // Logout route
+// Logout route
 router.get('/logout', (req, res) => {
-  req.logout(); // Passport's method to log the user out
-  req.session.destroy(err => { // Optional: Destroy the session
-    if (err) {
+  req.logout(function(err) {
+    if (err) { 
       return res.status(500).json({ message: "Error logging out" });
     }
-    res.clearCookie('connect.sid'); // Clear the session cookie
-    res.json({ message: "Logged out successfully" });
+    req.session.destroy(err => { // Destroy the session
+      if (err) {
+        // handle error case...
+        return res.status(500).json({ message: "Error destroying session" });
+      }
+      res.clearCookie('connect.sid'); // Clear the session cookie
+      res.json({ message: "Logged out successfully" });
+    });
   });
 });
+
 
 
 // Check Auth

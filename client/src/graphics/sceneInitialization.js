@@ -19,6 +19,7 @@ import { createDarkenedMaterial } from './darkenBuilding.js';
 import { createRegisterInterface } from '../network/registerInterface.js';
 import { createLoginInterface } from '../network/loginInterface.js';
 import { checkAuth } from '../network/checkAuth.js';
+import { createConnectingScreen } from '../network/authenticationScreen.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -104,6 +105,8 @@ export const initAuthenticationScene = () => {
     lights = initLights(scene); //Lights
 
     importMenuBackground(scene, lights); //Game meshes
+
+    createConnectingScreen(); //Connecting screen
 
     checkAuth();
 }

@@ -83,6 +83,10 @@ io.on('connection', (socket) => {
     console.log('Unauthenticated user connected');
     socket.disconnect(true);
   }
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+    // Perform any cleanup or status updates needed on disconnection
+  });
 });
 
 // Passport

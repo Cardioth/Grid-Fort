@@ -1,3 +1,4 @@
+import { initGUIScene } from "../graphics/sceneInitialization";
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
 import { connectToServer } from "./connect";
@@ -20,7 +21,10 @@ export function checkAuth(){
       } else {
         localStorage.removeItem('loggedIn');
         localStorage.removeItem('username');
-        createLoginInterface();
+        fadeToBlack(()=>{
+          initGUIScene();
+          createLoginInterface();
+        });
       }
     })
     .catch(error => {

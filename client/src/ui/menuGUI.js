@@ -48,6 +48,13 @@ export function createMenuScreen(){
             }
         });
     });
+    playButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    playButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
     container.addControl(playButton);
 
     // Create Collection Button
@@ -67,30 +74,50 @@ export function createMenuScreen(){
         //     //setCurrentScene("collection");
         // });
     });
+    collectionButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    collectionButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
     container.addControl(collectionButton);
 
     // Sign Out Button
     const signOutButton = GUI.Button.CreateSimpleButton("signOutButton", "Sign Out");
-    signOutButton.width = 0.2;
+    signOutButton.width = 0.09;
     signOutButton.height = "40px";
     signOutButton.color = "white";
     signOutButton.fontSize = 30;
-    signOutButton.fontFamily = "GemunuLibre-Bold";
-    signOutButton.top = 130;
-    signOutButton.left = 0;
+    signOutButton.fontFamily = "GemunuLibre-Medium";
+    signOutButton.top = "45%";
+    signOutButton.left = "43%";
     signOutButton.thickness = 0;
-    signOutButton.background = "black";
+    signOutButton.background = "#0E1016";
     signOutButton.name = "signOutButton";
     signOutButton.onPointerClickObservable.add(() => {
         hideMenuButtons();
         signOutUser();
     });
+    signOutButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    signOutButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
+    container.addControl(signOutButton);
 
     GUITexture.addControl(container);
     return menuScreen;
 }
 
 export function hideMenuButtons(){
-    const menuScreen = GUITexture.getControlByName("menuScreen");
-    menuScreen.isVisible = false;
+    const playButton = GUITexture.getControlByName("playButton");
+    const collectionButton = GUITexture.getControlByName("collectionButton");
+    const signOutButton = GUITexture.getControlByName("signOutButton");
+
+    playButton.isVisible = false;
+    collectionButton.isVisible = false;
+    signOutButton.isVisible = false;
 }

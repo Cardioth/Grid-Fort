@@ -1,3 +1,8 @@
+import { serverUrl } from "./serverURL";
+import { socket } from "./connect";
+import { fadeToBlack } from "../ui/generalGUI";
+import { setCurrentScene } from "../managers/sceneManager";
+
 export function signOutUser() {
     fetch(serverUrl + "/auth/logout", {
       method: 'GET',
@@ -10,6 +15,12 @@ export function signOutUser() {
       localStorage.removeItem('loggedIn');
       localStorage.removeItem('username');
       // Update your game UI to reflect that the user is logged out
+      socket.disconnect();
+      fadeToBlack(
+        () => {
+            setCurrentScene("authentication");
+        }
+      );
     })
     .catch(error => {
       console.error('Logout error:', error);
