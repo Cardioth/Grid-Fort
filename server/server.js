@@ -1,5 +1,5 @@
+const fs = require('fs');
 const express = require('express');
-const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const passport = require('passport');
@@ -12,14 +12,27 @@ const redisClient = require('./db/redis');
 
 // Express
 const app = express();
-const server = http.createServer(app);
-app.get('/', (req, res) => {
-  res.send('Grid Fort Server is running');
-});
+let server;
+if (process.env.NODE_ENV === 'development') {
+  const https = require('https');
+  const options = {
+    key: fs.readFileSync('localhost+2-key.pem'),
+    cert: fs.readFileSync('localhost+2.pem')
+  };
+  server = https.createServer(options, app).listen(3000, () => {
+    console.log('HTTPS server running locally on port 3000');
+  });
+} else {
+  const http = require('http');
+  server = http.createServer(app).listen(process.env.PORT || 3000, () => {
+    console.log(`Server running on port ${process.env.PORT || 3000}`);
+  });
+}
+
 
 // Express CORS
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://gridfort.netlify.app'],
+  origin: ['https://localhost:5173', 'https://gridfort.netlify.app'],
   methods: ['GET', 'POST'],
   credentials: true,
 };
@@ -34,9 +47,11 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    domain: 'api.gridfort.net',
+    domain: process.env.NODE_ENV === 'development' ? 'localhost' : 'api.gridfort.net',
+    httpOnly: true,
     sameSite: 'none',
     secure: true,
+    expires: 1000 * 60 * 60 * 24 * 7 // 1 week
   }
 });
 app.set('trust proxy', 2)
@@ -49,7 +64,7 @@ app.use('/auth', authRoutes);
 // Socket.io
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'https://gridfort.netlify.app'],
+    origin: ['https://localhost:5173', 'https://gridfort.netlify.app'],
     credentials: true,
     methods: ['GET', 'POST'],
   }
@@ -62,19 +77,12 @@ io.use((socket, next) => {
 
 // Rejects connection if user is not authenticated
 io.on('connection', (socket) => {
-  console.log(socket.request.session);
   if(socket.request.session && socket.request.session.passport && socket.request.session.passport.user) {
     console.log('User connected:', socket.request.session.passport.user);
   } else {
     console.log('Unauthenticated user connected');
     socket.disconnect(true);
   }
-});
-
-// Server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
 });
 
 // Passport

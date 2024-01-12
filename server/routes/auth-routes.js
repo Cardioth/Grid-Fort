@@ -46,15 +46,24 @@ router.post('/login', (req, res, next) => {
         if (err) {
           return next(err);
         }
-
-        console.log("Session after save:", req.session); // Log session after save
-
         return res.json({ message: "Login successful" });
       });
     });
   })(req, res, next);
 });
 
+
+// Logout route
+router.get('/logout', (req, res) => {
+  req.logout(); // Passport's method to log the user out
+  req.session.destroy(err => { // Optional: Destroy the session
+    if (err) {
+      return res.status(500).json({ message: "Error logging out" });
+    }
+    res.clearCookie('connect.sid'); // Clear the session cookie
+    res.json({ message: "Logged out successfully" });
+  });
+});
 
 
 // Check Auth

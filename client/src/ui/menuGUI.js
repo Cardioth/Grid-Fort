@@ -3,6 +3,7 @@ import { GUITexture } from '../graphics/sceneInitialization.js';
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits, updateUniCredits } from "../data/config.js";
+import { signOutUser } from "../network/signOutUser.js";
 
 export function createMenuScreen(){
     // Create container
@@ -17,15 +18,15 @@ export function createMenuScreen(){
     menuScreen.alpha = 0.5;
     container.addControl(menuScreen);
 
-    // Create Menu Text
-    const menuText = new GUI.TextBlock();
-    menuText.text = "Grid Fort";
-    menuText.color = "white";
-    menuText.fontSize = 50;
-    menuText.fontFamily = "GemunuLibre-Bold";
-    menuText.top = -30;
-    menuText.left = 0;
-    container.addControl(menuText);
+    // Create Game Title Text
+    const titleText = new GUI.TextBlock();
+    titleText.text = "Grid Fort";
+    titleText.color = "white";
+    titleText.fontSize = 50;
+    titleText.fontFamily = "GemunuLibre-Bold";
+    titleText.top = -30;
+    titleText.left = 0;
+    container.addControl(titleText);
 
     // Create Play Button
     const playButton = GUI.Button.CreateSimpleButton("playButton", "Play");
@@ -38,6 +39,7 @@ export function createMenuScreen(){
     playButton.left = 0;
     playButton.thickness = 0;
     playButton.background = "black";
+    playButton.name = "playButton";
     playButton.onPointerClickObservable.add(() => {
         fadeToBlack(() => {
             if(uniCredits > 150){
@@ -59,6 +61,7 @@ export function createMenuScreen(){
     collectionButton.left = 0;
     collectionButton.thickness = 0;
     collectionButton.background = "black";
+    collectionButton.name = "collectionButton";
     collectionButton.onPointerClickObservable.add(() => {
         // fadeToBlack(() => {
         //     //setCurrentScene("collection");
@@ -66,6 +69,28 @@ export function createMenuScreen(){
     });
     container.addControl(collectionButton);
 
+    // Sign Out Button
+    const signOutButton = GUI.Button.CreateSimpleButton("signOutButton", "Sign Out");
+    signOutButton.width = 0.2;
+    signOutButton.height = "40px";
+    signOutButton.color = "white";
+    signOutButton.fontSize = 30;
+    signOutButton.fontFamily = "GemunuLibre-Bold";
+    signOutButton.top = 130;
+    signOutButton.left = 0;
+    signOutButton.thickness = 0;
+    signOutButton.background = "black";
+    signOutButton.name = "signOutButton";
+    signOutButton.onPointerClickObservable.add(() => {
+        hideMenuButtons();
+        signOutUser();
+    });
+
     GUITexture.addControl(container);
     return menuScreen;
+}
+
+export function hideMenuButtons(){
+    const menuScreen = GUITexture.getControlByName("menuScreen");
+    menuScreen.isVisible = false;
 }
