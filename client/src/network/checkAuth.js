@@ -14,7 +14,9 @@ export function checkAuth(){
     .then(data => {
       if (data.auth) {
         connectToServer();
-        fadeToBlack(setCurrentScene("menu"));
+        fadeToBlack(()=>{
+            setCurrentScene("menu");
+        });
       } else {
         localStorage.removeItem('loggedIn');
         localStorage.removeItem('username');
