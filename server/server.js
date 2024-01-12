@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Express CORS
 const corsOptions = {
-  origin: ['https://localhost:5173', 'https://gridfort.netlify.app'],
+  origin: ['https://localhost:5173', 'https://gridfort.net', 'https://gridfort.netlify.app'],
   methods: ['GET', 'POST'],
   credentials: true,
 };
@@ -64,7 +64,7 @@ app.use('/auth', authRoutes);
 // Socket.io
 const io = new Server(server, {
   cors: {
-    origin: ['https://localhost:5173', 'https://gridfort.netlify.app'],
+    origin: ['https://localhost:5173', 'https://gridfort.net', 'https://gridfort.netlify.app'],
     credentials: true,
     methods: ['GET', 'POST'],
   }
