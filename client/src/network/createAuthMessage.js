@@ -11,6 +11,8 @@ export function createAuthMessage(messageText, endOfMessageFunction) {
         previousMessage.dispose();
     }
     const message = new GUI.TextBlock();
+    message.width = "200px";
+    message.height = "40px";
     message.text = messageText;
     message.color = "white";
     message.fontSize = 25;

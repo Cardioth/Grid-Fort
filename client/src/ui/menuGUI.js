@@ -2,9 +2,10 @@ import * as GUI from "@babylonjs/gui";
 import { GUITexture } from '../graphics/sceneInitialization.js';
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
-import { uniCredits, updateUniCredits } from "../data/config.js";
+import { uniCredits } from "../data/config.js";
 import { signOutUser } from "../network/signOutUser.js";
 import { socket } from "../network/connect.js";
+import { createAuthMessage } from "../network/createAuthMessage.js";
 
 export function createMenuScreen(){
     // Create container
@@ -30,6 +31,7 @@ export function createMenuScreen(){
     container.addControl(titleText);
 
     // Create Play Button
+    let startingGame = false;
     const playButton = GUI.Button.CreateSimpleButton("playButton", "Play");
     playButton.width = 0.2;
     playButton.height = "40px";
@@ -42,14 +44,17 @@ export function createMenuScreen(){
     playButton.background = "black";
     playButton.name = "playButton";
     playButton.onPointerClickObservable.add(() => {
+        if(startingGame) return;
+        startingGame = true;
         socket.emit("startGame");
         socket.on("startGameResponse", (response) => {
-            if(response){
+            if (response) {
                 fadeToBlack(() => {
                     setCurrentScene("build");
                 });
             } else {
-                alert("Not enough credits to start game");
+                createAuthMessage("Not enough credits");
+                startingGame = false;
             }
         });
     });
