@@ -10,6 +10,9 @@ const session = require('express-session');
 const RedisStore = require("connect-redis").default
 const redisClient = require('./db/redis');
 
+const { getUniCreditsListener } = require('./socketEvents/getUniCreditsListener');
+const { startGameListener } = require('./socketEvents/startGameListener');
+
 // Express
 const app = express();
 let server;
@@ -74,20 +77,28 @@ io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
 
-
 // Socket.io events
 io.on('connection', (socket) => {
-  if(socket.request.session && socket.request.session.passport && socket.request.session.passport.user) {
-    console.log('User connected:', socket.request.session.passport.user);
+  const username = socket.request.session.passport?.user;
+
+  if (username) {
+    console.log('User connected:', username);
+    
+    socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.id);
+      // Perform any cleanup or status updates needed on disconnection
+    });
+
+    getUniCreditsListener(socket, username);
+
+    startGameListener(socket, username);
+
   } else {
     console.log('Unauthenticated user connected');
     socket.disconnect(true);
   }
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-    // Perform any cleanup or status updates needed on disconnection
-  });
 });
+
 
 // Passport
 initializePassport(
@@ -95,3 +106,4 @@ initializePassport(
   username => users.find(user => user.username === username),
   id => users.find(user => user.id === id)
 );
+

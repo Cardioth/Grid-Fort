@@ -4,6 +4,7 @@ import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits, updateUniCredits } from "../data/config.js";
 import { signOutUser } from "../network/signOutUser.js";
+import { socket } from "../network/connect.js";
 
 export function createMenuScreen(){
     // Create container
@@ -41,10 +42,14 @@ export function createMenuScreen(){
     playButton.background = "black";
     playButton.name = "playButton";
     playButton.onPointerClickObservable.add(() => {
-        fadeToBlack(() => {
-            if(uniCredits > 150){
-                updateUniCredits(-150);
-                setCurrentScene("build");
+        socket.emit("startGame");
+        socket.on("startGameResponse", (response) => {
+            if(response){
+                fadeToBlack(() => {
+                    setCurrentScene("build");
+                });
+            } else {
+                alert("Not enough credits to start game");
             }
         });
     });

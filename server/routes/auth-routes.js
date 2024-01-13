@@ -3,8 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const redisClient = require('../db/redis');
-
-//const User = require('./models/User'); 
+const gameConfig = require('../data/config');
 
 // Register route
 router.post('/register', async (req, res) => {
@@ -23,11 +22,16 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: "Username can only contain letters" });
     }
 
+    // Must be at least 3 characters long
+    if (username.length < 3) {
+      return res.status(400).json({ message: "Username is too short" });
+    }
+
     // Create user object
     const newUser = { 
       username, 
       password: hashedPassword,
-      uniCredits: 456
+      uniCredits: gameConfig.registrationCredits,
     };
 
     // Store the user data in Redis
@@ -49,8 +53,6 @@ router.post('/login', (req, res, next) => {
 
     req.logIn(user, (err) => {
       if (err) return next(err);
-
-      // Explicitly save the session before sending the response
       req.session.save(err => {
         if (err) {
           return next(err);
