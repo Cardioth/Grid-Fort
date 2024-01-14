@@ -11,7 +11,7 @@ import { createMenuScreen } from '../ui/menuGUI.js';
 import WebFont from "webfontloader";
 import { createPreloadScreen } from '../ui/preloadGUI.js';
 import { fadeToBlack } from '../ui/generalGUI.js';
-import { displayBottomUI } from '../ui/gameGUI.js';
+import { displayBottomUI, displayStrikeDialogue, updateStrikeDialoguePanelStrikes } from '../ui/gameGUI.js';
 import { gameSetup } from '../managers/gameSetup.js';
 import { loadParticleSystems } from './particleEffects/loadParticleEffects.js';
 import { loadImages as loadImages } from './loadImages.js';
@@ -142,6 +142,9 @@ export const initGameScene = () => {
     displayBottomUI(); //Bottom UI
 
     gameSetup();
+
+    displayStrikeDialogue();
+    updateStrikeDialoguePanelStrikes();
 };
 
 function initFadeScene() {

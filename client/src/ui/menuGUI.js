@@ -8,6 +8,7 @@ import { signOutUser } from "../network/signOutUser.js";
 import { socket } from "../network/connect.js";
 import { createAuthMessage } from "../network/createAuthMessage.js";
 import { getImage } from "../graphics/loadImages.js";
+import { serverUrl } from "../network/serverURL.js";
 
 export function createMenuScreen(){
     // Create container
@@ -173,24 +174,25 @@ function createStartGameDialogue(){
     container.addControl(startButton);
     let startingGame = false;
     startButton.onPointerClickObservable.add(() => {
-        /*
-        fadeToBlack(() => {
-            setCurrentScene("build");
-        });
-        */
-        if(startingGame) return;
-        startingGame = true;
-        socket.emit("startGame");
-        socket.on("startGameResponse", (response) => {
-            if (response) {
-                fadeToBlack(() => {
-                    setCurrentScene("build");
-                });
-            } else {
-                createAuthMessage("Not enough credits");
-                startingGame = false;
-            }
-        });
+        if(serverUrl === "https://localhost:3000"){
+            fadeToBlack(() => {
+                setCurrentScene("build");
+            });
+        } else {
+            if(startingGame) return;
+            startingGame = true;
+            socket.emit("startGame");
+            socket.on("startGameResponse", (response) => {
+                if (response) {
+                    fadeToBlack(() => {
+                        setCurrentScene("build");
+                    });
+                } else {
+                    createAuthMessage("Not enough credits");
+                    startingGame = false;
+                }
+            });
+        }
     });
     startButton.onPointerEnterObservable.add(function () {
         document.body.style.cursor='pointer'

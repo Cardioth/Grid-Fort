@@ -7,6 +7,7 @@ import { availableCredits } from "../gameplay/credits.js";
 import { endTurn } from "../gameplay/endTurn.js";
 import { currentScene } from "../managers/sceneManager.js";
 import { getImage } from "../graphics/loadImages.js";
+import { strikes } from "../managers/gameSetup.js";
 
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();
@@ -410,5 +411,48 @@ export function removeExistingCreditIcons(){
         GUIscene.beginDirectAnimation(creditIcon, [creditIcon.animations[0]], 0, 40, false, 1, function(){
             creditIcon.dispose();
         });
+    }
+}
+
+export function displayStrikeDialogue(){
+    //Main container
+    const container = new GUI.Rectangle();
+    container.width = "430px";
+    container.height = "44px";
+    container.top = "-48%";
+    container.thickness = 0;
+    container.scaleX = 0.9;
+    container.scaleY = 0.9;
+
+    //Panel
+    const strikeDialoguePanel = new GUI.Image("strikeDialoguePanel", getImage("strikeDialogue.png"));
+    strikeDialoguePanel.width = "430px";
+    strikeDialoguePanel.height = "44px";
+    strikeDialoguePanel.thickness = 0;
+    container.addControl(strikeDialoguePanel);
+
+    GUITexture.strikeDialoguePanel = container;
+    GUITexture.addControl(container);
+}
+
+export function updateStrikeDialoguePanelStrikes(){
+    if(GUITexture.strikeDialoguePanel.strikes && GUITexture.strikeDialoguePanel.strikes.length > 0){
+        for(let i = 0; i < GUITexture.strikeDialoguePanel.strikes.length; i++){
+            GUITexture.strikeDialoguePanel.strikes[i].dispose();
+        }
+    }
+    GUITexture.strikeDialoguePanel.strikes = [];
+    if(GUITexture.strikeDialoguePanel){
+        //Panel Icon
+        for(let i = 0; i < strikes; i++){
+            const strikeDialogueIcon = new GUI.Image("strikeDialogueIcon", getImage("strikeDialogueIcon.png"));
+            strikeDialogueIcon.width = "45px";
+            strikeDialogueIcon.height = "16px";
+            strikeDialogueIcon.top = "6px";
+            strikeDialogueIcon.thickness = 0;
+            strikeDialogueIcon.left = -134 + i*45;
+            GUITexture.strikeDialoguePanel.addControl(strikeDialogueIcon);        
+            GUITexture.strikeDialoguePanel.strikes.push(strikeDialogueIcon);
+        }
     }
 }

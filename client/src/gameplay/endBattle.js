@@ -5,7 +5,7 @@ import allBuildings from "../components/buildings";
 import { playerBoard, enemyBoard } from "../managers/gameSetup";
 import { GUIcamera, camera } from "../graphics/sceneInitialization";
 import { setZoomTarget } from "../graphics/renderLoop";
-import { updateBuildingStatsText } from "../ui/gameGUI";
+import { updateBuildingStatsText, updateStrikeDialoguePanelStrikes } from "../ui/gameGUI";
 import * as BABYLON from "@babylonjs/core";
 import { fadeOutMeshAnimation } from "../graphics/animations/meshFadeAnimations";
 import { weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
@@ -21,6 +21,7 @@ export function endBattle(victory) {
         updateMedals(1);
     } else {
         updateStrikes(1);
+        updateStrikeDialoguePanelStrikes();
     }
 
     setCurrentScene("endBattle");
