@@ -34,6 +34,10 @@ export function loadImages(scene) {
         "medalIcon2.png",
         "medalIcon3.png",
         "strikeIcon.png",
+        "credIcon.png",
+        "startButton.png",
+        "startGameBacking.png",
+        "cancelButton.png",
     ];
     
     paths.forEach(path => {

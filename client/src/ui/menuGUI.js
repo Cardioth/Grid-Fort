@@ -1,11 +1,13 @@
 import * as GUI from "@babylonjs/gui";
-import { GUITexture } from '../graphics/sceneInitialization.js';
+import { GUITexture, GUIscene } from '../graphics/sceneInitialization.js';
+import * as BABYLON from "@babylonjs/core";
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../data/config.js";
 import { signOutUser } from "../network/signOutUser.js";
 import { socket } from "../network/connect.js";
 import { createAuthMessage } from "../network/createAuthMessage.js";
+import { getImage } from "../graphics/loadImages.js";
 
 export function createMenuScreen(){
     // Create container
@@ -31,7 +33,7 @@ export function createMenuScreen(){
     container.addControl(titleText);
 
     // Create Play Button
-    let startingGame = false;
+
     const playButton = GUI.Button.CreateSimpleButton("playButton", "Play");
     playButton.width = 0.2;
     playButton.height = "40px";
@@ -44,19 +46,7 @@ export function createMenuScreen(){
     playButton.background = "black";
     playButton.name = "playButton";
     playButton.onPointerClickObservable.add(() => {
-        if(startingGame) return;
-        startingGame = true;
-        socket.emit("startGame");
-        socket.on("startGameResponse", (response) => {
-            if (response) {
-                fadeToBlack(() => {
-                    setCurrentScene("build");
-                });
-            } else {
-                createAuthMessage("Not enough credits");
-                startingGame = false;
-            }
-        });
+        createStartGameDialogue();
     });
     playButton.onPointerEnterObservable.add(function () {
         document.body.style.cursor='pointer'
@@ -141,4 +131,112 @@ export function hideMenuButtons(){
     playButton.isVisible = false;
     collectionButton.isVisible = false;
     signOutButton.isVisible = false;
+}
+
+function createStartGameDialogue(){
+    // Create container
+    const container = new GUI.Rectangle();
+    container.thickness = 0;
+
+    // Create Dark Screen
+    const darkScreen = new GUI.Rectangle();
+    darkScreen.width = "100%";
+    darkScreen.height = "100%";
+    darkScreen.thickness = 0;
+    darkScreen.background = "black";
+    darkScreen.alpha = 0.5;
+    container.addControl(darkScreen);
+
+    // Create Game Dialogue Backing
+    const startGameDialogueBacking = new GUI.Image("startGameDialogueBacking", getImage("startGameBacking.png"));
+    startGameDialogueBacking.width = "413px";
+    startGameDialogueBacking.height = "124px";
+    startGameDialogueBacking.top = "65px";
+    container.addControl(startGameDialogueBacking);
+
+    // Create Start Game Button
+    const startButton = new GUI.Image("startButton", getImage("startButton.png"));
+    startButton.width = "134px";
+    startButton.height = "33px";
+    startButton.left = "95px";
+    startButton.top = "59px";
+    container.addControl(startButton);
+    let startingGame = false;
+    startButton.onPointerClickObservable.add(() => {
+        if(startingGame) return;
+        startingGame = true;
+        socket.emit("startGame");
+        socket.on("startGameResponse", (response) => {
+            if (response) {
+                fadeToBlack(() => {
+                    setCurrentScene("build");
+                });
+            } else {
+                createAuthMessage("Not enough credits");
+                startingGame = false;
+            }
+        });
+    });
+    startButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    startButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
+    // Create Cancel Button
+    const cancelButton = new GUI.Image("cancelButton", getImage("cancelButton.png"));
+    cancelButton.width = "14px";
+    cancelButton.height = "14px";
+    cancelButton.left = "188px";
+    cancelButton.top = "23px";
+    container.addControl(cancelButton);
+    cancelButton.onPointerClickObservable.add(() => {
+        //Animate container fade out
+        const animation2 = new BABYLON.Animation("fadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const keys2 = [
+            { frame: 0, value: 1 },
+            { frame: 10, value: 0 },
+        ];
+        animation2.setKeys(keys2);
+        container.animations = [];
+        container.animations.push(animation2);
+        GUIscene.beginAnimation(container, 0, 10, false, 1, () => {
+            container.dispose();
+        });
+    });
+    cancelButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    cancelButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
+    container.alpha = 0;
+
+    // Create Credits Text
+    const creditsText = new GUI.TextBlock();
+    creditsText.width = "50px";
+    creditsText.height = "40px";
+    creditsText.text = "50uC";
+    creditsText.color = "#57CDFF";
+    creditsText.fontSize = 25;
+    creditsText.fontFamily = "GemunuLibre-Medium";
+    creditsText.top = "59px";
+    creditsText.left = "-100px";
+    container.addControl(creditsText);
+
+    //Animate container fade in
+    const animation = new BABYLON.Animation("fadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const keys = [
+        { frame: 0, value: 0 },
+        { frame: 10, value: 1 },
+    ];
+    animation.setKeys(keys);
+    container.animations = [];
+    container.animations.push(animation);
+    GUIscene.beginAnimation(container, 0, 10, false, 1);
+
+    GUITexture.addControl(container);
+
 }

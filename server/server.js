@@ -87,8 +87,7 @@ io.on('connection', (socket) => {
     console.log('User connected:', username);
     
     socket.on('disconnect', () => {
-      console.log('User disconnected:', socket.id);
-      // Perform any cleanup or status updates needed on disconnection
+      console.log('User disconnected:', username);
     });
 
     getUniCreditsListener(socket, username);
