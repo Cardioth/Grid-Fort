@@ -2,12 +2,10 @@ const cron = require('node-cron');
 const redisClient = require('../db/redis');
 const { processInBatches } = require('../utils/batchProcess');
 
-//0 0 */12 * *
+//0 0 */12 * * * every 12 hours
 
-// Run twice daily
-
-cron.schedule('*/10 * * * * *', () => {
-    console.log('Running every 10 seconds');
+cron.schedule('*0 * * * *', () => {
+    console.log('Running every hour on the hour');
     dailyCreditsGift();
 });
 
