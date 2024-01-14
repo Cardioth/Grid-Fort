@@ -57,7 +57,7 @@ function battleLoop() {
             }
         });
 
-        //if all buildings are destroyed, end game (Conquest Mode)
+        //if all buildings are destroyed, end battle (Conquest Mode)
         let allBuildingsDestroyed = true;
         board.allPlacedBuildings.forEach((building) => {
             if (building.destroyed === false) {
@@ -65,6 +65,7 @@ function battleLoop() {
             }
         });
 
+        // End battle
         if (allBuildingsDestroyed) {
             let victory = board === enemyBoard;
             removalAllLasers();

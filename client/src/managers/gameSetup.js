@@ -1,10 +1,11 @@
-import { gridHeight, gridWidth, startingCardCount, startingMedals } from "../data/config.js";
+import { gridHeight, gridWidth, startingCardCount, startingCredits, startingMedals } from "../data/config.js";
 import { buildRandomDeck, drawCardFromDeckToHand } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../components/buildings.js";
 import { boardWidth } from "../data/config.js";
+import { availableCredits, setAvailableCredits, setTotalCredits, totalCredits } from "../gameplay/credits.js";
 
 export const fortStats = {
     kineticFirepower: {name:"Kinetic Firepower", stat: 0},
@@ -39,13 +40,21 @@ export const enemyBoard = {
     id:1,
 };
 
-export let strikes = 0;
+export let strikes;
 export let medals = startingMedals;
 
-export const allBoards = [playerBoard];
+export let allBoards = [];
 
 export function gameSetup(){
     buildRandomDeck();
+
+    strikes = 0;
+    medals = startingMedals;
+
+    setAvailableCredits(startingCredits);
+    setTotalCredits(startingCredits);
+
+    allBoards = [playerBoard];
 
     for(let i = 0; i < startingCardCount; i++){
         drawCardFromDeckToHand();
@@ -54,8 +63,6 @@ export function gameSetup(){
     circularizeGrids();
 
     placeBuildingToBoard(allBuildings.core, playerBoard, -1, -1);
-
-    //createTestImage();
 }
 
 export function updateMedals(value){

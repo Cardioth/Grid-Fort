@@ -16,8 +16,6 @@ import { gameSetup } from '../managers/gameSetup.js';
 import { loadParticleSystems } from './particleEffects/loadParticleEffects.js';
 import { loadImages as loadImages } from './loadImages.js';
 import { createDarkenedMaterial } from './darkenBuilding.js';
-import { createRegisterInterface } from '../network/registerInterface.js';
-import { createLoginInterface } from '../network/loginInterface.js';
 import { checkAuth } from '../network/checkAuth.js';
 import { createConnectingScreen } from '../network/authenticationScreen.js';
 
@@ -32,12 +30,13 @@ engine.loadingScreen = {
 
 export let scene;
 export let GUIscene;
+export let fadeScene;
 
 // Meshs
 let allMeshes;
 export let baseMesh;
 export let baseBaseMesh;
-let backgroundMesh;
+export let backgroundMesh;
 export let gridPlane;
 export let gridShaderMaterial;
 export let buildingAssets;
@@ -45,7 +44,7 @@ export let weaponAssets;
 export let shadowGenerator;
 export let menuBackgrounds = [];
 export let boostedCellGraphic;
-let lights;
+export let lights;
 
 // Material Atlas
 export const materialAtlas = [];
@@ -65,11 +64,13 @@ export let collisionPlane;
 export let camera;
 export let GUIcamera;
 let orthoSize = 3;
-let cameraHeight = 6.5;
+export let cameraHeight = 6.5;
 
 // GUI
 export let GUITexture;
-export const infoBoxes = [];
+
+// Fade Texture
+export let fadeTexture;
 
 export const initPreloadScene = () => {
     scene = new BABYLON.Scene(engine);
@@ -86,11 +87,15 @@ export const initPreloadScene = () => {
         }
     });
 
+    initFadeScene();
+
     loadParticleSystems(scene); //Particle effects
 
     loadImages(scene); //Preload images and models
 
     loadModels(scene);
+
+    initializeGameControls(canvas); //Event listeners
 
     addLaserMaterialsToMaterialPool(200);
 
@@ -134,12 +139,18 @@ export const initGameScene = () => {
 
     //createTestingPlane(); // For visualising building placement
 
-    initializeGameControls(canvas); //Event listeners
-
     displayBottomUI(); //Bottom UI
 
     gameSetup();
 };
+
+function initFadeScene() {
+    fadeScene = new BABYLON.Scene(engine);
+    const fadeCamera = new BABYLON.FreeCamera("fadeCamera", new BABYLON.Vector3(5, 5, 5), fadeScene);
+    fadeScene.autoClear = false;
+    fadeScene.autoClearDepthAndStencil = false;
+    fadeTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("fadeTexture", true, fadeScene);
+}
 
 export const initGUIScene = () => {
     if(GUIscene){
@@ -162,10 +173,6 @@ export const initGUIScene = () => {
     GUITexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
 
     return GUIscene;
-}
-
-export const disposeGameScene = () => {
-    scene.dispose();
 }
 
 function createCollisionPlane() {
@@ -299,7 +306,7 @@ function loadModels(scene) {
     );
 }
 
-function importMenuBackground(scene) {
+export function importMenuBackground(scene) {
     BABYLON.SceneLoader.ImportMesh(undefined, "./models/", "menuBackground.glb", scene,
         function (meshes) {
             const backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
@@ -434,4 +441,5 @@ engine.runRenderLoop(() => {
     if (currentScene === "preload") {
         GUIscene.render();
     }
+    fadeScene.render();
 });

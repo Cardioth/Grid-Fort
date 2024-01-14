@@ -8,6 +8,7 @@ import { medals, strikes } from "../managers/gameSetup.js";
 import { playerBoard, enemyBoard } from "../managers/gameSetup.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { currentScene } from "../managers/sceneManager.js";
+import { createEndGameScreen } from "./endGameGUI.js";
 
 export function createEndBattleScreen(victory){
     //container
@@ -97,7 +98,6 @@ export function createEndBattleScreen(victory){
     enemyStatsText.fontFamily = "GemunuLibre-Bold";
     enemyStatsText.zIndex = 7;
     container.addControl(enemyStatsText);
- 
 
     //Continue Button
     const continueButton = new GUI.Image("continueButton", getImage("continueButton.png"));
@@ -109,7 +109,6 @@ export function createEndBattleScreen(victory){
    
     continueButton.onPointerClickObservable.add( () => {
         if(currentScene === "endBattle"){
-            returnToBuildScene();
             const animation = new BABYLON.Animation("containerFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
             animation.setKeys([
                 { frame: 0, value: 1 },
@@ -120,9 +119,18 @@ export function createEndBattleScreen(victory){
             let ease = new BABYLON.CubicEase();
             ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
             animation.setEasingFunction(ease);    
-            GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
-                container.dispose();
-            });
+
+            if(strikes >= 7){
+                GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
+                    container.dispose();
+                });
+                createEndGameScreen();
+            } else {
+                GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
+                    container.dispose();
+                });
+                returnToBuildScene();
+            }
         }
     });
 
@@ -227,7 +235,6 @@ export function createEndBattleScreen(victory){
     ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
     animation.setEasingFunction(ease);    
     GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 40, false, 1);
-    
 
 
     return endBattleDarkness;

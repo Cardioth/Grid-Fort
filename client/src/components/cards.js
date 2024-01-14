@@ -8,6 +8,10 @@ export function removeCardFromHand(selectedCard) {
     hand = hand.filter(card => card !== selectedCard);
 }
 
+export function clearHand() {
+    hand = [];
+}
+
 export function updateCardAnimation() {
     hand.forEach(card => {
         if (card.container !== undefined) {

@@ -38,6 +38,7 @@ export function loadImages(scene) {
         "startButton.png",
         "startGameBacking.png",
         "cancelButton.png",
+        "credIconNoShine.png",
     ];
     
     paths.forEach(path => {

@@ -1,8 +1,11 @@
 import * as BABYLON from "@babylonjs/core";
 import { scene, camera, gridPlane, collisionPlane } from '../graphics/sceneInitialization';
-import { fortStats } from "../managers/gameSetup";
-import { currentMouseX, currentMouseY } from "../managers/eventListeners";
+import { enemyBoard, fortStats } from "../managers/gameSetup";
+import { currentMouseX, currentMouseY, selectedPlacedBuilding } from "../managers/eventListeners";
 import { materialAtlas } from '../graphics/sceneInitialization';
+import { unplaceBuilding } from "../gameplay/buildingPlacement";
+import { fadeOutMeshAnimation } from "../graphics/animations/meshFadeAnimations";
+import { displayBuildingInfo } from "../ui/gameGUI";
 
 export function wrapText(context, text, x, y, lineHeight) {
     const lines = text.split("\n");
@@ -122,4 +125,26 @@ export function getMaterialFromMaterialAtlas(name){
             return material;
         }
     }
+}
+
+export function clearBoard(board) {
+    board.allPlacedBuildings.forEach((building) => {
+        building.buildingGraphic.dispose();
+        unplaceBuilding(building, board);
+
+        if (building.buildingGraphic.laserGraphic) {
+            for (let child of building.buildingGraphic.laserGraphic.getChildren()) {
+                fadeOutMeshAnimation(child, 20);
+            }
+            building.buildingGraphic.laserGraphic = null;
+        }
+
+        if (selectedPlacedBuilding === building) {
+            displayBuildingInfo(null);
+        }
+        if (building.healthBarGraphic) {
+            building.healthBarGraphic.dispose();
+            building.healthBarGraphic = null;
+        }
+    });
 }

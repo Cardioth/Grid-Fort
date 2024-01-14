@@ -15,6 +15,7 @@ import { AIforts } from "../components/AIforts.js";
 import { placeAIFort } from "./buildingPlacement.js";
 import { drawBattleCountdown } from "../graphics/drawBattleCountdown.js";
 
+export const baseMeshes = [];
 
 export function endTurn() {
     return function () {
@@ -22,7 +23,7 @@ export function endTurn() {
             document.body.style.cursor='default'
             setCurrentScene("battleCountdown");
 
-            //Random Left or Right position of Enemy Board
+            //Random Left or Right position of Enemy Board //TODO: merge into one function
             const randomLeftOrRight = Math.floor(Math.random() * 2);
             if(randomLeftOrRight === 0){
                 enemyBoard.position = {x:-boardWidth*2,y:0};
@@ -43,6 +44,9 @@ export function endTurn() {
                 camera.targetPosition.x -= boardWidth;
                 GUIcamera.setTargetTargetPosition.x -= boardWidth;
                 GUIcamera.targetPosition.x -= boardWidth;
+
+                baseMeshes.push(newBaseMesh);
+                baseMeshes.push(newBaseBaseMesh);
             } else {
                 enemyBoard.position = {x:0,y:-boardWidth*2};
                 enemyBoard.targetPosition = {x:0,y:-boardWidth*2};
@@ -62,6 +66,9 @@ export function endTurn() {
                 camera.targetPosition.z -= boardWidth;
                 GUIcamera.setTargetTargetPosition.z -= boardWidth;
                 GUIcamera.targetPosition.z -= boardWidth;
+
+                baseMeshes.push(newBaseMesh);
+                baseMeshes.push(newBaseBaseMesh);
             }
 
             setZoomTarget(3.5);

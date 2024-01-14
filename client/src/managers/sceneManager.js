@@ -1,4 +1,5 @@
-import { initGameScene, initMenuScene, disposeGameScene, initGUIScene, initPreloadScene, initAuthenticationScene} from "../graphics/sceneInitialization";
+import { initGameScene, initMenuScene, initGUIScene, initPreloadScene, initAuthenticationScene} from "../graphics/sceneInitialization";
+import { resetGame } from './resetGame';
 import { createLoginInterface } from "../network/loginInterface";
 
 export let currentScene;
@@ -29,8 +30,8 @@ export function setCurrentScene(setScene) {
         initGameScene();
     }
 
-    if(setScene === "menu" && currentScene === "build"){
-        disposeGameScene();
+    if(setScene === "menu" && (currentScene === "build" || currentScene === "endBattle")){
+        resetGame();
         initGUIScene();
         initMenuScene();
     }

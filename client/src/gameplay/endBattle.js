@@ -3,11 +3,9 @@ import { allBoards, updateMedals, updateStrikes } from "../managers/gameSetup";
 import { getTotalCredits, setAvailableCredits, updateTotalCredits } from "./credits";
 import allBuildings from "../components/buildings";
 import { playerBoard, enemyBoard } from "../managers/gameSetup";
-import { unplaceBuilding } from "./buildingPlacement";
 import { GUIcamera, camera } from "../graphics/sceneInitialization";
 import { setZoomTarget } from "../graphics/renderLoop";
-import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
-import { selectedPlacedBuilding } from "../managers/eventListeners";
+import { updateBuildingStatsText } from "../ui/gameGUI";
 import * as BABYLON from "@babylonjs/core";
 import { fadeOutMeshAnimation } from "../graphics/animations/meshFadeAnimations";
 import { weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
@@ -16,9 +14,9 @@ import { getTurretsOfBuilding } from "./battle";
 import { drawCardFromDeckToHand } from "../components/deck";
 import { hand } from "../components/cards";
 import { createEndBattleScreen } from "../ui/endBattleGUI";
+import { clearBoard } from "../utilities/utils";
 
 export function endBattle(victory) {
-
     if(victory){
         updateMedals(1);
     } else {
@@ -50,22 +48,26 @@ export function returnToBuildScene() {
     fadeOutMeshAnimation(enemyBoard.baseBaseMesh, 60);
 
     //Move camera
+    resetCameraTargetPositions(); 
+
+    updatePlayerBuildings();
+
+    //clear enemy board
+    clearBoard(enemyBoard);
+
+    if (allBoards.indexOf(enemyBoard) !== -1) {
+        allBoards.splice(allBoards.indexOf(enemyBoard), 1);
+    }
+
+}
+
+export function resetCameraTargetPositions() {
     camera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     camera.targetPosition = camera.defaultTargetPosition.clone();
     GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     GUIcamera.targetPosition = GUIcamera.defaultTargetPosition.clone();
 
     setZoomTarget(2.5);
-
-    updatePlayerBuildings();
-
-    //clear enemy board
-    clearEnemyBoard();
-
-    if (allBoards.indexOf(enemyBoard) !== -1) {
-        allBoards.splice(allBoards.indexOf(enemyBoard), 1);
-    }
-
 }
 
 function updatePlayerBuildings() {
@@ -107,26 +109,3 @@ function updatePlayerBuildings() {
         }
     });
 }
-
-function clearEnemyBoard() {
-    enemyBoard.allPlacedBuildings.forEach((building) => {
-        building.buildingGraphic.dispose();
-        unplaceBuilding(building, enemyBoard);
-
-        if (building.buildingGraphic.laserGraphic) {
-            for (let child of building.buildingGraphic.laserGraphic.getChildren()) {
-                fadeOutMeshAnimation(child, 20);
-            }
-            building.buildingGraphic.laserGraphic = null;
-        }
-
-        if (selectedPlacedBuilding === building) {
-            displayBuildingInfo(null);
-        }
-        if (building.healthBarGraphic) {
-            building.healthBarGraphic.dispose();
-            building.healthBarGraphic = null;
-        }
-    });
-}
-

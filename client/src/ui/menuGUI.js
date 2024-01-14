@@ -110,7 +110,7 @@ export function createMenuScreen(){
     const uniCreditsText = new GUI.TextBlock();
     uniCreditsText.width = 0.09;
     uniCreditsText.height = "40px";
-    uniCreditsText.text = "Credits: " + uniCredits;
+    uniCreditsText.text = uniCredits + "uC";
     uniCreditsText.color = "white";
     uniCreditsText.fontSize = 25;
     uniCreditsText.fontFamily = "GemunuLibre-Medium";
@@ -118,6 +118,16 @@ export function createMenuScreen(){
     uniCreditsText.left = "30%";
     uniCreditsText.name = "uniCreditsText";
     container.addControl(uniCreditsText);
+
+    // Create Credits Icon
+    const creditsIcon = new GUI.Image("creditsIcon", getImage("credIcon.png"));
+    creditsIcon.width = "103px";
+    creditsIcon.height = "69px";
+    creditsIcon.top = "45%";
+    creditsIcon.left = "26%";
+    creditsIcon.scaleX = 0.6;
+    creditsIcon.scaleY = 0.6;
+    container.addControl(creditsIcon);
     
     GUITexture.addControl(container);
     return menuScreen;
@@ -163,6 +173,11 @@ function createStartGameDialogue(){
     container.addControl(startButton);
     let startingGame = false;
     startButton.onPointerClickObservable.add(() => {
+        /*
+        fadeToBlack(() => {
+            setCurrentScene("build");
+        });
+        */
         if(startingGame) return;
         startingGame = true;
         socket.emit("startGame");
@@ -225,6 +240,16 @@ function createStartGameDialogue(){
     creditsText.top = "59px";
     creditsText.left = "-100px";
     container.addControl(creditsText);
+
+    // Create Credits Icon
+    const creditsIcon = new GUI.Image("creditsIcon", getImage("credIcon.png"));
+    creditsIcon.width = "103px";
+    creditsIcon.height = "69px";
+    creditsIcon.top = "59px";
+    creditsIcon.left = "-150px";
+    creditsIcon.scaleX = 0.6;
+    creditsIcon.scaleY = 0.6;
+    container.addControl(creditsIcon);
 
     //Animate container fade in
     const animation = new BABYLON.Animation("fadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
