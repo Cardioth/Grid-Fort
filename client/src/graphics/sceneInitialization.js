@@ -31,6 +31,7 @@ engine.loadingScreen = {
 export let scene;
 export let GUIscene;
 export let fadeScene;
+export let GUI3Dscene;
 
 // Meshs
 let allMeshes;
@@ -45,6 +46,7 @@ export let shadowGenerator;
 export let menuBackgrounds = [];
 export let boostedCellGraphic;
 export let lights;
+export let lootBoxes = [];
 
 // Material Atlas
 export const materialAtlas = [];
@@ -63,6 +65,7 @@ export let collisionPlane;
 // Cameras
 export let camera;
 export let GUIcamera;
+export let GUI3Dcamera;
 let orthoSize = 3;
 export let cameraHeight = 6.5;
 
@@ -89,11 +92,15 @@ export const initPreloadScene = () => {
 
     initFadeScene();
 
+    initGUI3DScene(); //3D GUI scene
+
     loadParticleSystems(scene); //Particle effects
 
     loadImages(scene); //Preload images and models
 
     loadModels(scene);
+
+    loadLootBoxes(GUI3Dscene);
 
     initializeGameControls(canvas); //Event listeners
 
@@ -153,6 +160,39 @@ function initFadeScene() {
     fadeScene.autoClear = false;
     fadeScene.autoClearDepthAndStencil = false;
     fadeTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("fadeTexture", true, fadeScene);
+}
+
+function initGUI3DScene() {
+    GUI3Dscene = new BABYLON.Scene(engine);
+    GUI3Dscene.autoClear = false;
+    GUI3Dscene.autoClearDepthAndStencil = false;
+
+    GUI3Dcamera = new BABYLON.FreeCamera("GUI3Dcamera", new BABYLON.Vector3(9, 0, 0), GUI3Dscene);
+    GUI3Dcamera.setTarget(new BABYLON.Vector3(0, 0, 0));
+
+    //Lights
+    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 1), GUI3Dscene);
+    light.intensity = 0.7;
+}
+
+function cloneObjectWithChildren(object){
+    let clone = object;
+
+    clone = object.clone(object.name + "_clone", null, true);
+
+    clone.setEnabled(true);
+
+    for (let i = 0; i < object.getChildMeshes().length; i++) {
+        let child = object.getChildMeshes()[i];
+        let childClone = child.clone(child.name + "_clone", clone, true);
+        childClone.setEnabled(true);
+        childClone.rotation.x = -(90) * (Math.PI / 180);
+        childClone.scaling.y = -5;
+        childClone.scaling.x = 5;
+        childClone.scaling.z = 5;
+    }
+
+    return clone;
 }
 
 export const initGUIScene = () => {
@@ -260,6 +300,35 @@ function preWarmMaterials() {
     }
 }
 
+function loadLootBoxes(scene) {
+    BABYLON.SceneLoader.ImportMesh(undefined, "./models/", "lootBoxes.glb", scene,
+        function (meshes) {
+            for (let i = 0; i < meshes.length; i++) {
+                if (meshes[i].parent && (meshes[i].parent.id.startsWith("LootBox"))) {
+                    if (!lootBoxes.includes(meshes[i].parent)) {
+                        lootBoxes.push(meshes[i].parent);
+                    }
+                    //meshes[i].setEnabled(false);
+                    //Animate Loot Box Rotation
+                    for(const children of meshes[i].parent.getChildren()){
+                        children.position.z = 10;
+                        children.rotation.y = -0.4;
+                        const animation = new BABYLON.Animation("lootBoxAnimation", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                        const keys = [
+                            { frame: 0, value: 0 },
+                            { frame: 120, value: Math.PI * 2 }
+                        ];
+                        animation.setKeys(keys);
+                        children.animations = [];
+                        children.animations.push(animation);
+                        scene.beginAnimation(children, 0, 120, true);
+                    }
+                }
+            }
+        }
+    );
+}
+
 function loadModels(scene) {
     buildingAssets = new BABYLON.AssetContainer(scene);
     weaponAssets = new BABYLON.AssetContainer(scene);
@@ -272,13 +341,15 @@ function loadModels(scene) {
             baseBaseMesh = meshes.find(mesh => mesh.id === "baseBase");
             boostedCellGraphic = meshes.find(mesh => mesh.id === "boostedCell");
 
+
+
             boostedCellGraphic.isPickable = false;
             backgroundMesh.isPickable = false;
             baseBaseMesh.isPickable = false;
             baseMesh.isPickable = false;
             baseMesh.receiveShadows = true;
 
-            //If id ends in Building add to building assets
+            //Storing meshes in asset containers
             for (let i = 0; i < meshes.length; i++) {
                 if (meshes[i].parent && (meshes[i].parent.id.endsWith("Building"))) {
                     if (!buildingAssets.meshes.includes(meshes[i].parent)) {
@@ -426,6 +497,13 @@ function updateCameraOrtho() {
         GUIcamera.orthoLeft = orthoLeft;
         GUIcamera.orthoRight = orthoRight;
     }
+
+    if(GUI3Dcamera){
+        GUI3Dcamera.orthoTop = orthoTop;
+        GUI3Dcamera.orthoBottom = orthoBottom;
+        GUI3Dcamera.orthoLeft = orthoLeft;
+        GUI3Dcamera.orthoRight = orthoRight;
+    }
 }
 
 engine.runRenderLoop(() => {
@@ -433,12 +511,14 @@ engine.runRenderLoop(() => {
         scene.render();
         GUIscene.render();
         updateMenuGraphics();
+        GUI3Dscene.render();
     }
 
     if (currentScene === "build" || currentScene === "battle" || currentScene === "battleCountdown" || currentScene === "endBattle") {
         scene.render();
         GUIscene.render();
         updateGraphics();
+        GUI3Dscene.render();
     }
 
     if (currentScene === "preload") {

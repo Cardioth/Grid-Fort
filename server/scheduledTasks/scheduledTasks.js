@@ -3,7 +3,7 @@ const redisClient = require('../db/redis');
 const { processInBatches } = require('../utils/batchProcess');
 
 
-cron.schedule('0 0 * * *', () => {
+cron.schedule('0 0 * * * *', () => {
     console.log('Running every hour on the hour');
     dailyCreditsGift();
 });

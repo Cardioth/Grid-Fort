@@ -64,7 +64,9 @@ app.use(passport.session());
 
 app.use('/auth', authRoutes);
 
-require('./scheduledTasks/scheduledTasks');
+if(process.env.NODE_ENV !== 'development') {
+  require('./scheduledTasks/scheduledTasks');
+}
 
 // Socket.io
 const io = new Server(server, {

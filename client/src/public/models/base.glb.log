@@ -39,7 +39,7 @@
 			<count>2</count>
 			<item_version>0</item_version>
 			<item>
-				<strData>0.01</strData>
+				<strData>0.00</strData>
 			</item>
 			<item>
 				<strData>0</strData>
@@ -74,8 +74,8 @@
 		<item>1</item>
 		<item>30</item>
 		<item>1</item>
-		<item>16</item>
-		<item>14</item>
+		<item>17</item>
+		<item>15</item>
 	</v2>
 </e>
 <e class_id_reference="2">
@@ -6020,7 +6020,7 @@
 				<strData>false</strData>
 			</item>
 			<item>
-				<strData>4.45</strData>
+				<strData>4.66</strData>
 			</item>
 			<item>
 				<strData>25</strData>
