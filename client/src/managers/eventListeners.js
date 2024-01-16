@@ -11,6 +11,7 @@ import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
 import { engine } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 import { displayBuildingInfo } from "../ui/gameGUI";
+import { createLootBoxImplosionParticleSystem } from "../graphics/particleEffects/createLootBoxImplosion";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -147,6 +148,7 @@ export function initializeGameControls(canvas) {
                 if(clickedLootBox){
                     const parent = clickedLootBox.parent;
                     clickedLootBox.pickedAnimation.play();
+                    createLootBoxImplosionParticleSystem(clickedLootBox.absolutePosition);
                     //dipose lootbox at end of animation
                     setTimeout(() => {
                         parent.dispose();

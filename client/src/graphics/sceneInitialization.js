@@ -302,6 +302,7 @@ function loadLootBoxes(scene) {
             }
 
             children.pickedAnimation = scene.animationGroups[scene.animationGroups.length-1];
+            children.rootNodePosition = position;
 
             //Default Spinning Animation
             const spinningAnimation = new BABYLON.Animation("spinningAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
