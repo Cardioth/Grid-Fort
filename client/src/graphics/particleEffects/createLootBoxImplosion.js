@@ -10,31 +10,33 @@ export function createLootBoxImplosionParticleSystem(location){
 }
 
 function mainExplosion(location) {
-    const particleSystem = new BABYLON.ParticleSystem("particles", 500, GUI3Dscene);
+    const particleSystem = new BABYLON.ParticleSystem("particles", 30, GUI3Dscene);
     particleSystem.particleTexture = new BABYLON.Texture("textures/laserTextureGlow.png");
     particleSystem.billboardMode = BABYLON.ParticleSystem.BILLBOARDMODE_ALL;
     particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
     particleSystem.emitter = location;
 
-    particleSystem.addColorGradient(0, new BABYLON.Color4(1, 1, 1, 1)); //color at start of particle lifetime
-    particleSystem.addColorGradient(0.2, new BABYLON.Color4(1, 1, 1, 1)); //color at end of particle lifetime
-    particleSystem.addColorGradient(1, new BABYLON.Color4(1, 1, 1, 0)); //color at end of particle lifetime
+    particleSystem.addColorGradient(0, new BABYLON.Color4(1, 1, 1, 1), new BABYLON.Color4(1, 1, 0, 1)); //color at start of particle lifetime
+    particleSystem.addColorGradient(0.2, new BABYLON.Color4(1, 1, 1, 1), new BABYLON.Color4(1, 0.5, 0.1, 1)); //color at end of particle lifetime
+    particleSystem.addColorGradient(1, new BABYLON.Color4(0, 0, 0, 0), new BABYLON.Color4(0, 0, 0, 0)); //color at end of particle lifetime
 
-    particleSystem.minLifeTime = 1.45;
-    particleSystem.maxLifeTime = 1.45;
+    particleSystem.minLifeTime = 1.46;
+    particleSystem.maxLifeTime = 1.46;
 
     particleSystem.startDelay = 3200;
 
-    particleSystem.minEmitPower = -5;
-    particleSystem.maxEmitPower = -10;
+    particleSystem.minEmitPower = -10;
+    particleSystem.maxEmitPower = -20;
     particleSystem.updateSpeed = 0.008;
 
-    particleSystem.addDragGradient(0, 0.1); //drag at start of particle lifetime
-    particleSystem.addDragGradient(1, 0.8); //drag at end of particle lifetime
+    particleSystem.addDragGradient(0, 0); //drag at start of particle lifetime
+    particleSystem.addDragGradient(0.1, 0.2); //drag at start of particle lifetime
+    particleSystem.addDragGradient(0.2, 0.5); //drag at start of particle lifetime
+    particleSystem.addDragGradient(1, 1); //drag at end of particle lifetime
 
     particleSystem.targetStopDuration = 1.45;
-    particleSystem.addSizeGradient(0, 1, 0);
-    particleSystem.addSizeGradient(0.1, 0.1, 0.1);
+    particleSystem.addSizeGradient(0, 1, 1.2);
+    particleSystem.addSizeGradient(0.1, 0.1, 0.2);
     particleSystem.addSizeGradient(1.0, 0, 0);
 
     particleSystem.emitRate = 10000;
@@ -88,7 +90,7 @@ function fluffExplosion(location) {
 
     particleSystem.emitRate = 500;
 
-    particleSystem.createSphereEmitter(0.01, 0.01);
+    particleSystem.createSphereEmitter(0.02, 0.02);
 
     particleSystem.start();
 }

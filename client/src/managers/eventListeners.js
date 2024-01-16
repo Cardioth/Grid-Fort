@@ -145,7 +145,7 @@ export function initializeGameControls(canvas) {
 
             if(currentScene === "menu"){
                 const clickedLootBox = getHoveredLootBox();
-                if(clickedLootBox){
+                if(clickedLootBox && clickedLootBox.pickedAnimation.isPlaying === undefined){
                     const parent = clickedLootBox.parent;
                     clickedLootBox.pickedAnimation.play();
                     createLootBoxImplosionParticleSystem(clickedLootBox.absolutePosition);

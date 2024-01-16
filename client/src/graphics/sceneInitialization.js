@@ -288,50 +288,52 @@ function preWarmMaterials() {
 }
 
 function loadLootBoxes(scene) {
+    var duplicate = function(container, position, delayedApproach) {
+        setTimeout(function() {
+            let entries = container.instantiateModelsToScene();
 
-    var duplicate = function(container, position) {
-        let entries = container.instantiateModelsToScene();
-
-        for (var node of entries.rootNodes) {
-            node.position = position;
-        }
-
-        for (var children of entries.rootNodes[0].getChildMeshes()) {
-            if(children.parent.rotOffset === undefined){
-                children.parent.rotOffset = Math.random() * 2 * Math.PI;
+            for (var node of entries.rootNodes) {
+                node.position = position;
             }
 
-            children.pickedAnimation = scene.animationGroups[scene.animationGroups.length-1];
-            children.rootNodePosition = position;
+            for (var children of entries.rootNodes[0].getChildMeshes()) {
+                if(children.parent.rotOffset === undefined){
+                    children.parent.rotOffset = Math.random() * 2 * Math.PI;
+                }
 
-            //Default Spinning Animation
-            const spinningAnimation = new BABYLON.Animation("spinningAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-            const keys = [
-                { frame: 0, value: 0 + children.parent.rotOffset},
-                { frame: 240, value: 2*Math.PI + children.parent.rotOffset }
-            ];
-            spinningAnimation.setKeys(keys);
+                children.pickedAnimation = scene.animationGroups[scene.animationGroups.length-1];
+                children.rootNodePosition = position;
 
-            //First Approach Animation
-            const firstApproachAnimation = new BABYLON.Animation("firstApproachAnimation", "position.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-            const keys2 = [
-                { frame: 0, value: 6 },
-                { frame: 30, value: 3 }
-            ];
-            firstApproachAnimation.setKeys(keys2);
-            const easingFunction = new BABYLON.CircleEase();
-            easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-            firstApproachAnimation.setEasingFunction(easingFunction);
-        
-            children.animations.push(spinningAnimation);
-            children.animations.push(firstApproachAnimation);
-            scene.beginAnimation(children, 0, 240, true);
-        }
+                //Default Spinning Animation
+                const spinningAnimation = new BABYLON.Animation("spinningAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                const keys = [
+                    { frame: 0, value: 0 + children.parent.rotOffset},
+                    { frame: 240, value: 2*Math.PI + children.parent.rotOffset }
+                ];
+                spinningAnimation.setKeys(keys);
+
+                //First Approach Animation
+                const firstApproachAnimation = new BABYLON.Animation("firstApproachAnimation", "position.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+                const keys2 = [
+                    { frame: 0, value: 6},
+                    { frame: 30, value: 3 }
+                ];
+                firstApproachAnimation.setKeys(keys2);
+                const easingFunction = new BABYLON.CircleEase();
+                easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+                firstApproachAnimation.setEasingFunction(easingFunction);
+            
+                children.animations.push(spinningAnimation);
+                children.animations.push(firstApproachAnimation);
+                scene.beginAnimation(children, 0, 240, true);
+            }
+        }, delayedApproach);
     }
 
     BABYLON.SceneLoader.LoadAssetContainer("./models/", "lootBoxes.glb", scene, function (container) {
         lootBoxes.push(container);
-        positionObjectsInCircle(3, 0, 0, 3, container);
+        positionObjectsInCircle(5, 0, 0, 3, container);
     });
 
     function positionObjectsInCircle(amount, centerX, centerY, radius, object){
@@ -341,7 +343,7 @@ function loadLootBoxes(scene) {
             for(let i = 0; i < amount; i++){
                 let y = centerX + radius * Math.cos(angle);
                 let z = centerY + radius * Math.sin(angle);
-                duplicate(object, new BABYLON.Vector3(0,y-0.5,z), false);
+                duplicate(object, new BABYLON.Vector3(0,y-0.5,z), i*100);
                 angle += step;
             }
         } else {
