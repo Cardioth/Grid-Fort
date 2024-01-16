@@ -1,0 +1,256 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "babylon.js glTF exporter for 3dsmax 2024 v20230922.2"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0,
+        1
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "scale": [
+        6.2632,
+        6.2632,
+        6.2632
+      ],
+      "name": "LootBox1"
+    },
+    {
+      "mesh": 1,
+      "scale": [
+        6.2632,
+        6.2632,
+        6.2632
+      ],
+      "name": "Object001"
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1,
+            "NORMAL": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 0,
+          "material": 0
+        }
+      ],
+      "name": "LootBox1"
+    },
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 5,
+            "NORMAL": 6,
+            "TEXCOORD_0": 7
+          },
+          "indices": 4,
+          "material": 1
+        }
+      ],
+      "name": "Object001"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 5952,
+      "type": "SCALAR",
+      "name": "accessorIndices"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 5952,
+      "max": [
+        0.09854335,
+        0.102031462,
+        0.09823838
+      ],
+      "min": [
+        -0.09737342,
+        -0.09535552,
+        -0.09617635
+      ],
+      "type": "VEC3",
+      "name": "accessorPositions"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 71424,
+      "componentType": 5126,
+      "count": 5952,
+      "type": "VEC3",
+      "name": "accessorNormals"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 5952,
+      "type": "VEC2",
+      "name": "accessorUVs"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 11904,
+      "componentType": 5123,
+      "count": 6,
+      "type": "SCALAR",
+      "name": "accessorIndices"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 142848,
+      "componentType": 5126,
+      "count": 6,
+      "max": [
+        0.215549529,
+        0.0937899351,
+        0.0908398
+      ],
+      "min": [
+        0.215549484,
+        0.010229269,
+        -0.08525111
+      ],
+      "type": "VEC3",
+      "name": "accessorPositions"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 142920,
+      "componentType": 5126,
+      "count": 6,
+      "type": "VEC3",
+      "name": "accessorNormals"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 47616,
+      "componentType": 5126,
+      "count": 6,
+      "type": "VEC2",
+      "name": "accessorUVs"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 11916,
+      "name": "bufferViewScalar"
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 11916,
+      "byteLength": 142992,
+      "byteStride": 12,
+      "name": "bufferViewFloatVec3"
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 154908,
+      "byteLength": 47664,
+      "byteStride": 8,
+      "name": "bufferViewFloatVec2"
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "lootBoxes.bin",
+      "byteLength": 202572
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicRoughnessTexture": {
+          "index": 2
+        }
+      },
+      "normalTexture": {
+        "index": 0
+      },
+      "name": "Material #13"
+    },
+    {
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.0,
+          0.24000001,
+          1.0,
+          1.0
+        ],
+        "baseColorTexture": {
+          "index": 3
+        },
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.5
+      },
+      "emissiveFactor": [
+        0.355263174,
+        0.57397294,
+        1.0
+      ],
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "name": "blueGlow"
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0,
+      "name": "lootBox_Material _12 Slot _1_Normal.png"
+    },
+    {
+      "sampler": 0,
+      "source": 1,
+      "name": "lootBox_Material _12 Slot _1_BaseColor.png"
+    },
+    {
+      "sampler": 0,
+      "source": 2,
+      "name": "lootBox_Material _12 Slot _1_RoughnesslootBox_Material _12 Slot _1_Metallic.png"
+    },
+    {
+      "sampler": 0,
+      "source": 3,
+      "name": "061255_alpha_Map__85.png"
+    }
+  ],
+  "images": [
+    {
+      "uri": "lootBox_Material _12 Slot _1_Normal.png"
+    },
+    {
+      "uri": "lootBox_Material _12 Slot _1_BaseColor.png"
+    },
+    {
+      "uri": "lootBox_Material _12 Slot _1_RoughnesslootBox_Material _12 Slot _1_Metallic.png"
+    },
+    {
+      "uri": "061255_alpha_Map__85.png"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987
+    }
+  ]
+}

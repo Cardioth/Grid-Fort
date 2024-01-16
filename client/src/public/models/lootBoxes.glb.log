@@ -74,9 +74,15 @@
 		<item>1</item>
 		<item>2</item>
 		<item>1</item>
-		<item>1</item>
-		<item>1</item>
+		<item>2</item>
+		<item>2</item>
 	</v2>
+</e>
+<e class_id_reference="2">
+	<Event></Event>
+</e>
+<e class_id_reference="2">
+	<Event></Event>
 </e>
 <e class_id_reference="2">
 	<Event></Event>
@@ -382,25 +388,6 @@
 	</ObjectProcessEvent>
 	<message>
 		<strData>Warning: Invalid shader node:transmission</strData>
-	</message>
-</e>
-<e class_id_reference="10">
-	<ObjectProcessEvent>
-		<Event></Event>
-		<m_role>3</m_role>
-		<m_eventSeverity>2</m_eventSeverity>
-		<m_objectId>
-			<strData></strData>
-		</m_objectId>
-		<m_startTime>
-			<timestamp></timestamp>
-		</m_startTime>
-		<m_endTime>
-			<timestamp></timestamp>
-		</m_endTime>
-	</ObjectProcessEvent>
-	<message>
-		<strData>Warning: Different dimensions for maps connected with base, base_color and opacity.</strData>
 	</message>
 </e>
 <e class_id_reference="10">
@@ -804,7 +791,7 @@
 				<strData>false</strData>
 			</item>
 			<item>
-				<strData>1.30</strData>
+				<strData>1.06</strData>
 			</item>
 			<item>
 				<strData>32</strData>

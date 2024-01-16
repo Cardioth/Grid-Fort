@@ -100,8 +100,6 @@ export const initPreloadScene = () => {
 
     loadModels(scene);
 
-    loadLootBoxes(GUI3Dscene);
-
     initializeGameControls(canvas); //Event listeners
 
     addLaserMaterialsToMaterialPool(200);
@@ -125,6 +123,8 @@ export const initAuthenticationScene = () => {
 
 export const initMenuScene = () => {
     createMenuScreen(); //Menu screen
+
+    loadLootBoxes(GUI3Dscene);
 };
 
 export const initGameScene = () => {
@@ -173,26 +173,13 @@ function initGUI3DScene() {
     //Lights
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 1), GUI3Dscene);
     light.intensity = 0.7;
-}
 
-function cloneObjectWithChildren(object){
-    let clone = object;
+    //Fog
+    GUI3Dscene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
+    GUI3Dscene.fogColor = new BABYLON.Color3(0.094, 0.106, 0.137);
+    GUI3Dscene.fogStart = 12;
+    GUI3Dscene.fogEnd = 14;
 
-    clone = object.clone(object.name + "_clone", null, true);
-
-    clone.setEnabled(true);
-
-    for (let i = 0; i < object.getChildMeshes().length; i++) {
-        let child = object.getChildMeshes()[i];
-        let childClone = child.clone(child.name + "_clone", clone, true);
-        childClone.setEnabled(true);
-        childClone.rotation.x = -(90) * (Math.PI / 180);
-        childClone.scaling.y = -5;
-        childClone.scaling.x = 5;
-        childClone.scaling.z = 5;
-    }
-
-    return clone;
 }
 
 export const initGUIScene = () => {
@@ -301,33 +288,69 @@ function preWarmMaterials() {
 }
 
 function loadLootBoxes(scene) {
-    BABYLON.SceneLoader.ImportMesh(undefined, "./models/", "lootBoxes.glb", scene,
-        function (meshes) {
-            for (let i = 0; i < meshes.length; i++) {
-                if (meshes[i].parent && (meshes[i].parent.id.startsWith("LootBox"))) {
-                    if (!lootBoxes.includes(meshes[i].parent)) {
-                        lootBoxes.push(meshes[i].parent);
-                    }
-                    //meshes[i].setEnabled(false);
-                    //Animate Loot Box Rotation
-                    for(const children of meshes[i].parent.getChildren()){
-                        children.position.z = 10;
-                        children.rotation.y = -0.4;
-                        const animation = new BABYLON.Animation("lootBoxAnimation", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-                        const keys = [
-                            { frame: 0, value: 0 },
-                            { frame: 120, value: Math.PI * 2 }
-                        ];
-                        animation.setKeys(keys);
-                        children.animations = [];
-                        children.animations.push(animation);
-                        scene.beginAnimation(children, 0, 120, true);
-                    }
-                }
-            }
+
+    var duplicate = function(container, position) {
+        let entries = container.instantiateModelsToScene();
+
+        for (var node of entries.rootNodes) {
+            node.position = position;
         }
-    );
+
+        for (var children of entries.rootNodes[0].getChildMeshes()) {
+            if(children.parent.rotOffset === undefined){
+                children.parent.rotOffset = Math.random() * 2 * Math.PI;
+            }
+
+            children.pickedAnimation = scene.animationGroups[scene.animationGroups.length-1];
+
+            //Default Spinning Animation
+            const spinningAnimation = new BABYLON.Animation("spinningAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+            const keys = [
+                { frame: 0, value: 0 + children.parent.rotOffset},
+                { frame: 240, value: 2*Math.PI + children.parent.rotOffset }
+            ];
+            spinningAnimation.setKeys(keys);
+
+            //First Approach Animation
+            const firstApproachAnimation = new BABYLON.Animation("firstApproachAnimation", "position.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+            const keys2 = [
+                { frame: 0, value: 6 },
+                { frame: 30, value: 3 }
+            ];
+            firstApproachAnimation.setKeys(keys2);
+            const easingFunction = new BABYLON.CircleEase();
+            easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+            firstApproachAnimation.setEasingFunction(easingFunction);
+        
+            children.animations.push(spinningAnimation);
+            children.animations.push(firstApproachAnimation);
+            scene.beginAnimation(children, 0, 240, true);
+        }
+    }
+
+    BABYLON.SceneLoader.LoadAssetContainer("./models/", "lootBoxes.glb", scene, function (container) {
+        lootBoxes.push(container);
+        positionObjectsInCircle(3, 0, 0, 3, container);
+    });
+
+    function positionObjectsInCircle(amount, centerX, centerY, radius, object){
+        if(amount > 1){            
+            let angle = Math.PI / 2;
+            let step = (2 * Math.PI) / amount;
+            for(let i = 0; i < amount; i++){
+                let y = centerX + radius * Math.cos(angle);
+                let z = centerY + radius * Math.sin(angle);
+                duplicate(object, new BABYLON.Vector3(0,y-0.5,z), false);
+                angle += step;
+            }
+        } else {
+            duplicate(object, new BABYLON.Vector3(0,centerX-0.5,centerY), false);
+        }
+    }
+
 }
+
+
 
 function loadModels(scene) {
     buildingAssets = new BABYLON.AssetContainer(scene);
@@ -340,8 +363,6 @@ function loadModels(scene) {
             backgroundMesh = meshes.find(mesh => mesh.id === "Plane001");
             baseBaseMesh = meshes.find(mesh => mesh.id === "baseBase");
             boostedCellGraphic = meshes.find(mesh => mesh.id === "boostedCell");
-
-
 
             boostedCellGraphic.isPickable = false;
             backgroundMesh.isPickable = false;

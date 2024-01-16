@@ -2,7 +2,7 @@ import { currentScene } from "./sceneManager";
 import { availableCredits } from "../gameplay/credits";
 import { returnSelectedBuildingToDeck, setAnchorRotationAdjustment } from "../gameplay/buildingPlacement";
 import { unplaceBuilding, canPlaceBuildingNearest, placeBuilding, rotateBuilding } from "../gameplay/buildingPlacement";
-import { getHoveredBuilding } from "../utilities/utils";
+import { getHoveredBuilding, getHoveredLootBox } from "../utilities/utils";
 import { getHoveredCard, setCardPositions, removeCardFromHand } from "../components/cards";
 import { playerBoard } from "./gameSetup";
 import { setZoomTarget } from "../graphics/renderLoop";
@@ -118,7 +118,7 @@ export function initializeGameControls(canvas) {
                     setCardPositions();
                     setAnchorRotationAdjustment(selectedBuilding);
                 } else if (hoveredCard !== null && hoveredCard.cost > availableCredits) {
-                    
+                    //TODO: Display message that you don't have enough credits
                 }
             }
             startDrag = true;
@@ -141,7 +141,19 @@ export function initializeGameControls(canvas) {
                     displayBuildingInfo(null);
                 }
             }
-    
+
+            if(currentScene === "menu"){
+                const clickedLootBox = getHoveredLootBox();
+                if(clickedLootBox){
+                    const parent = clickedLootBox.parent;
+                    clickedLootBox.pickedAnimation.play();
+                    //dipose lootbox at end of animation
+                    setTimeout(() => {
+                        parent.dispose();
+                    }, 3200);
+                }
+            }
+
             //If there's a building selected try to place it
             if (selectedBuilding !== null) {
                 // Place the selected shape on the grid

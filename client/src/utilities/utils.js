@@ -1,5 +1,5 @@
 import * as BABYLON from "@babylonjs/core";
-import { scene, camera, gridPlane, collisionPlane } from '../graphics/sceneInitialization';
+import { scene, camera, gridPlane, collisionPlane, GUI3Dscene, GUI3Dcamera } from '../graphics/sceneInitialization';
 import { enemyBoard, fortStats } from "../managers/gameSetup";
 import { currentMouseX, currentMouseY, selectedPlacedBuilding } from "../managers/eventListeners";
 import { materialAtlas } from '../graphics/sceneInitialization';
@@ -109,6 +109,16 @@ export function getHoveredBuilding() {
     }
     return null;
 }
+
+export function getHoveredLootBox() {
+    const ray = GUI3Dscene.createPickingRay(currentMouseX, currentMouseY, BABYLON.Matrix.Identity(), GUI3Dcamera);
+    let pickResult = GUI3Dscene.pickWithRay(ray);
+    if (pickResult.pickedMesh !== null) {
+        return pickResult.pickedMesh;
+    }
+    return null;
+}
+
 export function getMeshByMaterialName(name, building) {
     const buildingChildren = building.getChildren();
     for (let i = 0; i < buildingChildren.length; i++) {
