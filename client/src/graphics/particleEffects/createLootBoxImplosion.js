@@ -16,6 +16,15 @@ function mainExplosion(location) {
     particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
     particleSystem.emitter = location;
 
+    var noiseTexture = new BABYLON.NoiseProceduralTexture("perlin", 256, GUI3Dscene);
+    noiseTexture.animationSpeedFactor = 5;
+    noiseTexture.persistence = 2;
+    noiseTexture.brightness = 0.5;
+    noiseTexture.octaves = 2;
+
+    particleSystem.noiseTexture = noiseTexture;
+    particleSystem.noiseStrength = new BABYLON.Vector3(5, 5, 5);
+
     particleSystem.addColorGradient(0, new BABYLON.Color4(1, 1, 1, 1), new BABYLON.Color4(1, 1, 0, 1)); //color at start of particle lifetime
     particleSystem.addColorGradient(0.2, new BABYLON.Color4(1, 1, 1, 1), new BABYLON.Color4(1, 0.5, 0.1, 1)); //color at end of particle lifetime
     particleSystem.addColorGradient(1, new BABYLON.Color4(0, 0, 0, 0), new BABYLON.Color4(0, 0, 0, 0)); //color at end of particle lifetime

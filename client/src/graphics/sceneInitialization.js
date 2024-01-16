@@ -289,11 +289,15 @@ function preWarmMaterials() {
 
 function loadLootBoxes(scene) {
     var duplicate = function(container, position, delayedApproach) {
+
         setTimeout(function() {
             let entries = container.instantiateModelsToScene();
-
             for (var node of entries.rootNodes) {
                 node.position = position;
+            }
+
+            for (var group of entries.animationGroups) {
+                group.reset();
             }
 
             for (var children of entries.rootNodes[0].getChildMeshes()) {
@@ -343,11 +347,11 @@ function loadLootBoxes(scene) {
             for(let i = 0; i < amount; i++){
                 let y = centerX + radius * Math.cos(angle);
                 let z = centerY + radius * Math.sin(angle);
-                duplicate(object, new BABYLON.Vector3(0,y-0.5,z), i*100);
+                duplicate(object, new BABYLON.Vector3(0,y-0.5,z), i*300);
                 angle += step;
             }
         } else {
-            duplicate(object, new BABYLON.Vector3(0,centerX-0.5,centerY), false);
+            duplicate(object, new BABYLON.Vector3(0,centerX-0.5,centerY), 0);
         }
     }
 
