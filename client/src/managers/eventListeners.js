@@ -143,7 +143,7 @@ export function initializeGameControls(canvas) {
                 }
             }
 
-            if(currentScene === "menu"){
+            if(currentScene === "endBattle" || currentScene === "menu"){
                 const clickedLootBox = getHoveredLootBox();
                 if(clickedLootBox && clickedLootBox.pickedAnimation.isPlaying === false){
                     const parent = clickedLootBox.parent;

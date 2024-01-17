@@ -2,6 +2,7 @@ import { loadedParticleSystems } from "./loadParticleEffects";
 
 
 export function createExplosion(position, explosionName) {
+    //TODO: Create from pool
     let explosionTemplate = loadedParticleSystems.find(system => system.name === explosionName);
 
     if (explosionTemplate && explosionTemplate.systems) {

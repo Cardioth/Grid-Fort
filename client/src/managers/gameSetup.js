@@ -48,8 +48,8 @@ export let allBoards = [];
 export function gameSetup(){
     buildRandomDeck();
 
-    strikes = 5;
-    medals = startingMedals;
+    strikes = 6;
+    medals = 6;
 
     setAvailableCredits(startingCredits);
     setTotalCredits(startingCredits);
