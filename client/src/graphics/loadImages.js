@@ -41,6 +41,7 @@ export function loadImages(scene) {
         "credIconNoShine.png",
         "strikeDialogue.png",
         "strikeDialogueIcon.png",
+        "circleBacking.png",
     ];
     
     paths.forEach(path => {

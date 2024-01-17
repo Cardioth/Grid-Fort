@@ -130,7 +130,7 @@ export const initAuthenticationScene = () => {
 export const initMenuScene = () => {
     createMenuScreen(); //Menu screen
 
-    createEndGameScreen(); //End game screen
+    //createEndGameScreen(); //End game screen Testing
 };
 
 export const initGameScene = () => {

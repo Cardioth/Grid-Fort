@@ -11,7 +11,7 @@ export function createLootBoxImplosionParticleSystem(location){
 
 function mainExplosion(location) {
     const particleSystem = new BABYLON.ParticleSystem("particles", 30, GUI3Dscene);
-    particleSystem.particleTexture = new BABYLON.Texture("textures/laserTextureGlow.png");
+    particleSystem.particleTexture = new BABYLON.Texture("textures/debrisTexture.png");
     particleSystem.billboardMode = BABYLON.ParticleSystem.BILLBOARDMODE_ALL;
     particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
     particleSystem.emitter = location;
@@ -29,6 +29,12 @@ function mainExplosion(location) {
     particleSystem.addColorGradient(0.2, new BABYLON.Color4(1, 1, 1, 1), new BABYLON.Color4(1, 0.5, 0, 1)); //color at end of particle lifetime
     particleSystem.addColorGradient(1, new BABYLON.Color4(0, 0, 0, 0), new BABYLON.Color4(0, 0, 0, 0)); //color at end of particle lifetime
 
+    particleSystem.minAngularSpeed = -0.5;
+    particleSystem.maxAngularSpeed = 0.5;
+
+    particleSystem.minInitialRotation = 0;
+    particleSystem.maxInitialRotation = 2 * Math.PI;
+
     particleSystem.minLifeTime = 1.46;
     particleSystem.maxLifeTime = 1.46;
 
@@ -45,7 +51,7 @@ function mainExplosion(location) {
 
     particleSystem.targetStopDuration = 1.45;
     particleSystem.addSizeGradient(0, 1, 1.2);
-    particleSystem.addSizeGradient(0.1, 0.1, 0.2);
+    particleSystem.addSizeGradient(0.1, 0.15, 0.2);
     particleSystem.addSizeGradient(1.0, 0, 0);
 
     particleSystem.emitRate = 10000;

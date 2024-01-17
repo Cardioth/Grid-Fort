@@ -67,6 +67,8 @@ export function createEndGameScreen(){
         document.body.style.cursor='default'
     });
 
+    GUIscene.continueButtonEndGame = continueButton;
+
     container.addControl(continueButton);
 
     //Medal Icons
@@ -79,47 +81,49 @@ export function createEndGameScreen(){
             return "medalIcon3.png"; // Level 3 Medal
         }
     }
+    if(medals > 0){
+        let medalTextCount = 0;
+        for (let i = 0; i < medals; i++) {
+            const level = Math.floor(i / 6);
+            const medalImage = getMedalImage(level * 6);
+            const medalIcon = new GUI.Image("medalIcon", getImage(medalImage));
+            medalIcon.width = "60px";
+            medalIcon.height = "45px";
+            medalIcon.top = "-36px";
+            medalIcon.left = 85 + (i % 6) * 63;
+            medalIcon.zIndex = 10;
+            container.addControl(medalIcon);
 
-    let medalTextCount = 0;
-    for (let i = 0; i < 20; i++) {
-        const level = Math.floor(i / 6);
-        const medalImage = getMedalImage(level * 6);
-        const medalIcon = new GUI.Image("medalIcon", getImage(medalImage));
-        medalIcon.width = "60px";
-        medalIcon.height = "45px";
-        medalIcon.top = "-36px";
-        medalIcon.left = 85 + (i % 6) * 63;
-        medalIcon.zIndex = 10;
-        container.addControl(medalIcon);
+            medalIcon.animations = [];
 
-        medalIcon.animations = [];
+            // Create swirl keyframe data
+            const keyFrameData = createSwirlKeyFrameData(-36, 85 + (i % 6) * 63, i);
+            const keyFrameDataX = keyFrameData[0];
+            const keyFrameDataY = keyFrameData[1];
 
-        // Create swirl keyframe data
-        const keyFrameData = createSwirlKeyFrameData(-36, 85 + (i % 6) * 63, i);
-        const keyFrameDataX = keyFrameData[0];
-        const keyFrameDataY = keyFrameData[1];
+            // Medal icons swirl to the centre
+            const medalAnimationX = new BABYLON.Animation("medalAnimation", "top", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+            medalAnimationX.setKeys(keyFrameDataX);
 
-        // Medal icons swirl to the center
-        const medalAnimationX = new BABYLON.Animation("medalAnimation", "top", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-        medalAnimationX.setKeys(keyFrameDataX);
+            const medalAnimationY = new BABYLON.Animation("medalAnimation", "left", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+            medalAnimationY.setKeys(keyFrameDataY);
+            
+            medalIcon.animations.push(medalAnimationX);
+            medalIcon.animations.push(medalAnimationY);
 
-        const medalAnimationY = new BABYLON.Animation("medalAnimation", "left", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-        medalAnimationY.setKeys(keyFrameDataY);
-        
-        medalIcon.animations.push(medalAnimationX);
-        medalIcon.animations.push(medalAnimationY);
+            GUIscene.beginDirectAnimation(medalIcon, [medalAnimationX, medalAnimationY], 0, 300, false, 1, function () {
+                medalIcon.dispose();
+                medalTextCount++;
+                medalText.text = "Medals: " + medalTextCount;
+                createMedalExplosionParticleSystem(new BABYLON.Vector3(0,0,0));
 
-        GUIscene.beginDirectAnimation(medalIcon, [medalAnimationX, medalAnimationY], 0, 300, false, 1, function () {
-            medalIcon.dispose();
-            medalTextCount++;
-            medalText.text = "Medals: " + medalTextCount;
-            createMedalExplosionParticleSystem(new BABYLON.Vector3(0,0,0));
-
-            if(medalTextCount >= 20){
-                createLootBoxes(GUI3Dscene);
-                GUIscene.beginDirectAnimation(continueButton, [continueButton.animations[0]], 0, 40, false, 1);
-            }
-        });
+                if(medalTextCount >= medals){
+                    createLootBoxes(GUI3Dscene, medals);
+                }
+            });
+        }
+    } else {
+        createLootBoxes(GUI3Dscene, medals);
     }
 
     container.zIndex = 300;
@@ -140,6 +144,10 @@ export function createEndGameScreen(){
     animation.setEasingFunction(ease); 
 
     GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 40, false, 1);
+}
+
+export function fadeInContinueButton(continueButton) {
+    GUIscene.beginDirectAnimation(continueButton, [continueButton.animations[0]], 0, 40, false, 1);
 }
 
 export function createSwirlKeyFrameData(dummyX, dummyY, index) {

@@ -49,7 +49,7 @@ export function gameSetup(){
     buildRandomDeck();
 
     strikes = 6;
-    medals = 6;
+    medals = 20;
 
     setAvailableCredits(startingCredits);
     setTotalCredits(startingCredits);

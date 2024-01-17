@@ -1,12 +1,15 @@
 import * as BABYLON from '@babylonjs/core';
 import { lootBoxes } from './sceneInitialization.js';
 
-export function createLootBoxes(scene) {
-    var duplicate = function (container, position, delayedApproach) {
+export function createLootBoxes(scene, medals) {
+    var duplicate = function (container, position, delayedApproach, lootLevel) {
         setTimeout(function () {
+            scene.lootBoxes = scene.lootBoxes || [];
             let entries = container.instantiateModelsToScene();
+
             for (var node of entries.rootNodes) {
                 node.position = position;
+                scene.lootBoxes.push(node);
             }
 
             for (var group of entries.animationGroups) {
@@ -20,6 +23,7 @@ export function createLootBoxes(scene) {
 
                 children.pickedAnimation = scene.animationGroups[scene.animationGroups.length - 1];
                 children.rootNodePosition = position;
+                children.lootLevel = lootLevel;
 
                 //Default Spinning Animation
                 const spinningAnimation = new BABYLON.Animation("spinningAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
@@ -48,14 +52,15 @@ export function createLootBoxes(scene) {
         }, delayedApproach);
     };    
 
-    function positionLootBoxesInCircle(amount, centerX, centerY, radius, object) {
-        if (amount > 1) {
+    function positionLootBoxesInCircle(rewards, centerX, centerY, radius, object) {
+        console.log(rewards);
+        if (rewards.lootBoxCount > 1) {
             let angle = Math.PI / 2;
-            let step = (2 * Math.PI) / amount;
-            for (let i = 0; i < amount; i++) {
+            let step = (2 * Math.PI) / rewards.lootBoxCount;
+            for (let i = 0; i < rewards.lootBoxCount; i++) {
                 let y = centerX + radius * Math.cos(angle);
                 let z = centerY + radius * Math.sin(angle);
-                duplicate(object, new BABYLON.Vector3(0, y, z), i * 300);
+                duplicate(object, new BABYLON.Vector3(0, y, z), i * 300, rewards.lootLevel);
                 angle += step;
             }
         } else {
@@ -63,5 +68,20 @@ export function createLootBoxes(scene) {
         }
     }
 
-    positionLootBoxesInCircle(5, 0, 0, 3, lootBoxes[0]);
+    positionLootBoxesInCircle(calculateLootBoxRewards(medals), 0, 0, 3, lootBoxes[0]);
+}
+
+function calculateLootBoxRewards(medals) {
+    // Define the parameters
+    const maxMedals = 40;
+    const maxLootBoxes = 6;
+    const minLootBoxes = 2;
+
+    // Calculate the level of loot boxes
+    const level = Math.min(4, Math.floor(medals / (maxMedals / 4)));
+
+    // Calculate the number of loot boxes
+    const lootBoxes = minLootBoxes + (level * (maxLootBoxes - minLootBoxes)) / 4;
+
+    return { lootBoxCount: Math.floor(lootBoxes), lootLevel: Math.floor(level)+1};
 }

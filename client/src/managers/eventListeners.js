@@ -8,10 +8,12 @@ import { playerBoard } from "./gameSetup";
 import { setZoomTarget } from "../graphics/renderLoop";
 import { getPointerGridLocation } from '../utilities/utils';
 import { updateBuildingGraphicPosition } from '../gameplay/buildingPlacement';
-import { engine } from "../graphics/sceneInitialization";
+import { GUI3Dscene, GUIscene, engine } from "../graphics/sceneInitialization";
 import { createBuildingGraphicFromCard } from "../gameplay/buildingPlacement";
 import { displayBuildingInfo } from "../ui/gameGUI";
 import { createLootBoxImplosionParticleSystem } from "../graphics/particleEffects/createLootBoxImplosion";
+import { createLootReward } from "../graphics/lootRewardGraphic";
+import { fadeInContinueButton } from "../ui/endGameGUI";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -146,12 +148,16 @@ export function initializeGameControls(canvas) {
             if(currentScene === "endBattle" || currentScene === "menu"){
                 const clickedLootBox = getHoveredLootBox();
                 if(clickedLootBox && clickedLootBox.pickedAnimation.isPlaying === false){
-                    const parent = clickedLootBox.parent;
+                    const parent = clickedLootBox.parent.parent;
                     clickedLootBox.pickedAnimation.play();
                     createLootBoxImplosionParticleSystem(clickedLootBox.absolutePosition);
-                    //dipose lootbox at end of animation
                     setTimeout(() => {
                         parent.dispose();
+                        createLootReward(clickedLootBox.lootLevel, clickedLootBox.absolutePosition);
+                        GUI3Dscene.lootBoxes.splice(GUI3Dscene.lootBoxes.indexOf(parent), 1);
+                        if(GUI3Dscene.lootBoxes.length === 0){
+                            fadeInContinueButton(GUIscene.continueButtonEndGame);
+                        }
                     }, 3200);
                 }
             }
