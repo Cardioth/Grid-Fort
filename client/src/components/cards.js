@@ -17,14 +17,14 @@ export function updateCardAnimation() {
         if (card.container !== undefined) {
             if (card.isHovered) {
                 // Set target size and position for hovered card
-                card.rotation = 0;
+                card.rotationAsCard = 0;
                 card.container.scaleX = .4;
                 card.container.scaleY = .4;
                 card.targetPosition = { x: card.originalPosition.x, y: 150 };
                 card.zIndex = 100;
             } else {
                 // Reset to normal size and position when not hovered
-                card.rotation = card.originalRotation;
+                card.rotationAsCard = card.originalRotation;
                 card.container.scaleX = .25;
                 card.container.scaleY = .25;
                 card.targetPosition = card.originalPosition;
@@ -45,7 +45,7 @@ export function updateCardAnimation() {
             // Update container to card
             card.container.top = card.currentPosition.y;
             card.container.left = card.currentPosition.x;
-            card.container.rotation = card.rotation;
+            card.container.rotation = card.rotationAsCard;
             card.container.zIndex = card.zIndex;
         }
     });
@@ -68,7 +68,7 @@ export function setCardPositions() {
             buildingCard.initialized = true;
         }
         buildingCard.targetSize = { ...buildingCard.currentSize };
-        buildingCard.rotation = rotationAngle;
+        buildingCard.rotationAsCard = rotationAngle;
         buildingCard.originalRotation = rotationAngle;
         buildingCard.isHovered = false;
         buildingCard.isDragged = false;

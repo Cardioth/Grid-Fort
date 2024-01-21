@@ -63,7 +63,9 @@ export function placeBuilding(building, gridX, gridY, board) {
                             if (key === key2) {
                                 newBuilding.stats[key] += board.grid[cellIndex].effects[key];
                                 if(board.grid[cellIndex].effects[key] > 0){
-                                    boosterRisingAnimation(board.grid[cellIndex]);
+                                    if(board === playerBoard){
+                                        boosterRisingAnimation(board.grid[cellIndex]);
+                                    }
                                     if(newBuilding.bonuses.filter(obj => obj.key === key).length === 0){
                                         newBuilding.bonuses.push({key:key, value:board.grid[cellIndex].effects[key]});
                                     } else {
@@ -114,7 +116,7 @@ export function placeBuilding(building, gridX, gridY, board) {
                             } else {
                                 board.grid[cellIndex].effects[key] = newBuilding.effects[key];
                             }
-                            if (board.grid[cellIndex].occupied && board.grid[cellIndex].building !== undefined && newBuilding.effects[key] > 0) {
+                            if (board.grid[cellIndex].occupied && board.grid[cellIndex].building !== undefined && newBuilding.effects[key] > 0 && board === playerBoard) {
                                 boosterRisingAnimation(board.grid[cellIndex]);
                             }
                         }
@@ -275,38 +277,62 @@ export function canPlaceBuildingNearest(building, gridX, gridY) {
     return { canPlace: false };
 }
 
-export function rotateBuilding(building, direction = 'R') {
+export function rotateBuilding(building, direction = 'R', graphicOnly = false) {
     let newShape = [];
+    const currentRotation = building.rotation;
     const { width, height, shape } = building;
-
     if (direction === 'R') {
+        if (currentRotation === "N") {
+            building.rotation = "R";
+        } else if (currentRotation === "R") {
+            building.rotation = "RR";
+        } else if (currentRotation === "RR") {
+            building.rotation = "L";
+        } else if (currentRotation === "L") {
+            building.rotation = "N";
+        }
         if(building.buildingGraphic){
             building.buildingGraphic.rotate(BABYLON.Axis.Y, Math.PI / 2, BABYLON.Space.WORLD);
         }
-        // Transpose and reverse rows for clockwise rotation
-        for (let x = 0; x < width; x++) {
-            for (let y = height - 1; y >= 0; y--) {
-                newShape.push(shape[y * width + x]);
+        if(!graphicOnly){
+            // Transpose and reverse rows for clockwise rotation
+            for (let x = 0; x < width; x++) {
+                for (let y = height - 1; y >= 0; y--) {
+                    newShape.push(shape[y * width + x]);
+                }
             }
         }
     } else {
+        if (currentRotation === "N") {
+            building.rotation = "L";
+        } else if (currentRotation === "L") {
+            building.rotation = "RR";
+        } else if (currentRotation === "RR") {
+            building.rotation = "R";
+        } else if (currentRotation === "R") {
+            building.rotation = "N";
+        }
         if(building.buildingGraphic){
             building.buildingGraphic.rotate(BABYLON.Axis.Y, -Math.PI / 2, BABYLON.Space.WORLD);
         }
+        if(!graphicOnly){
         // Transpose and reverse columns for counterclockwise rotation
-        for (let x = width - 1; x >= 0; x--) {
-            for (let y = 0; y < height; y++) {
-                newShape.push(shape[y * width + x]);
+            for (let x = width - 1; x >= 0; x--) {
+                for (let y = 0; y < height; y++) {
+                    newShape.push(shape[y * width + x]);
+                }
             }
         }
     }
 
-    building.shape = newShape;
-    building.width = height;
-    building.height = width;
-
     // Adjustments for building graphic rotation
-    setAnchorRotationAdjustment(building);    
+    if(!graphicOnly){
+        building.width = height;
+        building.height = width;
+        building.shape = newShape;
+        setAnchorRotationAdjustment(building);
+    }
+    
 }
 
 export function setAnchorRotationAdjustment(building) {
@@ -530,22 +556,32 @@ export function createBuildingGraphicFromCard(building, board, rotation) {
 
     // Rotate building graphic
     if (rotation === "R" || rotation === "L") {
-        rotateBuilding(building, building.rotation);
+        rotateBuilding(building, rotation, true);
     } else if (rotation === "RR") {
-        rotateBuilding(building, building.rotation);
-        rotateBuilding(building, building.rotation);
+        rotateBuilding(building, "R", true);
+        rotateBuilding(building, "R", true);
     }
 }
 export function placeAIFort(AIfortIndex) {
     const AIfort = AIforts[AIfortIndex];
-    AIfort.layout.forEach((building) => {
-        const newBuilding = { ...building.building };
-        if (building.rotation === "R" || building.rotation === "L") {
-            rotateBuilding(newBuilding, building.rotation);
-        } else if (building.rotation === "RR") {
-            rotateBuilding(newBuilding, building.rotation);
-            rotateBuilding(newBuilding, building.rotation);
+    AIfort.layout.forEach((buildingListing) => {
+        //const newBuilding = { ...buildingListing.building };
+
+        let newBuilding = null;
+        for (const key in allBuildings) {
+            if (allBuildings[key].BUID === buildingListing.BUID) {
+                newBuilding = JSON.parse(JSON.stringify(allBuildings[key]));
+            }
         }
-        placeBuildingToBoard(newBuilding, enemyBoard, building.x, building.y, building.rotation);
+
+        if (buildingListing.rotation === "R" || buildingListing.rotation === "L") {
+            rotateBuilding(newBuilding, buildingListing.rotation);
+        } else if (buildingListing.rotation === "RR") {
+            rotateBuilding(newBuilding, "R");
+            rotateBuilding(newBuilding, "R");
+        }
+        if(newBuilding !== null){
+            placeBuildingToBoard(newBuilding, enemyBoard, buildingListing.x, buildingListing.y, buildingListing.rotation);
+        }
     });
 }

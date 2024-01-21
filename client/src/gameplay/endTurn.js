@@ -1,7 +1,7 @@
 import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { baseMesh, baseBaseMesh } from "../graphics/sceneInitialization.js";
 import { camera, GUIcamera } from "../graphics/sceneInitialization.js";
-import { allBoards, enemyBoard } from "../managers/gameSetup.js";
+import { allBoards, enemyBoard, playerBoard } from "../managers/gameSetup.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../components/buildings.js";
 import { updateBoardStats } from "../utilities/utils.js";
@@ -14,6 +14,8 @@ import { fadeInMeshAnimation } from "../graphics/animations/meshFadeAnimations.j
 import { AIforts } from "../components/AIforts.js";
 import { placeAIFort } from "./buildingPlacement.js";
 import { drawBattleCountdown } from "../graphics/drawBattleCountdown.js";
+import { exportBoard } from "./exportBoard.js";
+import { serverUrl } from "../network/serverURL.js";
 
 export const baseMeshes = [];
 
@@ -22,6 +24,10 @@ export function endTurn() {
         if(currentScene === "build"){
             document.body.style.cursor='default'
             setCurrentScene("battleCountdown");
+            
+            if(serverUrl === "https://localhost:3000"){
+                exportBoard(playerBoard);
+            }            
 
             //Random Left or Right position of Enemy Board //TODO: merge into one function
             const randomLeftOrRight = Math.floor(Math.random() * 2);

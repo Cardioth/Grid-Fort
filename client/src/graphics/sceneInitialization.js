@@ -2,7 +2,7 @@ import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders';
 import * as GUI from '@babylonjs/gui';
 import { getShaderMaterial } from '../shaders/gridMaterial.js';
-import { gridHeight, gridWidth } from '../data/config.js';
+import { gridHeight, gridWidth, setUniCredits } from '../data/config.js';
 import { initializeGameControls } from '../managers/eventListeners.js';
 import { drawTestPlaneTexture } from './testingGraphics/drawTestPlaneTexture.js';
 import { currentScene, setCurrentScene } from '../managers/sceneManager.js';
@@ -20,6 +20,7 @@ import { checkAuth } from '../network/checkAuth.js';
 import { createConnectingScreen } from '../network/authenticationScreen.js';
 import { createLootBoxes } from './createLootBoxes.js';
 import { createEndGameScreen, createSwirlKeyFrameData } from '../ui/endGameGUI.js';
+import { serverUrl } from '../network/serverURL.js';
 
 export const canvas = document.getElementById('renderCanvas');
 
@@ -124,7 +125,14 @@ export const initAuthenticationScene = () => {
 
     createConnectingScreen(); //Connecting screen
 
-    checkAuth();
+    //checkAuth();
+
+    //Skip Check Auth For Localhost
+    if(serverUrl === "https://localhost:3000"){
+        fadeToBlack(()=>{setCurrentScene("menu");});
+    } else {
+        checkAuth();
+    }
 }
 
 export const initMenuScene = () => {
@@ -477,20 +485,14 @@ function updateCameraOrtho() {
 engine.runRenderLoop(() => {
     if (currentScene === "menu" || currentScene === "authentication") {
         scene.render();
-        GUIscene.render();
         updateMenuGraphics();
-        GUI3Dscene.render();
     }
 
     if (currentScene === "build" || currentScene === "battle" || currentScene === "battleCountdown" || currentScene === "endBattle") {
         scene.render();
-        GUIscene.render();
         updateGraphics();
-        GUI3Dscene.render();
     }
-
-    if (currentScene === "preload") {
-        GUIscene.render();
-    }
+    GUIscene.render();
+    GUI3Dscene.render();
     fadeScene.render();
 });
