@@ -10,4 +10,4 @@
 
 • Watch them battle!
 
-Live at gridfort.netlify.app
+Live at gridfort.net
