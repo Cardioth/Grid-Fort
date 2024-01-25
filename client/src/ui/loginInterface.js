@@ -3,7 +3,7 @@ import * as BABYLON from "@babylonjs/core";
 import { GUITexture, initGUIScene } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { createRegisterInterface } from "./registerInterface.js";
-import { loginUser } from "./loginUser.js";
+import { loginUser } from "../network/loginUser.js";
 
 
 export function createLoginInterface(){

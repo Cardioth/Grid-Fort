@@ -1,0 +1,17 @@
+
++++ Create a card +++
+
+'HSET', 'card:card2', 'BUID', 3, 'level', 2, 'bStats', 'h20'
+'HSET', 'card:card3', 'BUID', 2, 'level', 3, 'bStats', 'h20/kf1/rr1'
+
++++ Link card to user +++
+
+'SADD', 'user:ben:cards', 'card2'
+
++++ Unlink card from user +++
+
+'SREM', 'user:ben:cards', 'c2'
+
++++ Retrieving card data +++
+
+'HGETALL', 'card.card1'

@@ -37,6 +37,9 @@ router.post('/register', async (req, res) => {
     // Store the user data in Redis
     await redisClient.hSet(`user:${username}`, newUser);
 
+    // Add user to the set of all users
+    await redisClient.sAdd('users', username);
+
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Registration error:", error);

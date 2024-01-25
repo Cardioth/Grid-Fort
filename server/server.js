@@ -12,6 +12,8 @@ const redisClient = require('./db/redis');
 
 const { getUniCreditsListener } = require('./socketEvents/getUniCreditsListener');
 const { startGameListener } = require('./socketEvents/startGameListener');
+const { getCollectionListener } = require('./socketEvents/getCollectionListener');
+const { adminListeners } = require('./socketEvents/adminListeners');
 
 // Express
 const app = express();
@@ -92,9 +94,18 @@ io.on('connection', (socket) => {
       console.log('User disconnected:', username);
     });
 
+    if(username === 'ben' || username === 'kane') {
+      socket.emit('privs', 'admin');
+      adminListeners(socket, username);
+    } else {
+      socket.emit('privs', 'user');
+    }
+
     getUniCreditsListener(socket, username);
 
     startGameListener(socket, username);
+
+    getCollectionListener(socket, username);
 
   } else {
     console.log('Unauthenticated user connected');

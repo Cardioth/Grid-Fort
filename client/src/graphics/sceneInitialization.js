@@ -125,14 +125,14 @@ export const initAuthenticationScene = () => {
 
     createConnectingScreen(); //Connecting screen
 
-    //checkAuth();
+    checkAuth();
 
     //Skip Check Auth For Localhost
-    if(serverUrl === "https://localhost:3000"){
-        fadeToBlack(()=>{setCurrentScene("menu");});
-    } else {
-        checkAuth();
-    }
+    // if(serverUrl === "https://localhost:3000"){
+    //     fadeToBlack(()=>{setCurrentScene("menu");});
+    // } else {
+    //     checkAuth();
+    // }
 }
 
 export const initMenuScene = () => {
@@ -483,15 +483,15 @@ function updateCameraOrtho() {
 }
 
 engine.runRenderLoop(() => {
-    if (currentScene === "menu" || currentScene === "authentication") {
-        scene.render();
+
+    if (currentScene === "menu" || currentScene === "authentication" || currentScene === "collection") {
         updateMenuGraphics();
     }
 
     if (currentScene === "build" || currentScene === "battle" || currentScene === "battleCountdown" || currentScene === "endBattle") {
-        scene.render();
         updateGraphics();
     }
+    scene.render();
     GUIscene.render();
     GUI3Dscene.render();
     fadeScene.render();

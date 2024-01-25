@@ -3,6 +3,7 @@ import { GUITexture } from './sceneInitialization.js';
 import { availableCredits } from "../gameplay/credits.js";
 import { currentScene } from "../managers/sceneManager.js";
 import { getImage } from "./loadImages.js";
+import { camelCaseToTitleCase } from "../utilities/utils.js";
 
 export function createCardGraphic(card) {
     var container = new GUI.Rectangle();
@@ -91,14 +92,30 @@ export function createCardGraphic(card) {
     }
 
     //Card Level
-    if(card.cardLevel >= 1){
-        const imageName = getImage("cardLevel"+card.cardLevel+".png");
+    if(card.level >= 1){
+        const imageName = getImage("cardLevel"+card.level+".png");
         var levelImage = new GUI.Image("but", imageName);
         levelImage.width = "323px";
         levelImage.height = "44px";
         levelImage.top = "-385px";
         levelImage.left = "0px";
         container.addControl(levelImage);
+    }
+
+    //Bonus stats
+    var index = 0;
+    for(var stats in card.bStats){
+        var statText = new GUI.TextBlock();
+        statText.text = "+" + card.bStats[stats] + " " + camelCaseToTitleCase(stats);
+        statText.color = "#16191f";
+        statText.fontSize = 50;
+        statText.top = 190 + index*50 + "px";
+        statText.scaleY = 0.8;
+        statText.left = "0px";
+        statText.fontFamily = "GemunuLibre-Medium";
+        container.addControl(statText);
+
+        index++;
     }
 
     container.scaleX = 0.25;
@@ -119,8 +136,6 @@ export function createCardGraphic(card) {
     container.onPointerOutObservable.add(function () {
         document.body.style.cursor='default'
     });
-
-    GUITexture.addControl(container);
 
     return container;
 }

@@ -3,7 +3,7 @@ import { initGUIScene } from "../graphics/sceneInitialization";
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
 import { connectToServer } from "./connect";
-import { createLoginInterface } from "./loginInterface";
+import { createLoginInterface } from "../ui/loginInterface";
 import { serverUrl } from "./serverURL";
 
 export function checkAuth(){

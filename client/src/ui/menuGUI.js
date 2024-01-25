@@ -5,10 +5,11 @@ import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../data/config.js";
 import { signOutUser } from "../network/signOutUser.js";
-import { socket } from "../network/connect.js";
+import { privs, socket } from "../network/connect.js";
 import { createAuthMessage } from "../network/createAuthMessage.js";
 import { getImage } from "../graphics/loadImages.js";
 import { serverUrl } from "../network/serverURL.js";
+import { setCollection } from "../managers/collectionManager.js";
 
 export function createMenuScreen(){
     // Create container
@@ -71,9 +72,16 @@ export function createMenuScreen(){
     collectionButton.background = "black";
     collectionButton.name = "collectionButton";
     collectionButton.onPointerClickObservable.add(() => {
-        // fadeToBlack(() => {
-        //     //setCurrentScene("collection");
-        // });
+        hideMenuButtons();
+        document.body.style.cursor='pointer'
+        socket.emit("getCollection");
+        socket.on("getCollectionResponse", (response) => {
+            setCollection(response);
+            fadeToBlack(() => {
+                setCurrentScene("collection");
+            });
+        });
+
     });
     collectionButton.onPointerEnterObservable.add(function () {
         document.body.style.cursor='pointer'
@@ -129,6 +137,42 @@ export function createMenuScreen(){
     creditsIcon.scaleX = 0.6;
     creditsIcon.scaleY = 0.6;
     container.addControl(creditsIcon);
+
+    if (privs === "admin") {
+        // Create console input box
+        const consoleInput = new GUI.InputText();
+        consoleInput.width = "400px";
+        consoleInput.height = "40px";
+        consoleInput.color = "white";
+        consoleInput.fontSize = 25;
+        consoleInput.fontFamily = "GemunuLibre-Medium";
+        consoleInput.top = "200px";
+        consoleInput.left = "-50px";
+        consoleInput.thickness = 0;
+        consoleInput.background = "black";
+        container.addControl(consoleInput);
+
+        // Create console submit button
+        const consoleSubmit = GUI.Button.CreateSimpleButton("consoleSubmit", "Submit");
+        consoleSubmit.width = "100px";
+        consoleSubmit.height = "40px";
+        consoleSubmit.color = "white";
+        consoleSubmit.fontSize = 25;
+        consoleSubmit.fontFamily = "GemunuLibre-Medium";
+        consoleSubmit.top = "200px";
+        consoleSubmit.left = "220px";
+        consoleSubmit.thickness = 0;
+        consoleSubmit.background = "black";
+        consoleSubmit.onPointerClickObservable.add(() => {
+            socket.emit("consoleCommand", consoleInput.text);
+            consoleInput.text = "";
+        });
+        container.addControl(consoleSubmit);
+
+        socket.on("consoleResponse", (response) => {
+            console.log(response);
+        });
+    }
     
     GUITexture.addControl(container);
     return menuScreen;

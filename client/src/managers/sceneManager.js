@@ -1,6 +1,7 @@
 import { initGameScene, initMenuScene, initGUIScene, initPreloadScene, initAuthenticationScene} from "../graphics/sceneInitialization";
 import { resetGame } from './resetGame';
-import { createLoginInterface } from "../network/loginInterface";
+import { createLoginInterface } from "../ui/loginInterface";
+import { createCollectionInterface } from "../ui/collectionGUI";
 
 export let currentScene;
 
@@ -25,9 +26,9 @@ export function setCurrentScene(setScene) {
         initMenuScene();
     }
 
-    if(setScene === "build" && currentScene === undefined){
+    if(setScene === "collection" && currentScene === "menu"){
         initGUIScene();
-        initGameScene();
+        createCollectionInterface();
     }
 
     if(setScene === "menu" && (currentScene === "build" || currentScene === "endBattle")){
@@ -39,9 +40,6 @@ export function setCurrentScene(setScene) {
     if(setScene === "build" && currentScene === "menu"){
         initGUIScene();
         initGameScene();
-    }
-    if(setScene === "battleCountdown"  && currentScene === "build"){
-
     }
 
     currentScene = setScene;

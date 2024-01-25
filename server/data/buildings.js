@@ -110,10 +110,4 @@ for (let key in allBuildings) {
     allBuildings[key].keyName = key;
 }
 
-export default allBuildings;
-
-export function getRandomBuilding() {
-    const drawableCards = Object.values(allBuildings).filter(card => card.drawable);
-    const randomNumber = Math.floor(Math.random() * drawableCards.length);
-    return { ...drawableCards[randomNumber] };
-}
+module.exports = allBuildings;

@@ -1,5 +1,5 @@
 import { currentScene } from "../managers/sceneManager";
-import { canvas } from "../graphics/sceneInitialization";
+import { GUITexture, canvas } from "../graphics/sceneInitialization";
 import { createCardGraphic } from "../graphics/createCardGraphic";
 
 export let hand = [];
@@ -100,7 +100,8 @@ export function getHoveredCard(mouseX, mouseY) {
 export function createCardGraphicsForHand(){
     hand.forEach(card => {
         if(card.container === undefined){
-            createCardGraphic(card);
+            const cardGraphic = createCardGraphic(card);
+            GUITexture.addControl(cardGraphic);
         }
     });
 }

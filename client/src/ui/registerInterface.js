@@ -1,8 +1,8 @@
 import * as GUI from "@babylonjs/gui";
 import { GUITexture, initGUIScene } from '../graphics/sceneInitialization.js';
 import { createLoginInterface } from "./loginInterface.js";
-import { registerUser } from "./registerUser.js";
-import { createAuthMessage } from "./createAuthMessage.js";
+import { registerUser } from "../network/registerUser.js";
+import { createAuthMessage } from "../network/createAuthMessage.js";
 
 
 export function createRegisterInterface(){

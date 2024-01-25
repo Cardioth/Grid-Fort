@@ -13,6 +13,7 @@ function startGameListener(socket, username) {
         return;
       } else {
         await redisClient.hSet(`user:${username}`, { uniCredits: uniCredits - gameConfig.startGameCost });
+        
         socket.emit('uniCreditsUpdate', uniCredits - gameConfig.startGameCost);
         socket.emit('startGameResponse', true);
       }

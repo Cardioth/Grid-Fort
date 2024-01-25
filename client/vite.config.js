@@ -1,7 +1,16 @@
 import fs from 'fs';
+import copy from 'rollup-plugin-copy';
 
 export default {
   root: "src",
+  plugins: [
+    copy({
+      targets: [
+        { src: '../common', dest: 'src' }
+      ],
+      hook: 'writeBundle'
+    })
+  ],
   build: {
     outDir: "../dist",
     emptyOutDir: true,

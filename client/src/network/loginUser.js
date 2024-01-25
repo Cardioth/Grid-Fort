@@ -2,7 +2,7 @@ import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
 import { connectToServer } from "./connect";
 import { createAuthMessage } from "./createAuthMessage";
-import { unhideLoginButtons } from "./loginInterface";
+import { unhideLoginButtons } from "../ui/loginInterface";
 import { serverUrl } from "./serverURL";
 import { setUniCredits } from "../data/config";
 
