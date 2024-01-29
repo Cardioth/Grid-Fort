@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
       console.log('User disconnected:', username);
     });
 
-    if(username === 'ben' || username === 'kane') {
+    if(username === 'admin') {
       socket.emit('privs', 'admin');
       adminListeners(socket, username);
     } else {

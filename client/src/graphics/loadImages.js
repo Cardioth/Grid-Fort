@@ -42,6 +42,7 @@ export function loadImages(scene) {
         "strikeDialogue.png",
         "strikeDialogueIcon.png",
         "circleBacking.png",
+        'emptyButton.png',
     ];
     
     paths.forEach(path => {

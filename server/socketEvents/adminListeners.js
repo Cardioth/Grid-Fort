@@ -6,6 +6,26 @@ function adminListeners(socket, username) {
     if(command.startsWith('/')){
       //Admin commands
 
+      // /removeallcards - Removes all cards from all users and deletes all cards
+      if(command === '/removeallcards'){
+        try {
+          const users = await redisClient.sMembers('users');
+          for (const user of users) {
+            await redisClient.del(`user:${user}:cards`);
+          }
+          console.log('All card links deleted');
+
+          await redisClient.del('cardID');
+          console.log('Card ID deleted');
+
+          deleteAllCards();
+          console.log('All cards deleted');
+          
+        } catch (error) {
+          console.error('Error removing all cards:', error);
+        }
+      }
+
       // /addAllUsernamesToSet - Adds all usernames to the set of all users
       if(command === '/addAllUsernamesToSet'){
         addAllUsernamesToSet();
@@ -23,6 +43,21 @@ function adminListeners(socket, username) {
         }
       } else {
         socket.emit('error', 'Invalid command');
+      }
+
+      // /createrandomcard username count
+      if(command.startsWith('/createrandomcard')){
+        const commandUser = command.split(' ')[1];
+        const commandCount = command.split(' ')[2];
+        for(let i = 0; i < commandCount; i++){
+          const commandBUID = Math.floor(Math.random() * 4) + 1;
+          const commandLevel = Math.floor(Math.random() * 4) + 1;
+          if(commandUser !== undefined){
+            createCard(commandBUID, commandLevel, commandUser);
+          } else {
+            createCard(commandBUID, commandLevel, username);
+          }
+        }
       }
 
       // /givecredits credits username
@@ -57,10 +92,10 @@ function adminListeners(socket, username) {
       if(command.startsWith('/createcardallusers')){
         const commandCount = command.split(' ')[1];
         for(let i = 0; i < commandCount; i++){
-          const commandBUID = Math.floor(Math.random() * 4) + 1;
-          const commandLevel = Math.floor(Math.random() * 4) + 1;
           const users = await redisClient.sMembers('users');
           users.forEach(async user => {
+            const commandBUID = Math.floor(Math.random() * 4) + 1;
+            const commandLevel = Math.floor(Math.random() * 4) + 1;
             createCard(commandBUID, commandLevel, user);
           });
         }
@@ -169,6 +204,22 @@ async function addAllUsernamesToSet() {
     console.log('All usernames added to the set.');
   } catch (error) {
     console.error('Error processing user hashes:', error);
+  }
+}
+
+async function deleteAllCards() {
+  try {
+    // Get all keys that match the card pattern
+    const keys = await redisClient.keys('card:*');
+
+    // Delete each key found
+    for (const key of keys) {
+      await redisClient.del(key);
+    }
+
+    console.log('All card keys deleted.');
+  } catch (error) {
+    console.error('Error deleting card keys:', error);
   }
 }
 

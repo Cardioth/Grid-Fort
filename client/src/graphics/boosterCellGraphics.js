@@ -85,12 +85,12 @@ export function boosterRisingAnimation(cell){
         { frame: 30, value: 0 },
     ]);
 
-    // Apply easing function to both animations
+    // Apply easing function to animations
     let ease = new BABYLON.CubicEase();
     ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
     offsetYAnimation.setEasingFunction(ease);
 
-    // Start both animations simultaneously
+    // Start animations
     GUIscene.beginDirectAnimation(cellIcon, [alphaAnimation,offsetYAnimation], 0, 60, true, 1, () => {
         locationMesh.dispose();
         cellIcon.dispose();

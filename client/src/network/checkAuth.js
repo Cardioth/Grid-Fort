@@ -15,10 +15,11 @@ export function checkAuth(){
     .then(response => response.json())
     .then(data => {
       if (data.auth) {
-        connectToServer();
-        fadeToBlack(()=>{
-          setUniCredits(data.uniCredits);
-          setCurrentScene("menu");
+        connectToServer(()=>{
+          fadeToBlack(()=>{
+            setUniCredits(data.uniCredits);
+            setCurrentScene("menu");
+          });
         });
       } else {
         localStorage.removeItem('loggedIn');
