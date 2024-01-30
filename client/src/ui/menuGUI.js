@@ -138,13 +138,14 @@ export function createMenuScreen(){
     creditsIcon.scaleX = 0.6;
     creditsIcon.scaleY = 0.6;
     container.addControl(creditsIcon);
+    
+    GUITexture.addControl(container);
 
+    console.log(privs);
     if(privs === "admin"){
         createAdminPanel();
     }
 
-    
-    GUITexture.addControl(container);
     return menuScreen;
 }
 

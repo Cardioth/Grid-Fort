@@ -23,12 +23,13 @@ export function loginUser(username, password) {
       }
   })
   .then(data => {
-      setUniCredits(data.uniCredits); // Update uniCredits
       localStorage.setItem('loggedIn', true); // Store a flag in local storage
       localStorage.setItem('username', username); // Optionally store the username
-      connectToServer();
-      fadeToBlack( () => {
+      connectToServer(()=>{
+        fadeToBlack(()=>{
+          setUniCredits(data.uniCredits);
           setCurrentScene("menu");
+        });
       });
   })
   .catch(error => {

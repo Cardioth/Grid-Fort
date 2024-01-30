@@ -3,8 +3,13 @@ import { GUITexture } from '../graphics/sceneInitialization.js';
 import { socket } from "../network/connect.js";
 
 export function createAdminPanel() {
+    console.log("Creating admin panel")
+
     // Create container
     const container = new GUI.Rectangle();
+    container.width = "600px";
+    container.height = "40px";
+    container.top = "200px";
     container.thickness = 0;
 
     // Create Console Input
@@ -14,7 +19,6 @@ export function createAdminPanel() {
     consoleInput.color = "white";
     consoleInput.fontSize = 25;
     consoleInput.fontFamily = "GemunuLibre-Medium";
-    consoleInput.top = "200px";
     consoleInput.left = "-50px";
     consoleInput.thickness = 0;
     consoleInput.background = "black";
@@ -27,7 +31,6 @@ export function createAdminPanel() {
     consoleSubmit.color = "white";
     consoleSubmit.fontSize = 25;
     consoleSubmit.fontFamily = "GemunuLibre-Medium";
-    consoleSubmit.top = "200px";
     consoleSubmit.left = "220px";
     consoleSubmit.thickness = 0;
     consoleSubmit.background = "black";
