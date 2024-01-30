@@ -3,6 +3,7 @@ import allBuildings from "../components/buildings";
 export let collection = [];
 
 export function setCollection(newCollection){
+    collection = [];
     newCollection.forEach(card => {
         for (let building in allBuildings) {
             if(allBuildings[building].BUID === card.BUID){
@@ -13,6 +14,10 @@ export function setCollection(newCollection){
             }
         }
     });
+}
+
+export function resetCollection(){
+    collection = [];
 }
 
 function mapKey(key) {

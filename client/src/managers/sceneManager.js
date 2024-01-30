@@ -31,6 +31,11 @@ export function setCurrentScene(setScene) {
         createCollectionInterface();
     }
 
+    if(setScene === "menu" && currentScene === "collection"){
+        initGUIScene();
+        initMenuScene();
+    }
+
     if(setScene === "menu" && (currentScene === "build" || currentScene === "endBattle")){
         resetGame();
         initGUIScene();

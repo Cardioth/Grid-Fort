@@ -141,7 +141,6 @@ export function createMenuScreen(){
     
     GUITexture.addControl(container);
 
-    console.log(privs);
     if(privs === "admin"){
         createAdminPanel();
     }

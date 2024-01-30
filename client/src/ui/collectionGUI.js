@@ -21,6 +21,7 @@ export function createCollectionInterface(){
     blackScreen.thickness = 0;
     blackScreen.background = "black";
     blackScreen.alpha = 0.5;
+    blackScreen.isPointerBlocker = false;
     container.addControl(blackScreen);
 
     // Create Game Title Text
@@ -31,6 +32,7 @@ export function createCollectionInterface(){
     titleText.fontFamily = "GemunuLibre-Bold";
     titleText.top = "-45%";
     titleText.left = 0;
+    titleText.isPointerBlocker = false;
     container.addControl(titleText);
 
     // Sign Out Button
@@ -99,16 +101,63 @@ export function createCollectionInterface(){
     cardContainer.width = "100%";
     cardContainer.height = "100%";
     cardContainer.top = "-20%";
-    cardContainer.thickness = 0;
+    cardContainer.thickness = 1;
 
     cardImages.forEach(card => {
         cardContainer.addControl(card);
     });
 
-    // Return to Menu Button
-    
-
     container.addControl(cardContainer);
 
+    // Return to Menu Button
+    const returnButton = createCustomButton("Return", () => {
+        fadeToBlack(() => {
+            setCurrentScene("menu");
+        });
+    });
+
+    returnButton.top = "46%";
+    returnButton.left = "-44%";
+
+    container.addControl(returnButton);
+    
+
     GUITexture.addControl(container);
+}
+
+export function createCustomButton(text, functionToCall){
+    // Create container
+    const container = new GUI.Rectangle();
+    container.thickness = 0;
+    container.width = "134px";
+    container.height = "33px";
+
+    // Create Button
+    const buttonGraphic = new GUI.Image("emptyButton", getImage("emptyButton.png"));
+    buttonGraphic.width = "134px";
+    buttonGraphic.height = "33px";
+    container.addControl(buttonGraphic);
+
+    // Create Button Text
+    const buttonText = new GUI.TextBlock();
+    buttonText.width = "134px";
+    buttonText.height = "33px";
+    buttonText.text = text;
+    buttonText.color = "white";
+    buttonText.fontSize = 20;
+    buttonText.fontFamily = "GemunuLibre-Medium";
+    container.addControl(buttonText);
+
+    container.onPointerClickObservable.add(() => {
+        document.body.style.cursor='default'
+        functionToCall();
+    });
+    container.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    container.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
+    return container;
 }
