@@ -2,6 +2,7 @@ import { initGameScene, initMenuScene, initGUIScene, initPreloadScene, initAuthe
 import { resetGame } from './resetGame';
 import { createLoginInterface } from "../ui/loginInterface";
 import { createCollectionInterface } from "../ui/collectionGUI";
+import { resizeCanvas } from "../graphics/resizeCanvas";
 
 export let currentScene;
 
@@ -9,6 +10,7 @@ export function setCurrentScene(setScene) {
     if(setScene === "preload" && currentScene === undefined){
         initGUIScene();
         initPreloadScene();
+        resizeCanvas();
     }
 
     if(setScene === "authentication" && currentScene === "preload"){

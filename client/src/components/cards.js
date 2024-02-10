@@ -52,7 +52,7 @@ export function updateCardAnimation() {
 }
 
 export function setCardPositions() {
-    let yCardOffset = 360; // Initial offset from middle
+    let yCardOffset = canvas.height/2-80; // Initial offset from middle
     const gap = 100 - hand.length * 2; // Gap between cards
 
     hand.forEach((buildingCard, index) => {
