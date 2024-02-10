@@ -341,6 +341,7 @@ function loadModels(scene) {
                     }
                     meshes[i].setEnabled(false);
                 }
+                meshes[i].freezeWorldMatrix();
             }
 
             boostedCellGraphic.setEnabled(false);
@@ -420,20 +421,20 @@ function initLights(scene) {
 }
 
 function postProcessEffects(scene, camera) {
-    const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
-    scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
-    ssaoPipeline.totalStrength = 1;
-    ssaoPipeline.radius = 0.00005;
+    // const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
+    // scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
+    // ssaoPipeline.totalStrength = 1;
+    // ssaoPipeline.radius = 0.00005;
 
-    const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
-    bloomPipeline.bloomEnabled = true;
-    bloomPipeline.bloomThreshold = 0.34;
-    bloomPipeline.bloomWeight = 1.65;
-    bloomPipeline.bloomKernel = 30;
-    bloomPipeline.bloomScale = 2;
+    // const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
+    // bloomPipeline.bloomEnabled = true;
+    // bloomPipeline.bloomThreshold = 0.32;
+    // bloomPipeline.bloomWeight = 0.5;
+    // bloomPipeline.bloomKernel = 25;
+    // bloomPipeline.bloomScale = 0.5;
 
-    var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
-    fxaaPostProcess.samples = 1;
+    // var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
+    // fxaaPostProcess.samples = 1;
 }
 
 function initCamera(scene) {
