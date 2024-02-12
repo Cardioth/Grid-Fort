@@ -1,4 +1,4 @@
-import { gridHeight, gridWidth, startingCardCount, startingCredits, startingMedals } from "../data/config.js";
+import { gridHeight, gridWidth, startingCardCount, startingCredits } from "../data/config.js";
 import { buildRandomDeck, drawCardFromDeckToHand } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
@@ -41,15 +41,15 @@ export const enemyBoard = {
 };
 
 export let strikes;
-export let medals = startingMedals;
+export let medals;
 
 export let allBoards = [];
 
 export function gameSetup(){
     buildRandomDeck();
 
-    strikes = 0;
-    medals = 0;
+    strikes = 6;
+    medals = 10;
 
     setAvailableCredits(startingCredits);
     setTotalCredits(startingCredits);

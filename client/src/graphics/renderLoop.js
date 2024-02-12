@@ -21,14 +21,21 @@ export function updateGraphics(){
         setOrthoSize(zoom);
         const cameras = [camera, GUIcamera];
 
-        // Animate Camera Position
-        for(const camera of cameras){
-            camera.position.x += (camera.targetPosition.x - camera.position.x) * 0.015;
-            camera.position.z += (camera.targetPosition.z - camera.position.z) * 0.015;
-            camera.currentSetTargetPosition.x += (camera.setTargetTargetPosition.x - camera.currentSetTargetPosition.x) * 0.025;
-            camera.currentSetTargetPosition.z += (camera.setTargetTargetPosition.z - camera.currentSetTargetPosition.z) * 0.025;
-            camera.setTarget(camera.currentSetTargetPosition);
+        // Animate Camera Position only if target position is far from current camera position
+
+        let distanceFromTargetPositionX = Math.abs(camera.position.x - camera.targetPosition.x);
+        let distanceFromTargetPositionZ = Math.abs(camera.position.z - camera.targetPosition.z);
+
+        if(distanceFromTargetPositionX > 0.1 || distanceFromTargetPositionZ > 0.1){
+            for(const camera of cameras){
+                camera.position.x += (camera.targetPosition.x - camera.position.x) * 0.015;
+                camera.position.z += (camera.targetPosition.z - camera.position.z) * 0.015;
+                camera.currentSetTargetPosition.x += (camera.setTargetTargetPosition.x - camera.currentSetTargetPosition.x) * 0.025;
+                camera.currentSetTargetPosition.z += (camera.setTargetTargetPosition.z - camera.currentSetTargetPosition.z) * 0.025;
+                camera.setTarget(camera.currentSetTargetPosition);
+            }
         }
+
 
         // Animate Cards
         updateCardAnimation();

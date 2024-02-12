@@ -7,9 +7,6 @@ export const startingCredits = 2;
 export const startingCardCount = 2;
 export const battleLoopTimeLength = 20;
 
-export const startingLives = 7;
-export const startingMedals = 0;
-
 export let uniCredits = 0;
 
 export function updateUniCredits(amount){

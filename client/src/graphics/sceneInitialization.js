@@ -455,7 +455,6 @@ export function setOrthoSize(size) {
 }
 
 export function updateCameraOrtho() {
-    console.log(canvas.width, canvas.height);
     let aspectRatio = canvas.width / canvas.height;
     let orthoTop = orthoSize;
     let orthoBottom = -orthoSize;

@@ -51,6 +51,13 @@ export function createEndBattleScreen(victory){
         container.addControl(defeatText);
     }
 
+    //Text Container
+    const textContainer = new GUI.Rectangle();
+    textContainer.width = "1000px";
+    textContainer.height = "1000px";
+    textContainer.left = "-300px";
+    textContainer.thickness = 0;
+
     //Medals Text
     const medalText = new GUI.TextBlock();
     medalText.text = "Medals: " + medals;
@@ -61,7 +68,7 @@ export function createEndBattleScreen(victory){
     medalText.left = "860px";
     medalText.fontFamily = "GemunuLibre-Bold";
     medalText.zIndex = 4;
-    container.addControl(medalText);
+    textContainer.addControl(medalText);
 
     //Strike Text
     const strikeText = new GUI.TextBlock();
@@ -73,7 +80,7 @@ export function createEndBattleScreen(victory){
     strikeText.left = "860px";
     strikeText.fontFamily = "GemunuLibre-Bold";
     strikeText.zIndex = 5;
-    container.addControl(strikeText);
+    textContainer.addControl(strikeText);
 
     //Your Stats Text
     const yourStatsText = new GUI.TextBlock();
@@ -85,7 +92,7 @@ export function createEndBattleScreen(victory){
     yourStatsText.left = "357px";
     yourStatsText.fontFamily = "GemunuLibre-Bold";
     yourStatsText.zIndex = 6;
-    container.addControl(yourStatsText);
+    textContainer.addControl(yourStatsText);
 
     //Enemy Stats Text
     const enemyStatsText = new GUI.TextBlock();
@@ -97,7 +104,7 @@ export function createEndBattleScreen(victory){
     enemyStatsText.left = "603px";
     enemyStatsText.fontFamily = "GemunuLibre-Bold";
     enemyStatsText.zIndex = 7;
-    container.addControl(enemyStatsText);
+    textContainer.addControl(enemyStatsText);
 
     //Continue Button
     const continueButton = new GUI.Image("continueButton", getImage("continueButton.png"));
@@ -194,7 +201,7 @@ export function createEndBattleScreen(victory){
             statsText.left = "357px";
             statsText.fontFamily = "GemunuLibre-Medium";
             statsText.zIndex = 11;
-            container.addControl(statsText);
+            textContainer.addControl(statsText);
             lineHeight += 20;
         }
     }
@@ -213,10 +220,14 @@ export function createEndBattleScreen(victory){
             statsText.left = "603px";
             statsText.fontFamily = "GemunuLibre-Medium";
             statsText.zIndex = 11;
-            container.addControl(statsText);
+            textContainer.addControl(statsText);
             lineHeight += 20;
         }
     }
+
+    textContainer.zIndex = 8;
+
+    container.addControl(textContainer);
     
     container.zIndex = 300;
 

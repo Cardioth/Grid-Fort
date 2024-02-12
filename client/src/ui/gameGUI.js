@@ -222,7 +222,7 @@ export function displayBuildingInfo(building){
 
     //Building level
     const levelText = new GUI.TextBlock();
-    levelText.text = "Level " + building.cardLevel;
+    levelText.text = "Level " + building.level;
     levelText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     levelText.color = "#94EAFF";
     levelText.fontSize = 27;
@@ -232,8 +232,8 @@ export function displayBuildingInfo(building){
     container.addControl(levelText);
 
     //Building Level image
-    if(building.cardLevel >= 1){
-        const imageName = getImage("cardLevel"+building.cardLevel+".png");
+    if(building.level >= 1){
+        const imageName = getImage("cardLevel"+building.level+".png");
         var levelImage = new GUI.Image("but", imageName);
         levelImage.width = "323px";
         levelImage.height = "44px";
@@ -339,6 +339,7 @@ export function displayBottomUI(){
     addCreditIcon(availableCredits);
 
     bottomPanelContainer.zIndex = 200;
+    bottomPanelContainer.isPointerBlocker = false;
 
     GUITexture.addControl(bottomPanelContainer);
 }

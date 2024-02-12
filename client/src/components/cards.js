@@ -82,7 +82,7 @@ export function getHoveredCard(mouseX, mouseY) {
         const hoverWidth = 70;
         const minX = hand[i].currentPosition.x - hoverWidth + canvas.width / 2;
         const maxX = hand[i].currentPosition.x + hoverWidth + canvas.width / 2;
-        const minY = canvas.height - 300;
+        const minY = canvas.height - canvas.height / 4;
         const maxY = canvas.height;        
         if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) {
             for (let j = 0; j < hand.length; j++) {

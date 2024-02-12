@@ -55,7 +55,7 @@ const allBuildings = {
         stats:{health:25, energyFirepower:2, powerStorage:15, powerDraw:0.2, fireRate:2}},
     damageBooster:{name:"Damage Booster", class:"Booster",cost:2, width:3,height:3,shape:[6,1,6,6,2,6,6,1,6], color:"#487fb6", drawable:true, BUID: 3,
         effects:{energyFirepower:1, kineticFirepower:1}},
-    powerStation:{name:"Power Station", class:"Booster",cost:3, width:4,height:4,shape:[0,6,6,0,6,8,1,6,6,1,1,6,0,6,6,0], color:"#5497e3", drawable:true, BUID: 4,
+    powerStation:{name:"Power Station", class:"Booster",cost:1, width:4,height:4,shape:[0,6,6,0,6,8,1,6,6,1,1,6,0,6,6,0], color:"#5497e3", drawable:true, BUID: 4,
         stats:{energyFirepower:1, fireRate:3, powerStorage:30, powerDraw:0.1},effects:{powerStorage:100}},
     ammoStation:{name:"Ammo Station", class:"Booster",cost:3, width:4,height:4,shape:[0,5,5,0,5,2,1,5,5,1,1,5,0,5,5,0], color:"#35608a", drawable:false, BUID: 5,
         stats:{kineticFirepower:1, ammoStorage:30, fireRate:12, ammoStorage:50}, effects:{ammoStorage:100}},

@@ -38,7 +38,7 @@ export function createMenuScreen(){
     // Create Play Button
 
     const playButton = GUI.Button.CreateSimpleButton("playButton", "Play");
-    playButton.width = 0.2;
+    playButton.width = "200px";
     playButton.height = "40px";
     playButton.color = "white";
     playButton.fontSize = 30;
@@ -62,7 +62,7 @@ export function createMenuScreen(){
 
     // Create Collection Button
     const collectionButton = GUI.Button.CreateSimpleButton("collectionButton", "Collection");
-    collectionButton.width = 0.2;
+    collectionButton.width = "200px";
     collectionButton.height = "40px";
     collectionButton.color = "white";
     collectionButton.fontSize = 30;
@@ -94,13 +94,15 @@ export function createMenuScreen(){
 
     // Sign Out Button
     const signOutButton = GUI.Button.CreateSimpleButton("signOutButton", "Sign Out");
-    signOutButton.width = 0.09;
+    signOutButton.width = "130px";
     signOutButton.height = "40px";
     signOutButton.color = "white";
     signOutButton.fontSize = 30;
     signOutButton.fontFamily = "GemunuLibre-Medium";
-    signOutButton.top = "45%";
-    signOutButton.left = "43%";
+    signOutButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    signOutButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    signOutButton.top = "-10px";
+    signOutButton.left = "-10px";
     signOutButton.thickness = 0;
     signOutButton.background = "#0E1016";
     signOutButton.name = "signOutButton";
@@ -118,14 +120,16 @@ export function createMenuScreen(){
 
     // Create Uni Credits Text
     const uniCreditsText = new GUI.TextBlock();
-    uniCreditsText.width = 0.09;
+    uniCreditsText.width = "130px";
     uniCreditsText.height = "40px";
     uniCreditsText.text = uniCredits + "uC";
     uniCreditsText.color = "white";
     uniCreditsText.fontSize = 25;
     uniCreditsText.fontFamily = "GemunuLibre-Medium";
-    uniCreditsText.top = "45%";
-    uniCreditsText.left = "30%";
+    uniCreditsText.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    uniCreditsText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    uniCreditsText.top = "-10px";
+    uniCreditsText.left = "-150px";
     uniCreditsText.name = "uniCreditsText";
     container.addControl(uniCreditsText);
 
@@ -133,8 +137,10 @@ export function createMenuScreen(){
     const creditsIcon = new GUI.Image("creditsIcon", getImage("credIcon.png"));
     creditsIcon.width = "103px";
     creditsIcon.height = "69px";
-    creditsIcon.top = "45%";
-    creditsIcon.left = "26%";
+    creditsIcon.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    creditsIcon.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    creditsIcon.top = "5px";
+    creditsIcon.left = "-240px";
     creditsIcon.scaleX = 0.6;
     creditsIcon.scaleY = 0.6;
     container.addControl(creditsIcon);
