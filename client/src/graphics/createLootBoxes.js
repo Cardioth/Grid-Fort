@@ -53,7 +53,6 @@ export function createLootBoxes(scene, medals) {
     };    
 
     function positionLootBoxesInCircle(rewards, centerX, centerY, radius, object) {
-        console.log(rewards);
         if (rewards.lootBoxCount > 1) {
             let angle = Math.PI / 2;
             let step = (2 * Math.PI) / rewards.lootBoxCount;

@@ -108,8 +108,6 @@ export const initPreloadScene = () => {
     addLaserMaterialsToMaterialPool(200);
 
     loadLootBoxes(GUI3Dscene);
-    
-    createSwirlKeyFrameData();
 
     return scene;
 }
@@ -179,7 +177,7 @@ function initFadeScene() {
 function initGUI3DScene() {
     GUI3Dscene = new BABYLON.Scene(engine);
     GUI3Dscene.autoClear = false;
-    GUI3Dscene.autoClearDepthAndStencil = false;
+    GUI3Dscene.autoClearDepthAndStencil = true;
 
     GUI3Dcamera = new BABYLON.FreeCamera("GUI3Dcamera", new BABYLON.Vector3(9, 0, 0), GUI3Dscene);
     GUI3Dcamera.setTarget(new BABYLON.Vector3(0, 0, 0));
@@ -484,7 +482,7 @@ export function updateCameraOrtho() {
 }
 
 engine.runRenderLoop(() => {
-
+    
     if (currentScene === "menu" || currentScene === "authentication" || currentScene === "collection") {
         updateMenuGraphics();
     }

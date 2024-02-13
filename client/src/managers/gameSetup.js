@@ -41,7 +41,7 @@ export const enemyBoard = {
 };
 
 export let strikes;
-export let medals;
+export let medals = 10;
 
 export let allBoards = [];
 
