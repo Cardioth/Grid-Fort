@@ -9,7 +9,7 @@ const gameConfig = require('../data/config');
 router.post('/register', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const username = req.body.username;
+    const username = req.body.username.toLowerCase();
 
     // Check if user already exists
     const userExists = await redisClient.exists(`user:${username}`);
@@ -50,6 +50,10 @@ router.post('/register', async (req, res) => {
 
 // Login route
 router.post('/login', (req, res, next) => {
+  if (req.body.username) {
+    req.body.username = req.body.username.toLowerCase();
+  }
+
   passport.authenticate('local', (err, user, info) => {
     if (err) return next(err);
     if (!user) return res.status(400).json({ message: info.message });

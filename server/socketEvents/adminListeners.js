@@ -31,6 +31,34 @@ function adminListeners(socket, username) {
         addAllUsernamesToSet();
       }
 
+      // /removeAllUsernamesFromSet - Removes all usernames from the set of all users
+      if(command === '/removeAllUsernamesFromSet'){
+        try {
+          const users = await redisClient.sMembers('users');
+          for (const user of users) {
+            await redisClient.sRem('users', user);
+          }
+          console.log('All usernames removed from the set');
+        } catch (error) {
+          console.error('Error removing all usernames from the set:', error);
+        }
+      }
+
+      // /addFieldToAllUsers field value
+      if(command.startsWith('/addFieldToAllUsers')){
+        const field = command.split(' ')[1];
+        const value = command.split(' ')[2];
+        try {
+          const users = await redisClient.sMembers('users');
+          for (const user of users) {
+            await redisClient.hSet(`user:${user}`, field, value);
+          }
+          console.log('Field added to all users:', field, value);
+        } catch (error) {
+          console.error('Error adding field to all users:', error);
+        }
+      }
+
       // /createcard BUID level username
       if(command.startsWith('/createcard') && command.startsWith('/createcardallusers') === false){
         const commandBUID = command.split(' ')[1];

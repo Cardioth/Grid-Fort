@@ -3,8 +3,6 @@ import { GUITexture } from '../graphics/sceneInitialization.js';
 import { socket } from "../network/connect.js";
 
 export function createAdminPanel() {
-    console.log("Creating admin panel")
-
     // Create container
     const container = new GUI.Rectangle();
     container.width = "600px";

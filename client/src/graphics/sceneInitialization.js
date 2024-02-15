@@ -483,7 +483,7 @@ export function updateCameraOrtho() {
 
 engine.runRenderLoop(() => {
     
-    if (currentScene === "menu" || currentScene === "authentication" || currentScene === "collection") {
+    if (currentScene === "menu" || currentScene === "authentication" || currentScene === "collection" || currentScene === "profile") {
         updateMenuGraphics();
     }
 

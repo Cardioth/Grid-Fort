@@ -68,7 +68,7 @@ export function createMenuScreen(){
         document.body.style.cursor='pointer'
         socket.emit("getProfile");
         socket.on("getProfileResponse", (response) => {
-            console.log(response);
+            setProfileData(response);
             fadeToBlack(() => {
                 setCurrentScene("profile");
             });
@@ -261,4 +261,13 @@ function createStartGameDialogue(){
 
     GUITexture.addControl(container);
 
+}
+
+function setProfileData(data){
+    const profile = {
+        username: data.username,
+        wallet: data.wallet,
+        uniCredits: data.uniCredits,
+    };
+    localStorage.setItem("profile", JSON.stringify(profile));
 }

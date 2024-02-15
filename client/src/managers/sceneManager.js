@@ -3,6 +3,7 @@ import { resetGame } from './resetGame';
 import { createLoginInterface } from "../ui/loginInterface";
 import { createCollectionInterface } from "../ui/collectionGUI";
 import { resizeCanvas } from "../graphics/resizeCanvas";
+import { createProfileInterface } from "../ui/profileGUI";
 
 export let currentScene;
 
@@ -23,7 +24,7 @@ export function setCurrentScene(setScene) {
         createLoginInterface();
     }
 
-    if(setScene === "menu" && currentScene === "authentication"){
+    if(setScene === "menu" && (currentScene === "authentication" || currentScene === "profile")){
         initGUIScene();
         initMenuScene();
     }
@@ -31,6 +32,11 @@ export function setCurrentScene(setScene) {
     if(setScene === "collection" && currentScene === "menu"){
         initGUIScene();
         createCollectionInterface();
+    }
+
+    if(setScene === "profile" && currentScene === "menu"){
+        initGUIScene();
+        createProfileInterface();
     }
 
     if(setScene === "menu" && currentScene === "collection"){
