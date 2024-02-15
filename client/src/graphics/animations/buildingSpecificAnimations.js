@@ -62,4 +62,3 @@ function coreAnimation(building){
     scene.beginDirectAnimation(mesh2, mesh2.animations, 0, 300, true, 1);
     scene.beginDirectAnimation(mesh3, mesh3.animations, 0, 300, true, 1);
 }
-

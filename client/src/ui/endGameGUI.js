@@ -42,13 +42,6 @@ export function createEndGameScreen(){
     continueButton.top = "8%";
     continueButton.zIndex = 20;
     continueButton.alpha = 0;
-    continueButton.onPointerClickObservable.add( () => {
-        if(currentScene === "endBattle"){
-            fadeToBlack(()=> {
-                setCurrentScene("menu");
-            });
-        }
-    });
 
     //Fade in continue button animation
     const continueButtonAnimation = new BABYLON.Animation("containerFadeIn", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -58,14 +51,6 @@ export function createEndGameScreen(){
     ]);
     continueButton.animations = [];
     continueButton.animations.push(continueButtonAnimation);
-
-    //Change cursor on hover
-    continueButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    continueButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
 
     GUIscene.continueButtonEndGame = continueButton;
 
@@ -148,6 +133,20 @@ export function createEndGameScreen(){
 
 export function fadeInContinueButton(continueButton) {
     GUIscene.beginDirectAnimation(continueButton, [continueButton.animations[0]], 0, 40, false, 1);
+    continueButton.onPointerClickObservable.add( () => {
+        if(currentScene === "endBattle"){
+            fadeToBlack(()=> {
+                setCurrentScene("menu");
+            });
+        }
+    });
+    //Change cursor on hover
+    continueButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    continueButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
 }
 
 export function createSwirlKeyFrameData(dummyX, dummyY, index) {

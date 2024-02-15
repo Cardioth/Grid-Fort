@@ -43,7 +43,7 @@ function createProjectileTrail(startPosition, projectile) {
 
             for (let i = 0; i < trailLines.length; i++) {
                 trailLines[i].lifeSpan -= 1;
-                trailLines[i].alpha -= 0.05;
+                trailLines[i].alpha -= 0.25;
                 if (trailLines[i].lifeSpan <= 0) {
                     trailLines[i].dispose();
                     trailLines.splice(i, 1);

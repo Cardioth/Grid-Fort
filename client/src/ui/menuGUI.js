@@ -11,6 +11,7 @@ import { getImage } from "../graphics/loadImages.js";
 import { serverUrl } from "../network/serverURL.js";
 import { setCollection } from "../managers/collectionManager.js";
 import { createAdminPanel } from "./createAdminPanel.js";
+import { createCustomButton } from "./createCustomButton.js";
 
 export function createMenuScreen(){
     // Create container
@@ -36,43 +37,16 @@ export function createMenuScreen(){
     container.addControl(titleText);
 
     // Create Play Button
-
-    const playButton = GUI.Button.CreateSimpleButton("playButton", "Play");
-    playButton.width = "200px";
-    playButton.height = "40px";
-    playButton.color = "white";
-    playButton.fontSize = 30;
-    playButton.fontFamily = "GemunuLibre-Bold";
-    playButton.top = 30;
-    playButton.left = 0;
-    playButton.thickness = 0;
-    playButton.background = "black";
-    playButton.name = "playButton";
-    playButton.onPointerClickObservable.add(() => {
+    const playButton = createCustomButton("Play", () => {
         createStartGameDialogue();
     });
-    playButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    playButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
-
+    playButton.top = 30;
+    playButton.left = 0;
+    playButton.name = "playButton";
     container.addControl(playButton);
 
     // Create Collection Button
-    const collectionButton = GUI.Button.CreateSimpleButton("collectionButton", "Collection");
-    collectionButton.width = "200px";
-    collectionButton.height = "40px";
-    collectionButton.color = "white";
-    collectionButton.fontSize = 30;
-    collectionButton.fontFamily = "GemunuLibre-Bold";
-    collectionButton.top = 80;
-    collectionButton.left = 0;
-    collectionButton.thickness = 0;
-    collectionButton.background = "black";
-    collectionButton.name = "collectionButton";
-    collectionButton.onPointerClickObservable.add(() => {
+    const collectionButton = createCustomButton("Collection", () => {
         hideMenuButtons();
         document.body.style.cursor='pointer'
         socket.emit("getCollection");
@@ -82,40 +56,39 @@ export function createMenuScreen(){
                 setCurrentScene("collection");
             });
         });
-
     });
-    collectionButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    collectionButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
+    collectionButton.top = 80;
+    collectionButton.left = 0;
+    collectionButton.name = "collectionButton";
     container.addControl(collectionButton);
 
+    // Create Profile Button
+    const profileButton = createCustomButton("Profile", () => {
+        hideMenuButtons();
+        document.body.style.cursor='pointer'
+        socket.emit("getProfile");
+        socket.on("getProfileResponse", (response) => {
+            console.log(response);
+            fadeToBlack(() => {
+                setCurrentScene("profile");
+            });
+        });
+    });
+    profileButton.top = 130;
+    profileButton.left = 0;
+    profileButton.name = "profileButton";
+    container.addControl(profileButton);
+
     // Sign Out Button
-    const signOutButton = GUI.Button.CreateSimpleButton("signOutButton", "Sign Out");
-    signOutButton.width = "130px";
-    signOutButton.height = "40px";
-    signOutButton.color = "white";
-    signOutButton.fontSize = 30;
-    signOutButton.fontFamily = "GemunuLibre-Medium";
-    signOutButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    signOutButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-    signOutButton.top = "-10px";
-    signOutButton.left = "-10px";
-    signOutButton.thickness = 0;
-    signOutButton.background = "#0E1016";
-    signOutButton.name = "signOutButton";
-    signOutButton.onPointerClickObservable.add(() => {
+    const signOutButton = createCustomButton("Sign Out", () => {
         hideMenuButtons();
         signOutUser();
     });
-    signOutButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    signOutButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
+    signOutButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    signOutButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    signOutButton.top = "-20px";
+    signOutButton.left = "-10px";
+    signOutButton.name = "signOutButton";
     container.addControl(signOutButton);
 
     // Create Uni Credits Text
@@ -128,7 +101,7 @@ export function createMenuScreen(){
     uniCreditsText.fontFamily = "GemunuLibre-Medium";
     uniCreditsText.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     uniCreditsText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-    uniCreditsText.top = "-10px";
+    uniCreditsText.top = "-20px";
     uniCreditsText.left = "-150px";
     uniCreditsText.name = "uniCreditsText";
     container.addControl(uniCreditsText);
@@ -139,7 +112,7 @@ export function createMenuScreen(){
     creditsIcon.height = "69px";
     creditsIcon.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     creditsIcon.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-    creditsIcon.top = "5px";
+    creditsIcon.top = "-5px";
     creditsIcon.left = "-240px";
     creditsIcon.scaleX = 0.6;
     creditsIcon.scaleY = 0.6;
@@ -158,10 +131,12 @@ export function hideMenuButtons(){
     const playButton = GUITexture.getControlByName("playButton");
     const collectionButton = GUITexture.getControlByName("collectionButton");
     const signOutButton = GUITexture.getControlByName("signOutButton");
+    const profileButton = GUITexture.getControlByName("profileButton");
 
     playButton.isVisible = false;
     collectionButton.isVisible = false;
     signOutButton.isVisible = false;
+    profileButton.isVisible = false;
 }
 
 function createStartGameDialogue(){

@@ -70,8 +70,10 @@ export function createCollectionInterface(){
         });
     });
 
-    returnButton.top = "46%";
-    returnButton.left = "-44%";
+    returnButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    returnButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    returnButton.top = "-20px";
+    returnButton.left = "15px";
 
     container.addControl(returnButton);
     
