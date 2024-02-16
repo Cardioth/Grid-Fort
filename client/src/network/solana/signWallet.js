@@ -1,3 +1,5 @@
+import { createWalletAddressAndUnlinkButton, hideLinkWalletButton } from "../../ui/profileGUI";
+import { socket } from "../connect";
 import { createAlertMessage } from "../createAlertMessage";
 
 export const signMessage = async () => {
@@ -5,9 +7,24 @@ export const signMessage = async () => {
       const { solana } = window;
       if (solana) {
         const message = new TextEncoder().encode('Sign this message to connect your wallet.');
-        const signedMessage = await solana.signMessage(message, 'utf-8');
-        console.log('Signed Message:', signedMessage);
-        // Send the signed message to the server for verification
+        const signedMessage = await solana.signMessage(message, 'utf8');
+        const publicKey = localStorage.getItem('solanaPublicKey');
+        console.log(signedMessage);
+        // Send the signed message and public key to the server for verification
+        const payload = {
+          publicKey: publicKey,
+          signature: signedMessage.signature,
+        };
+        socket.emit('verifySignature', payload);
+        socket.on('signatureVerified', (verified) => {
+          if (verified) {
+            createAlertMessage('Signature verified');
+            createWalletAddressAndUnlinkButton();
+            hideLinkWalletButton();
+          } else {
+            createAlertMessage('Signature not verified');
+          }
+        });
       } else {
         createAlertMessage('Solana wallet not found');
       }

@@ -15,6 +15,7 @@ const { startGameListener } = require('./socketEvents/startGameListener');
 const { getCollectionListener } = require('./socketEvents/getCollectionListener');
 const { adminListeners } = require('./socketEvents/adminListeners');
 const { getProfileListener } = require('./socketEvents/getProfileListener');
+const { verifySignatureListener } = require('./socketEvents/verifySignatureListener');
 
 // Express
 const app = express();
@@ -109,6 +110,8 @@ io.on('connection', (socket) => {
     getCollectionListener(socket, username);
 
     getProfileListener(socket, username);
+
+    verifySignatureListener(socket, username);
 
   } else {
     console.log('Unauthenticated user connected');

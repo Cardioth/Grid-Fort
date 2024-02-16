@@ -7,6 +7,7 @@ import { uniCredits } from "../data/config.js";
 import { createAlertMessage } from "../network/createAlertMessage.js";
 import { createCustomButton } from "./createCustomButton.js";
 import { connectWallet } from "../network/solana/connectWallet.js";
+import { socket } from "../network/connect.js";
 
 export function createProfileInterface(){
     const profile = JSON.parse(localStorage.getItem("profile"));
@@ -66,16 +67,11 @@ export function createProfileInterface(){
 
     if(profile.wallet === "unlinked"){
         // Create Link Wallet Button
-        const linkWalletButton = createCustomButton("Link Wallet", () => {
-            createAlertMessage("linkWallet");
-            connectWallet();
-        });
-        linkWalletButton.top = "50px";
-        linkWalletButton.left = "0px";
-        container.addControl(linkWalletButton);
+        createLinkWalletButton(container);
+    } else {
+        // Create Wallet Address Text
+        createWalletAddressAndUnlinkButton();
     }
-
-
 
     // Return to Menu Button
     const returnButton = createCustomButton("Return", () => {
@@ -92,4 +88,61 @@ export function createProfileInterface(){
     container.addControl(returnButton);
     
     GUITexture.addControl(container);
+}
+
+export function createWalletAddressAndUnlinkButton() {
+    // Create Container
+    const container = new GUI.Rectangle();
+    container.thickness = 0;
+    container.width = "300px";
+    container.height = "300px";
+    container.zIndex = 3;
+
+    // Create Wallet Address Text
+    const walletAddressText = new GUI.TextBlock();
+    walletAddressText.text = "Wallet Connected";
+    walletAddressText.color = "white";
+    walletAddressText.fontSize = 25;
+    walletAddressText.fontFamily = "GemunuLibre-Medium";
+    walletAddressText.top = "50px";
+    walletAddressText.left = 0;
+    container.addControl(walletAddressText);
+
+    // Create Unlink Wallet Button
+    const unlinkWalletButton = createCustomButton("Unlink", () => {
+        socket.emit("unlinkWallet");
+        localStorage.removeItem('solanaPublicKey');
+    });
+    unlinkWalletButton.top = "100px";
+    unlinkWalletButton.left = "0px";
+    container.addControl(unlinkWalletButton);
+
+    socket.on("unlinkWalletResponse", (response) => {
+        if (response === true) {
+            createLinkWalletButton();
+            container.dispose();
+            createAlertMessage("Wallet unlinked successfully");
+        } else {
+            createAlertMessage("Error unlinking wallet");
+        }
+    });
+
+    GUITexture.addControl(container);
+}
+
+export function hideLinkWalletButton(){
+    const linkWalletButton = GUITexture.getControlByName("linkWalletButton");
+    linkWalletButton.isVisible = false;
+
+}
+
+function createLinkWalletButton() {
+    const linkWalletButton = createCustomButton("Link Wallet", () => {
+        connectWallet();
+    });
+    linkWalletButton.name = "linkWalletButton";
+    linkWalletButton.top = "50px";
+    linkWalletButton.left = "0px";
+    linkWalletButton.zIndex = 3;
+    GUITexture.addControl(linkWalletButton);
 }

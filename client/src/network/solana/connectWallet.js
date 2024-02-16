@@ -1,15 +1,15 @@
 import { createAlertMessage } from "../createAlertMessage";
+import { signMessage } from "./signWallet";
 
 // Assuming the user has a Solana wallet extension installed
 export const connectWallet = async () => {
     try {
         const { solana } = window;
-        console.log(solana);
         if (solana && solana.isPhantom) {
-            const response = await solana.connect({ onlyIfTrusted: true });
-            console.log(response);
-            console.log('Connected with Public Key:', response.publicKey.toString());
-            // Proceed with further actions such as signing a message
+            const response = await solana.connect();
+            localStorage.setItem('solanaPublicKey', response.publicKey.toString());
+            createAlertMessage('Solana wallet connected');
+            signMessage();
         } else {
             createAlertMessage('Solana wallet not found');
         }
