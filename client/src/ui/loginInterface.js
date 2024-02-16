@@ -23,8 +23,8 @@ export function createLoginInterface(){
 
     // Create Backing Box
     const backingBox = new GUI.Rectangle();
-    backingBox.width = "30%";
-    backingBox.height = "60%";
+    backingBox.width = "500px";
+    backingBox.height = "500px";
     backingBox.thickness = 1;
     backingBox.background = "black";
     backingBox.alpha = 0.5;
@@ -115,6 +115,8 @@ export function createLoginInterface(){
         }
         if(eventData.key === "Enter"){
             eventData.preventDefault();
+            loginButton.isVisible = false;
+            registerText.isVisible = false;
             loginUser(usernameInput.text, passwordInput.text);
         }
     });

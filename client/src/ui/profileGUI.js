@@ -4,8 +4,9 @@ import * as BABYLON from "@babylonjs/core";
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../data/config.js";
-import { createAuthMessage } from "../network/createAuthMessage.js";
+import { createAlertMessage } from "../network/createAlertMessage.js";
 import { createCustomButton } from "./createCustomButton.js";
+import { connectWallet } from "../network/solana/connectWallet.js";
 
 export function createProfileInterface(){
     const profile = JSON.parse(localStorage.getItem("profile"));
@@ -66,7 +67,8 @@ export function createProfileInterface(){
     if(profile.wallet === "unlinked"){
         // Create Link Wallet Button
         const linkWalletButton = createCustomButton("Link Wallet", () => {
-            createAuthMessage("linkWallet");
+            createAlertMessage("linkWallet");
+            connectWallet();
         });
         linkWalletButton.top = "50px";
         linkWalletButton.left = "0px";

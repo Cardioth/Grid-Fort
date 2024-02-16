@@ -94,9 +94,11 @@ function adminListeners(socket, username) {
         const commandUser = command.split(' ')[2];
         if(commandUser !== undefined){
           const currentCredits = await redisClient.hGet(`user:${commandUser}`, 'uniCredits');
+          console.log('Gave ', currentCredits, ' credits to ', commandUser);
           await redisClient.hSet(`user:${commandUser}`, { uniCredits: Number(currentCredits) + Number(commandCredits) });
         } else {
           const currentCredits = await redisClient.hGet(`user:${username}`, 'uniCredits');
+          console.log('Gave ', currentCredits, ' credits to ', username);
           await redisClient.hSet(`user:${username}`, { uniCredits: Number(currentCredits) + Number(commandCredits) });
         }
       }

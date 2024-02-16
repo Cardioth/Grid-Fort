@@ -2,7 +2,7 @@ import * as GUI from "@babylonjs/gui";
 import { GUITexture, initGUIScene } from '../graphics/sceneInitialization.js';
 import { createLoginInterface } from "./loginInterface.js";
 import { registerUser } from "../network/registerUser.js";
-import { createAuthMessage } from "../network/createAuthMessage.js";
+import { createAlertMessage } from "../network/createAlertMessage.js";
 
 
 export function createRegisterInterface(){
@@ -21,8 +21,8 @@ export function createRegisterInterface(){
 
         // Create Backing Box
         const backingBox = new GUI.Rectangle();
-        backingBox.width = "30%";
-        backingBox.height = "60%";
+        backingBox.width = "500px";
+        backingBox.height = "500px";
         backingBox.thickness = 1;
         backingBox.background = "black";
         backingBox.alpha = 0.5;
@@ -174,7 +174,7 @@ export function createRegisterInterface(){
         // Return To Sign In Text
         const returnToSignInText = new GUI.TextBlock();
         returnToSignInText.text = "Return to Sign In";
-        returnToSignInText.width = .095;
+        returnToSignInText.width = "150px";
         returnToSignInText.height = "40px";
         returnToSignInText.color = "white";
         returnToSignInText.fontSize = 20;
@@ -203,11 +203,11 @@ export function createRegisterInterface(){
 
 function register(username, password, confirmPassword){
     if(password === confirmPassword){
-        createAuthMessage("Registering...");
+        createAlertMessage("Registering...");
         registerUser(username, password);
     }
     else{
-        createAuthMessage("Passwords do not match", unhideRegisterButtons);
+        createAlertMessage("Passwords do not match", unhideRegisterButtons);
     }
 }
 

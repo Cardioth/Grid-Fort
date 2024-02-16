@@ -1,7 +1,7 @@
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
 import { connectToServer } from "./connect";
-import { createAuthMessage } from "./createAuthMessage";
+import { createAlertMessage } from "./createAlertMessage";
 import { unhideLoginButtons } from "../ui/loginInterface";
 import { serverUrl } from "./serverURL";
 import { setUniCredits } from "../data/config";
@@ -33,8 +33,6 @@ export function loginUser(username, password) {
       });
   })
   .catch(error => {
-    createAuthMessage("Login failed", unhideLoginButtons);
+    createAlertMessage("Login failed", unhideLoginButtons);
   });
 }
-
-  

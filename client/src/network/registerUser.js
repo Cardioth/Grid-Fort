@@ -1,6 +1,6 @@
 import { serverUrl } from "./serverURL";
 import { unhideRegisterButtons, returnToLoginFromRegister } from "../ui/registerInterface";
-import { createAuthMessage } from "./createAuthMessage";
+import { createAlertMessage } from "./createAlertMessage";
 
 export function registerUser(username, password) {
     fetch(serverUrl+"/auth/register", {
@@ -15,20 +15,20 @@ export function registerUser(username, password) {
             return response.json();
         } else if (response.status === 409) {
             console.log("User already exists");
-            createAuthMessage("User already exists", unhideRegisterButtons);
+            createAlertMessage("User already exists", unhideRegisterButtons);
             throw new Error('User already exists');
         } else if (response.status === 400) {
             console.log("Username can only contain letters");
-            createAuthMessage("Username can only contain letters", unhideRegisterButtons);
+            createAlertMessage("Username can only contain letters", unhideRegisterButtons);
             throw new Error('Username can only contain letters');
         } else {
-            createAuthMessage("Failed to register user: " + response.status, unhideRegisterButtons);
+            createAlertMessage("Failed to register user: " + response.status, unhideRegisterButtons);
             throw new Error('Registration failed with status: ' + response.status);
         }
     })
     .then(data => {
       if (data.message && data.message === "User registered successfully") {
-        createAuthMessage("Registration Successful", returnToLoginFromRegister);
+        createAlertMessage("Registration Successful", returnToLoginFromRegister);
       }
     })
     .catch(error => {

@@ -6,7 +6,7 @@ import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../data/config.js";
 import { signOutUser } from "../network/signOutUser.js";
 import { privs, socket } from "../network/connect.js";
-import { createAuthMessage } from "../network/createAuthMessage.js";
+import { createAlertMessage } from "../network/createAlertMessage.js";
 import { getImage } from "../graphics/loadImages.js";
 import { serverUrl } from "../network/serverURL.js";
 import { setCollection } from "../managers/collectionManager.js";
@@ -183,7 +183,7 @@ function createStartGameDialogue(){
                         setCurrentScene("build");
                     });
                 } else {
-                    createAuthMessage("Not enough credits");
+                    createAlertMessage("Not enough credits");
                     startingGame = false;
                 }
             });

@@ -4,7 +4,7 @@ import * as BABYLON from "@babylonjs/core";
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../data/config.js";
-import { createAuthMessage } from "../network/createAuthMessage.js";
+import { createAlertMessage } from "../network/createAlertMessage.js";
 import { collection } from "../managers/collectionManager.js";
 import { createCardGraphic } from "../graphics/createCardGraphic.js";
 import { signOutUser } from "../network/signOutUser.js";
