@@ -44,6 +44,9 @@ export function loadImages(scene) {
         "circleBacking.png",
         'emptyButton.png',
         'SolanalogoPNGimage.png',
+        'Phantom-Icon_App_60x60.png',
+        'solflareIcon.png',
+        'emptyButtonHighlight.png',
     ];
     
     paths.forEach(path => {

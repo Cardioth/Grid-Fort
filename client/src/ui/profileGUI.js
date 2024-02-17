@@ -8,6 +8,7 @@ import { createAlertMessage } from "../network/createAlertMessage.js";
 import { createCustomButton } from "./createCustomButton.js";
 import { connectWallet } from "../network/solana/connectWallet.js";
 import { socket } from "../network/connect.js";
+import { getImage } from "../graphics/loadImages.js";
 
 export function createProfileInterface(){
     const profile = JSON.parse(localStorage.getItem("profile"));
@@ -145,4 +146,29 @@ function createLinkWalletButton() {
     linkWalletButton.left = "0px";
     linkWalletButton.zIndex = 3;
     GUITexture.addControl(linkWalletButton);
+
+    // create wallet icons
+    const solanaIcon = new GUI.Image("solanaIcon", getImage("SolanalogoPNGimage.png"));
+    solanaIcon.width = "30px";
+    solanaIcon.height = "30px";
+    solanaIcon.top = "100px";
+    solanaIcon.left = "-40px";
+    solanaIcon.zIndex = 3;
+    GUITexture.addControl(solanaIcon);
+
+    const phantomIcon = new GUI.Image("phantomIcon", getImage("Phantom-Icon_App_60x60.png"));
+    phantomIcon.width = "30px";
+    phantomIcon.height = "30px";
+    phantomIcon.top = "100px";
+    phantomIcon.left = "0px";
+    phantomIcon.zIndex = 3;
+    GUITexture.addControl(phantomIcon);
+
+    const solflareIcon = new GUI.Image("solflareIcon", getImage("solflareIcon.png"));
+    solflareIcon.width = "30px";
+    solflareIcon.height = "30px";
+    solflareIcon.top = "100px";
+    solflareIcon.left = "40px";
+    solflareIcon.zIndex = 3;
+    GUITexture.addControl(solflareIcon);
 }
