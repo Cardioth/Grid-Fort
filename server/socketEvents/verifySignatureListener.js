@@ -1,5 +1,4 @@
 const redisClient = require('../db/redis');
-const {PublicKey} = require('@solana/web3.js');
 const nacl = require('tweetnacl');
 const naclUtil = require('tweetnacl-util');
 const bs58 = require('bs58');
@@ -10,30 +9,30 @@ function verifySignatureListener(socket, username) {
             const publicKey = payload.publicKey;
             const signature = payload.signature;
             if (publicKey) {
-                const verified = await verifySignature(signature, 'Sign this message to connect your wallet.', publicKey);
+                const verified = verifySignature(signature, 'Sign this message to connect your wallet.', publicKey);
                 if(verified) {
+                    const isAlreadyLinked = await redisClient.sIsMember('all_wallets', publicKey);
+                    if (isAlreadyLinked) {
+                        socket.emit('signatureVerified', {verified: false, message: 'Wallet already linked to an account.'});
+                        return;
+                    }
+
                     // Add the public key to the user's profile
                     await redisClient.hSet(`user:${username}`, 'wallet', publicKey);
-                    socket.emit('signatureVerified', true);
+
+                    // Add the public key to a set of all wallet addresses
+                    await redisClient.sAdd('all_wallets', publicKey);
+
+                    socket.emit('signatureVerified', {verified: true, message: 'Wallet linked successfully!'});
                 } else {
-                    socket.emit('signatureVerified', false);
+                    socket.emit('signatureVerified', {verified: false, message: 'Signature not verified.'});
                 }
             } else {
-                socket.emit('signatureVerified', false);
+                socket.emit('signatureVerified',  {verified: false, message: 'No public key.'});
             }
         } catch (error) {
             console.error('Error verifying signature:', error);
-            socket.emit('signatureVerified', false);
-        }
-    });
-
-    socket.on('unlinkWallet', async () => {
-        try {
-            await redisClient.hSet(`user:${username}`, 'wallet', 'unlinked');
-            socket.emit('unlinkWalletResponse', true);
-        } catch (error) {
-            console.error('Error unlinking wallet:', error);
-            socket.emit('unlinkWalletResponse', false);
+            socket.emit('signatureVerified', {verified: false, message: 'Error verifying signature'});
         }
     });
 }

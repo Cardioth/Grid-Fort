@@ -16,14 +16,14 @@ export const signMessage = async () => {
           signature: signedMessage.signature,
         };
         socket.emit('verifySignature', payload);
-        socket.on('signatureVerified', (verified) => {
-          if (verified) {
-            createAlertMessage('Signature verified');
-            createWalletAddressAndUnlinkButton();
-            hideLinkWalletButton();
-          } else {
-            createAlertMessage('Signature not verified');
-          }
+        socket.on('signatureVerified', (response) => {
+            const verified = response.verified;
+            const message = response.message;
+            createAlertMessage(message);
+            if (verified) {
+                createWalletAddressAndUnlinkButton();
+                hideLinkWalletButton();
+            }
         });
       } else {
         createAlertMessage('Solana wallet not found');

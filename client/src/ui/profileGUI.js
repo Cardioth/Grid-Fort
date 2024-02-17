@@ -109,23 +109,23 @@ export function createWalletAddressAndUnlinkButton() {
     container.addControl(walletAddressText);
 
     // Create Unlink Wallet Button
-    const unlinkWalletButton = createCustomButton("Unlink", () => {
-        socket.emit("unlinkWallet");
-        localStorage.removeItem('solanaPublicKey');
-    });
-    unlinkWalletButton.top = "100px";
-    unlinkWalletButton.left = "0px";
-    container.addControl(unlinkWalletButton);
+    // const unlinkWalletButton = createCustomButton("Unlink", () => {
+    //     socket.emit("unlinkWallet");
+    //     localStorage.removeItem('solanaPublicKey');
+    // });
+    // unlinkWalletButton.top = "100px";
+    // unlinkWalletButton.left = "0px";
+    // container.addControl(unlinkWalletButton);
 
-    socket.on("unlinkWalletResponse", (response) => {
-        if (response === true) {
-            createLinkWalletButton();
-            container.dispose();
-            createAlertMessage("Wallet unlinked successfully");
-        } else {
-            createAlertMessage("Error unlinking wallet");
-        }
-    });
+    // socket.on("unlinkWalletResponse", (response) => {
+    //     if (response === true) {
+    //         createLinkWalletButton();
+    //         container.dispose();
+    //         createAlertMessage("Wallet unlinked successfully");
+    //     } else {
+    //         createAlertMessage("Error unlinking wallet");
+    //     }
+    // });
 
     GUITexture.addControl(container);
 }

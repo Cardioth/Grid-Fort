@@ -131,6 +131,42 @@ function adminListeners(socket, username) {
         }
       }
 
+      // /unlink wallet username
+      if(command.startsWith('/unlink')){
+        const commandUser = command.split(' ')[1];
+        try {
+          await redisClient.hSet(`user:${commandUser}`, 'wallet', 'unlinked');
+          console.log('Wallet unlinked for', commandUser);
+        } catch (error) {
+          console.error('Error unlinking wallet:', error);
+        }
+      }
+
+      // /removeuser username
+      if(command.startsWith('/removeuser')){
+        const commandUser = command.split(' ')[1];
+        try {
+          await redisClient.del(`user:${commandUser}`);
+          await redisClient.sRem('users', commandUser);
+          console.log('User removed:', commandUser);
+        } catch (error) {
+          console.error('Error removing user:', error);
+        }
+      }
+
+      // /removeallwallets
+      if(command === '/removeallwallets'){
+        try {
+          const wallets = await redisClient.sMembers('all_wallets');
+          for (const wallet of wallets) {
+            await redisClient.sRem('all_wallets', wallet);
+          }
+          console.log('All wallets removed');
+        } catch (error) {
+          console.error('Error removing all wallets:', error);
+        }
+      }
+
     } else {
       //Database commands
       try {

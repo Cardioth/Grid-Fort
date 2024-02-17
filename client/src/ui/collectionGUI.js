@@ -37,14 +37,15 @@ export function createCollectionInterface(){
 
     // Create Cards
     const cardImages = [];
-    const rowHeight = 30; // Change this value based on your desired spacing
+    const rowHeight = 250; // Change this value based on your desired spacing
     collection.forEach(card => {
         let columnIndex = cardImages.length % 5;
         let rowIndex = Math.floor(cardImages.length / 5);
         card.currentPosition = { 
-            x: ((columnIndex - 3) * 12) + "%", 
-            y: rowIndex * rowHeight + "%" // y-position based on row number
+            x: ((columnIndex) * 180)-400 + "px", 
+            y: rowIndex * rowHeight + "px" // y-position based on row number
         };
+        
         card.rotation = 0;
         card.zIndex = 1;
         cardImages.push(createCardGraphic(card));
@@ -52,9 +53,12 @@ export function createCollectionInterface(){
 
     // Create Card Container
     const cardContainer = new GUI.Rectangle();
-    cardContainer.width = "100%";
-    cardContainer.height = "100%";
-    cardContainer.top = "-20%";
+    cardContainer.width = "70%";
+    cardContainer.height = "1000px";
+    cardContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    cardContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    cardContainer.top = "-200px";
+    cardContainer.left = "0px";
     cardContainer.thickness = 1;
 
     cardImages.forEach(card => {
