@@ -1,0 +1,1 @@
+solana-test-validator --reset --mint yYx8LEvyseRHLk4HK4oxfMnziGp74rNX8EZcmfiWuy7 --bpf-program metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s C:\Users\flash\Grid-Fort\server\programs\mpl_token_metadata.so

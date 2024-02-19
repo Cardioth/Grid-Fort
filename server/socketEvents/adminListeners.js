@@ -1,10 +1,17 @@
 const redisClient = require('../db/redis');
 const allBuildings = require('../data/buildings');
+const mintAndFetchNFT = require('../solana/minting');
 
 function adminListeners(socket, username) {
   socket.on('consoleCommand', async (command) => {
     if(command.startsWith('/')){
       //Admin commands
+
+      // /mintnft
+      if(command === '/mintnft'){
+        mintAndFetchNFT();
+        console.log('NFT minting function called');
+      }
 
       // /removeallcards - Removes all cards from all users and deletes all cards
       if(command === '/removeallcards'){

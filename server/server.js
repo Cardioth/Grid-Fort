@@ -9,13 +9,7 @@ require('dotenv').config();
 const session = require('express-session');
 const RedisStore = require("connect-redis").default
 const redisClient = require('./db/redis');
-
-const { getUniCreditsListener } = require('./socketEvents/getUniCreditsListener');
-const { startGameListener } = require('./socketEvents/startGameListener');
-const { getCollectionListener } = require('./socketEvents/getCollectionListener');
-const { adminListeners } = require('./socketEvents/adminListeners');
-const { getProfileListener } = require('./socketEvents/getProfileListener');
-const { verifySignatureListener } = require('./socketEvents/verifySignatureListener');
+const { setupSocketEvents } = require('./socketEvents/setupSocketEvents');
 
 // Express
 const app = express();
@@ -90,35 +84,14 @@ io.on('connection', (socket) => {
   const username = socket.request.session.passport?.user;
 
   if (username) {
-    console.log('User connected:', username);
-    
-    socket.on('disconnect', () => {
-      console.log('User disconnected:', username);
-    });
-
-    if(username === 'admin') {
-      socket.emit('privs', 'admin');
-      adminListeners(socket, username);
-    } else {
-      socket.emit('privs', 'user');
-    }
-
-    getUniCreditsListener(socket, username);
-
-    startGameListener(socket, username);
-
-    getCollectionListener(socket, username);
-
-    getProfileListener(socket, username);
-
-    verifySignatureListener(socket, username);
-
+    console.log('User connected:', username);    
+    // Use the new setup function for all event listeners
+    setupSocketEvents(socket, username);
   } else {
     console.log('Unauthenticated user connected');
     socket.disconnect(true);
   }
 });
-
 
 // Passport
 initializePassport(
