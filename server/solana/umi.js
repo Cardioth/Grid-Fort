@@ -2,10 +2,14 @@ const { createUmi, createKeypairFromSecretKey } = require('@metaplex-foundation/
 const { mplTokenMetadata } = require('@metaplex-foundation/mpl-token-metadata');
 const { createSignerFromKeypair, keypairIdentity } = require("@metaplex-foundation/umi");
 const bs58 = require('bs58');
+require('dotenv').config();
 
 //
-const umi = createUmi('http://127.0.0.1:8899');
-umi.use(mplTokenMetadata());
+if(process.env.NODE_ENV === 'development') {
+    const umi = createUmi('http://127.0.0.1:8899').use(mplTokenMetadata());
+} else {
+    const umi = createUmi('https://api.devnet.solana.com/').use(mplTokenMetadata());
+}
 
 //
 const secretKey = bs58.decode(process.env.SECRET_KEY);

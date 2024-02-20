@@ -1,6 +1,6 @@
 const redisClient = require('../db/redis');
 const allBuildings = require('../data/buildings');
-//const mintAndFetchNFT = require('../solana/minting');
+const mintAndFetchNFT = require('../solana/minting');
 
 function adminListeners(socket, username) {
   socket.on('consoleCommand', async (command) => {
@@ -9,7 +9,7 @@ function adminListeners(socket, username) {
 
       // /mintnft
       if(command === '/mintnft'){
-        //mintAndFetchNFT();
+        mintAndFetchNFT();
         console.log('NFT minting function called');
       }
 
