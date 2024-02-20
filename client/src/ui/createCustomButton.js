@@ -40,8 +40,8 @@ export function createCustomButton(text, functionToCall) {
     easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
     buttonAnimationScaleX.setEasingFunction(easingFunction);
     buttonAnimationScaleY.setEasingFunction(easingFunction);
-    container.animations = [];
-    container.animations.push(buttonAnimationScaleX, buttonAnimationScaleY);
+    buttonHighlight.animations = [];
+    buttonHighlight.animations.push(buttonAnimationScaleX, buttonAnimationScaleY);
 
 
     // Create Button Text
@@ -63,7 +63,7 @@ export function createCustomButton(text, functionToCall) {
         buttonHighlight.isVisible = true;
         buttonGraphic.isVisible = false;
         // Play button highlight animation
-        GUIscene.beginDirectAnimation(buttonHighlight, [container.animations[0], container.animations[1]], 0, 10, false, 1);
+        GUIscene.beginDirectAnimation(buttonHighlight, [buttonHighlight.animations[0], buttonHighlight.animations[1]], 0, 10, false, 1);
         
     });
     container.onPointerOutObservable.add(function () {

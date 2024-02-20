@@ -161,14 +161,8 @@ function createStartGameDialogue(){
     container.addControl(startGameDialogueBacking);
 
     // Create Start Game Button
-    const startButton = new GUI.Image("startButton", getImage("startButton.png"));
-    startButton.width = "134px";
-    startButton.height = "33px";
-    startButton.left = "95px";
-    startButton.top = "59px";
-    container.addControl(startButton);
     let startingGame = false;
-    startButton.onPointerClickObservable.add(() => {
+    const startButton = createCustomButton("Start", () => {
         if(serverUrl === "https://localhost:3000"){
             fadeToBlack(() => {
                 setCurrentScene("build");
@@ -189,12 +183,9 @@ function createStartGameDialogue(){
             });
         }
     });
-    startButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    startButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
+    startButton.left = "95px";
+    startButton.top = "59px";
+    container.addControl(startButton);
 
     // Create Cancel Button
     const cancelButton = new GUI.Image("cancelButton", getImage("cancelButton.png"));

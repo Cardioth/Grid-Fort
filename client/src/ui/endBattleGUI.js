@@ -9,6 +9,7 @@ import { playerBoard, enemyBoard } from "../managers/gameSetup.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { currentScene } from "../managers/sceneManager.js";
 import { createEndGameScreen } from "./endGameGUI.js";
+import { createCustomButton } from "./createCustomButton.js";
 
 export function createEndBattleScreen(victory){
     //container
@@ -50,7 +51,6 @@ export function createEndBattleScreen(victory){
         defeatText.zIndex = 3;
         container.addControl(defeatText);
     }
-
     //Text Container
     const textContainer = new GUI.Rectangle();
     textContainer.width = "1000px";
@@ -107,14 +107,7 @@ export function createEndBattleScreen(victory){
     textContainer.addControl(enemyStatsText);
 
     //Continue Button
-    const continueButton = new GUI.Image("continueButton", getImage("continueButton.png"));
-    continueButton.width = "137px";
-    continueButton.height = "33px";
-    continueButton.top = 118;
-    continueButton.left = 321;
-    continueButton.zIndex = 20;
-   
-    continueButton.onPointerClickObservable.add( () => {
+    const continueButton = createCustomButton("Continue", () => {
         if(currentScene === "endBattle"){
             const animation = new BABYLON.Animation("containerFadeOut", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
             animation.setKeys([
@@ -140,17 +133,10 @@ export function createEndBattleScreen(victory){
             }
         }
     });
-
-    //returnToBuildScene()
-
-    //Change cursor on hover
-    continueButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    continueButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
-
+    continueButton.top = 118;
+    continueButton.left = 321;
+    continueButton.zIndex = 20;
+   
     container.addControl(continueButton);
 
     //Strike Icons

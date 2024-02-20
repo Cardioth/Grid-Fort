@@ -9,6 +9,7 @@ import { fadeToBlack } from "./generalGUI.js";
 import { clearBoard } from "../utilities/utils.js";
 import { createLootBoxes } from "../graphics/createLootBoxes.js";
 import { createMedalExplosionParticleSystem } from "../graphics/particleEffects/createMedalExplosion.js";
+import { createCustomButton } from "./createCustomButton.js";
 
 export function createEndGameScreen(){
     //container
@@ -36,9 +37,14 @@ export function createEndGameScreen(){
     container.addControl(medalText);
 
     //Continue Button
-    const continueButton = new GUI.Image("continueButton", getImage("continueButton.png"));
-    continueButton.width = "137px";
-    continueButton.height = "33px";
+    const continueButton = createCustomButton("Continue", () => {
+        if(currentScene === "endBattle"){
+            fadeToBlack(()=> {
+                setCurrentScene("menu");
+            });
+        }
+    });
+    continueButton.isVisible = false;
     continueButton.top = "8%";
     continueButton.zIndex = 20;
     continueButton.alpha = 0;
@@ -133,20 +139,7 @@ export function createEndGameScreen(){
 
 export function fadeInContinueButton(continueButton) {
     GUIscene.beginDirectAnimation(continueButton, [continueButton.animations[0]], 0, 40, false, 1);
-    continueButton.onPointerClickObservable.add( () => {
-        if(currentScene === "endBattle"){
-            fadeToBlack(()=> {
-                setCurrentScene("menu");
-            });
-        }
-    });
-    //Change cursor on hover
-    continueButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    continueButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
+    continueButton.isVisible = true;
 }
 
 export function createSwirlKeyFrameData(dummyX, dummyY, index) {
