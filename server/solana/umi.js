@@ -5,10 +5,11 @@ const bs58 = require('bs58');
 require('dotenv').config();
 
 //
+let umi;
 if(process.env.NODE_ENV === 'development') {
-    const umi = createUmi('http://127.0.0.1:8899').use(mplTokenMetadata());
+    umi = createUmi('http://127.0.0.1:8899').use(mplTokenMetadata());
 } else {
-    const umi = createUmi('https://api.devnet.solana.com/').use(mplTokenMetadata());
+    umi = createUmi('https://api.devnet.solana.com/').use(mplTokenMetadata());
 }
 
 //
