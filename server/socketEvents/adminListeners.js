@@ -1,6 +1,9 @@
 const redisClient = require('../db/redis');
 const allBuildings = require('../data/buildings');
-const mintAndFetchNFT = require('../solana/minting');
+const fetchNFT = require('../solana/fetchNFT');
+const fetchNFTsByOwner = require('../solana/fetchNFTsByOwner');
+const mintCollection = require('../solana/mintCollection');
+const mintNFT = require('../solana/mintNFT');
 
 function adminListeners(socket, username) {
   socket.on('consoleCommand', async (command) => {
@@ -9,8 +12,34 @@ function adminListeners(socket, username) {
 
       // /mintnft
       if(command === '/mintnft'){
-        mintAndFetchNFT();
-        console.log('NFT minting function called');
+        const response = await mintNFT();
+        socket.emit('consoleResponse', response);
+      }
+
+      // /fetchnftbyowner ownerAddress
+      if(command.startsWith('/fetchnftbyowner')){
+        const ownerAddress = command.split(' ')[1];
+        socket.emit('consoleResponse', 'Fetching NFTs by owner address: ' + ownerAddress);
+        try {
+          const response = await fetchNFTsByOwner(ownerAddress);
+          socket.emit('consoleResponse', response);
+        } catch (error) {
+          console.error('Error fetching NFT:', error);
+        }
+      }
+
+      // /fetchnft address
+      if(command.startsWith('/fetchnft')) {
+        const address = command.split(' ')[1];
+        fetchNFT(address).then(response => {
+          socket.emit('consoleResponse', response);
+        });
+      }
+
+      // /mintcollection
+      if(command === '/mintcollection'){
+        mintCollection();
+        console.log('Collection minting function called');
       }
 
       // /removeallcards - Removes all cards from all users and deletes all cards
@@ -180,7 +209,7 @@ function adminListeners(socket, username) {
         const response = await redisClient.eval(`return redis.call(${command})`, 0);
 
         console.log('admin command', command, 'response', response);
-        socket.emit('consoleCommandResponse', response);
+        socket.emit('consoleResponse', response);
       } catch (error) {
         socket.emit('error', 'Unable to do console command');
       }

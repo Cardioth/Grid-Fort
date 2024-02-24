@@ -5,12 +5,8 @@ const bs58 = require('bs58');
 require('dotenv').config();
 
 //
-let umi;
-if(process.env.NODE_ENV === 'development') {
-    umi = createUmi('http://127.0.0.1:8899').use(mplTokenMetadata());
-} else {
-    umi = createUmi('https://api.devnet.solana.com/').use(mplTokenMetadata());
-}
+//const umi = createUmi(process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8899' : 'https://api.devnet.solana.com/').use(mplTokenMetadata());
+const umi = createUmi('https://api.devnet.solana.com/').use(mplTokenMetadata());
 
 //
 const secretKey = bs58.decode(process.env.SECRET_KEY);
