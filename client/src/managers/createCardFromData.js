@@ -4,7 +4,9 @@ export function createCardFromData(cardData) {
     for (let building in allBuildings) {
         if (allBuildings[building].BUID === cardData.BUID) {
             const newCard = JSON.parse(JSON.stringify(allBuildings[building]));
-            addBonusesToCard(cardData.bStats.split('/'), newCard);
+            if(cardData.bStats !== ''){
+                addBonusesToCard(cardData.bStats.split('/'), newCard);
+            }
             newCard.level = cardData.level;
             return newCard;
         }

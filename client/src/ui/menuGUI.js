@@ -50,6 +50,7 @@ export function createMenuScreen(){
         hideMenuButtons();
         document.body.style.cursor='pointer'
         socket.emit("getCollection");
+        console.log("getCollection");
         socket.on("getCollectionResponse", (response) => {
             setCollection(response);
             fadeToBlack(() => {
