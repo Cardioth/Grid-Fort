@@ -2,10 +2,10 @@ import * as BABYLON from '@babylonjs/core';
 import * as GUI from '@babylonjs/gui';
 import { GUITexture, GUIscene } from '../graphics/sceneInitialization.js';
 import { getImage } from './loadImages.js';
+import { createCardGraphic } from './createCardGraphic.js';
+import { createCardFromData } from '../managers/createCardFromData.js';
 
-export function createLootReward(lootLevel, position){
-    const reward = calculateRewards(lootLevel);
-
+export function createLootReward(reward, position){
     // Create container
     const container = new GUI.Rectangle();
     container.thickness = 0;
@@ -40,10 +40,18 @@ export function createLootReward(lootLevel, position){
         container.addControl(creditsText);
     }
 
+    if(reward.type === "card"){
+        const card = createCardFromData(reward.card);
+        card.currentPosition = {x: 0, y: 0};
+        card.rotation = 0;
+        card.zIndex = 5;
+        const cardGraphic = createCardGraphic(card);
+        container.addControl(cardGraphic);
+    }
 
     container.zIndex = 1000;
-    container.width = "200px";
-    container.height = "200px";
+    container.width = "300px";
+    container.height = "300px";
     container.scaleX = 0;
     container.scaleY = 0;
     container.top = -position.y * 95;
@@ -77,29 +85,4 @@ export function createLootReward(lootLevel, position){
     GUIscene.beginAnimation(container, 0, 30, false, 1);
     GUITexture.addControl(container);
 
-}
-
-//TODO: Move to server side
-function calculateRewards(lootLevel){
-    //const rewardType = Math.floor(Math.random() * 2)> 1? "credits" : "cards"; 
-    const rewardType = "credits";
-
-    if(rewardType === "credits"){
-        const baseReward = (lootLevel*25);
-        const bonusReward = Math.floor(Math.random() * 4) *25;
-        const credits = baseReward + bonusReward;
-        const reward = {
-            type: "credits",
-            amount: credits
-        }
-        return reward;
-    }
-
-    if(rewardType === "cards"){
-        const reward = {
-            type: "card",
-            card: getCardWithBonuses(lootLevel) //TODO: Add this function
-        }
-        return reward;
-    }
 }

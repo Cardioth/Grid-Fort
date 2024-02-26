@@ -1,16 +1,13 @@
-const { setAndVerifyCollection } = require('@metaplex-foundation/mpl-token-metadata');
+const { verifyCollectionV1 } = require('@metaplex-foundation/mpl-token-metadata');
 const umi = require('./umi');
 
-async function verifyNftInCollection(mintAddress, collectionAddress, payer, authority) {
-console.log("mintAddress: ", mintAddress);
+async function verifyNftInCollection(metadata, collectionMint, collectionAuthority) {
   try {
-    const transactionSignature = setAndVerifyCollection({
-      mintAddress,
-      collectionAddress,
-      payer,
-      authority,
-      connection: umi,
-    });
+    const transactionSignature = await verifyCollectionV1(umi,{
+      metadata,
+      collectionMint,
+      authority: collectionAuthority,
+    }).sendAndConfirm(umi);
 
     console.log("NFT verification in collection successful", transactionSignature);
     return transactionSignature;

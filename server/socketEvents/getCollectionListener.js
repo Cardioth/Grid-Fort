@@ -10,7 +10,7 @@ function getCollectionListener(socket, username) {
           const cardDataArray = await Promise.all(cardPromises);
           const formattedCardDataArray = cardDataArray.map(cardData => ({
               BUID: Number(cardData.BUID),
-              bStats: cardData.bStats.split('/'),
+              bStats: cardData.bStats,
               level: Number(cardData.level)
           }));
           collection = collection.concat(formattedCardDataArray, defaultCards);

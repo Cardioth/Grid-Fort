@@ -10,6 +10,7 @@ import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { currentScene } from "../managers/sceneManager.js";
 import { createEndGameScreen } from "./endGameGUI.js";
 import { createCustomButton } from "./createCustomButton.js";
+import { socket } from "../network/connect.js";
 
 export function createEndBattleScreen(victory){
     //container
@@ -124,7 +125,10 @@ export function createEndBattleScreen(victory){
                 GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
                     container.dispose();
                 });
-                createEndGameScreen();
+                socket.emit("endGame");
+                socket.on("endGameResponse", (rewards) => {
+                    createEndGameScreen(rewards);
+                });
             } else {
                 GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
                     container.dispose();

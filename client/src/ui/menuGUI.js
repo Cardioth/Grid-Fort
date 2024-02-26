@@ -163,25 +163,19 @@ function createStartGameDialogue(){
     // Create Start Game Button
     let startingGame = false;
     const startButton = createCustomButton("Start", () => {
-        if(serverUrl === "https://localhost:3000"){
-            fadeToBlack(() => {
-                setCurrentScene("build");
-            });
-        } else {
-            if(startingGame) return;
-            startingGame = true;
-            socket.emit("startGame");
-            socket.on("startGameResponse", (response) => {
-                if (response) {
-                    fadeToBlack(() => {
-                        setCurrentScene("build");
-                    });
-                } else {
-                    createAlertMessage("Not enough credits");
-                    startingGame = false;
-                }
-            });
-        }
+        if(startingGame) return;
+        startingGame = true;
+        socket.emit("startGame");
+        socket.on("startGameResponse", (response) => {
+            if (response) {
+                fadeToBlack(() => {
+                    setCurrentScene("build");
+                });
+            } else {
+                createAlertMessage("Not enough credits");
+                startingGame = false;
+            }
+        });
     });
     startButton.left = "95px";
     startButton.top = "59px";

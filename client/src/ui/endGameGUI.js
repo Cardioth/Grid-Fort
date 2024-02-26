@@ -11,7 +11,7 @@ import { createLootBoxes } from "../graphics/createLootBoxes.js";
 import { createMedalExplosionParticleSystem } from "../graphics/particleEffects/createMedalExplosion.js";
 import { createCustomButton } from "./createCustomButton.js";
 
-export function createEndGameScreen(){
+export function createEndGameScreen(rewards){
     //container
     const container = new GUI.Rectangle();
     container.width = "100%";
@@ -109,12 +109,12 @@ export function createEndGameScreen(){
                 createMedalExplosionParticleSystem(new BABYLON.Vector3(0,0,0));
 
                 if(medalTextCount >= medals){
-                    createLootBoxes(GUI3Dscene, medals);
+                    createLootBoxes(GUI3Dscene, rewards);
                 }
             });
         }
     } else {
-        createLootBoxes(GUI3Dscene, medals);
+        createLootBoxes(GUI3Dscene, rewards);
     }
 
     container.zIndex = 300;

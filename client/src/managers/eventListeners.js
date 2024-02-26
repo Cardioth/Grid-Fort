@@ -153,7 +153,7 @@ export function initializeGameControls(canvas) {
                     createLootBoxImplosionParticleSystem(clickedLootBox.absolutePosition);
                     setTimeout(() => {
                         parent.dispose();
-                        createLootReward(clickedLootBox.lootLevel, clickedLootBox.absolutePosition);
+                        createLootReward(clickedLootBox.reward, clickedLootBox.absolutePosition);
                         GUI3Dscene.lootBoxes.splice(GUI3Dscene.lootBoxes.indexOf(parent), 1);
                         if(GUI3Dscene.lootBoxes.length === 0){
                             fadeInContinueButton(GUIscene.continueButtonEndGame);

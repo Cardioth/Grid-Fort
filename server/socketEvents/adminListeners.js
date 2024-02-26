@@ -1,9 +1,9 @@
 const redisClient = require('../db/redis');
-const allBuildings = require('../data/buildings');
 const fetchNFT = require('../solana/fetchNFT');
 const fetchNFTsByOwner = require('../solana/fetchNFTsByOwner');
 const mintCollection = require('../solana/mintCollection');
 const mintNFT = require('../solana/mintNFT');
+const { createCard } = require('../game/createCard');
 
 function adminListeners(socket, username) {
   socket.on('consoleCommand', async (command) => {
@@ -95,46 +95,17 @@ function adminListeners(socket, username) {
         }
       }
 
-      // /createcard BUID level username
-      if(command.startsWith('/createcard') && command.startsWith('/createcardallusers') === false){
-        const commandBUID = command.split(' ')[1];
-        const commandLevel = command.split(' ')[2];
-        const commandUser = command.split(' ')[3];
-        if(commandUser !== undefined){
-          createCard(commandBUID, commandLevel, commandUser);
-        } else {
-          createCard(commandBUID, commandLevel, username);
-        }
-      } else {
-        socket.emit('error', 'Invalid command');
-      }
-
-      // /createrandomcard username count
-      if(command.startsWith('/createrandomcard')){
-        const commandUser = command.split(' ')[1];
-        const commandCount = command.split(' ')[2];
-        for(let i = 0; i < commandCount; i++){
-          const commandBUID = Math.floor(Math.random() * 4) + 1;
-          const commandLevel = Math.floor(Math.random() * 4) + 1;
-          if(commandUser !== undefined){
-            createCard(commandBUID, commandLevel, commandUser);
-          } else {
-            createCard(commandBUID, commandLevel, username);
-          }
-        }
-      }
-
       // /givecredits credits username
       if(command.startsWith('/givecredits')){
         const commandCredits = command.split(' ')[1];
         const commandUser = command.split(' ')[2];
         if(commandUser !== undefined){
           const currentCredits = await redisClient.hGet(`user:${commandUser}`, 'uniCredits');
-          console.log('Gave ', currentCredits, ' credits to ', commandUser);
+          console.log('Gave ', commandCredits, ' credits to ', commandUser);
           await redisClient.hSet(`user:${commandUser}`, { uniCredits: Number(currentCredits) + Number(commandCredits) });
         } else {
           const currentCredits = await redisClient.hGet(`user:${username}`, 'uniCredits');
-          console.log('Gave ', currentCredits, ' credits to ', username);
+          console.log('Gave ', commandCredits, ' credits to ', username);
           await redisClient.hSet(`user:${username}`, { uniCredits: Number(currentCredits) + Number(commandCredits) });
         }
       }
@@ -215,81 +186,6 @@ function adminListeners(socket, username) {
       }
     }
   });
-}
-
-async function createCard(BUID, level, username){
-  try {
-    //Get unique ID
-    const uniqueID = await redisClient.incr('cardID');
-
-    //Create card
-    await redisClient.hSet(`card:c${uniqueID}`, { BUID, level, bStats: convertLevelToBonusStats(level, BUID)});
-
-    //Add card to user's collection
-    await redisClient.sAdd(`user:${username}:cards`, `c${uniqueID}`);
-
-    console.log('Card created:', BUID, level, username);
-  } catch (error) {
-    console.error('Error creating card:', BUID, level, username, error);
-  }
-}
-
-function convertLevelToBonusStats(level, BUID) {
-  let bStats = [];
-
-  let buildingStats;
-  for(const building in allBuildings){
-    if(allBuildings[building].BUID === Number(BUID)){
-      buildingStats = allBuildings[building].stats;
-      break;
-    }
-  }
-
-  //Do as many times as there are levels
-  for(let i = 0; i < level; i++){
-    //pick random stat to increase
-    const statKeys = Object.keys(buildingStats);
-
-    // exclude banned stats
-    const filteredStatKeys = statKeys.filter(stat => !statBanned(stat));
-
-    // pick random stat from filtered list
-    const randomStat = filteredStatKeys[Math.floor(Math.random() * filteredStatKeys.length)];
-
-    //Add stat to bStats
-    bStats.push(mapBonus(randomStat));
-  }
-
-  //Return bStats as string
-  return bStats.join('/');
-}
-
-function statBanned(stat){
-  const bannedStats = [
-    'windUpTime',
-  ];
-  return bannedStats.includes(stat);
-}
-
-function mapBonus(value) {
-  const bonusMap = {
-      'health': 'h10',
-      'kineticFirepower': 'kf1',
-      'energyFirepower': 'ef1',
-      'critChance': 'cc5',
-      'critDamageBonus': 'cd10',
-      'blastRadius': 'br1',
-      'ammoDraw': 'ad1',
-      'fireRate': 'fr1',
-      'energyStorage': 'es100',
-      'energyResistance': 'er1',
-      'armor': 'a1',
-      'ammoStorage': 'as50',
-      'powerStorage': 'ps100',
-      'powerDraw': 'pd1',
-      'radarRange': 'rr1',
-  };
-  return bonusMap[value] || value;
 }
 
 async function addAllUsernamesToSet() {
