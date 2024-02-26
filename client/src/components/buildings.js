@@ -49,13 +49,13 @@ const defaultQualities = {
 */
 
 const allBuildings = { 
-    miniArty:{name:"Artillery", class:"Weapon", description:"",cost:1, width:3, height:2, shape:[1,7,1,0,1,0], color:"#3ca9c8", drawable:true, BUID: 1,
+    miniArty:{name:"Artillery", class:"Weapon", description:"Basic Artillery Weapon", cost:1, width:3, height:2, shape:[1,7,1,0,1,0], color:"#3ca9c8", drawable:true, BUID: 1,
         stats:{health:30, kineticFirepower:1, blastRadius:1, ammoStorage:12, fireRate:8}},
-    basicLaser:{name:"Basic Laser", class:"Weapon", cost:1, width:2, height:2, shape:[8,1,1,0], color:"#5497e3", drawable:true, BUID: 2,
+    basicLaser:{name:"Basic Laser", class:"Weapon", description:"Basic Laser Weapon", cost:1, width:2, height:2, shape:[8,1,1,0], color:"#5497e3", drawable:true, BUID: 2,
         stats:{health:25, energyFirepower:2, powerStorage:15, powerDraw:0.2, fireRate:2}},
-    damageBooster:{name:"Damage Booster", class:"Booster",cost:2, width:3,height:3,shape:[6,1,6,6,2,6,6,1,6], color:"#487fb6", drawable:true, BUID: 3,
+    damageBooster:{name:"Damage Booster", class:"Booster", description:"Basic Damage Booster",cost:2, width:3,height:3,shape:[6,1,6,6,2,6,6,1,6], color:"#487fb6", drawable:true, BUID: 3,
         effects:{energyFirepower:1, kineticFirepower:1}},
-    powerStation:{name:"Power Station", class:"Booster",cost:1, width:4,height:4,shape:[0,6,6,0,6,8,1,6,6,1,1,6,0,6,6,0], color:"#5497e3", drawable:true, BUID: 4,
+    powerStation:{name:"Power Station", class:"Booster", description:"Let your laser weapons shoot for longer!",cost:1, width:4,height:4,shape:[0,6,6,0,6,8,1,6,6,1,1,6,0,6,6,0], color:"#5497e3", drawable:true, BUID: 4,
         stats:{energyFirepower:1, fireRate:3, powerStorage:30, powerDraw:0.1},effects:{powerStorage:100}},
     ammoStation:{name:"Ammo Station", class:"Booster",cost:3, width:4,height:4,shape:[0,5,5,0,5,2,1,5,5,1,1,5,0,5,5,0], color:"#35608a", drawable:false, BUID: 5,
         stats:{kineticFirepower:1, ammoStorage:30, fireRate:12, ammoStorage:50}, effects:{ammoStorage:100}},

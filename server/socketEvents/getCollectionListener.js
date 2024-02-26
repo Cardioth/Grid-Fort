@@ -14,7 +14,6 @@ function getCollectionListener(socket, username) {
               level: Number(cardData.level)
           }));
           collection = collection.concat(formattedCardDataArray, defaultCards);
-          console.log('Collection:', collection);  
           socket.emit('getCollectionResponse', collection); // Send collection back to the client
       } catch (error) {
           socket.emit('error', 'Unable to fetch collection');

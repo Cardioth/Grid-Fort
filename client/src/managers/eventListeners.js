@@ -134,7 +134,7 @@ export function initializeGameControls(canvas) {
     canvas.addEventListener('pointerup', function (event) {
         if (event.button === 0) {
             //Building Selecting
-            if (selectedBuilding === null) {
+            if (selectedBuilding === null && (currentScene === "build" || currentScene === "battleCountdown" || currentScene === "battle")) {
                 const clickedBuilding = getHoveredBuilding();
                 if (clickedBuilding) {
                     selectedPlacedBuilding = clickedBuilding;
@@ -145,7 +145,7 @@ export function initializeGameControls(canvas) {
                 }
             }
 
-            if(currentScene === "endBattle" || currentScene === "menu"){
+            if(currentScene === "endGame" || currentScene === "menu"){
                 const clickedLootBox = getHoveredLootBox();
                 if(clickedLootBox && clickedLootBox.pickedAnimation.isPlaying === false){
                     const parent = clickedLootBox.parent.parent;

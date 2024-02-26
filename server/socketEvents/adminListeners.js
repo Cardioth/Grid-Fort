@@ -10,12 +10,6 @@ function adminListeners(socket, username) {
     if(command.startsWith('/')){
       //Admin commands
 
-      // /mintnft
-      if(command === '/mintnft'){
-        const response = await mintNFT();
-        socket.emit('consoleResponse', response);
-      }
-
       // /fetchnftbyowner ownerAddress
       if(command.startsWith('/fetchnftbyowner')){
         const ownerAddress = command.split(' ')[1];

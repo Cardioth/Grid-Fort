@@ -50,8 +50,7 @@ export function createMenuScreen(){
         hideMenuButtons();
         document.body.style.cursor='pointer'
         socket.emit("getCollection");
-        console.log("getCollection");
-        socket.on("getCollectionResponse", (response) => {
+        socket.once("getCollectionResponse", (response) => {
             setCollection(response);
             fadeToBlack(() => {
                 setCurrentScene("collection");
@@ -68,7 +67,7 @@ export function createMenuScreen(){
         hideMenuButtons();
         document.body.style.cursor='pointer'
         socket.emit("getProfile");
-        socket.on("getProfileResponse", (response) => {
+        socket.once("getProfileResponse", (response) => {
             setProfileData(response);
             fadeToBlack(() => {
                 setCurrentScene("profile");
@@ -167,7 +166,7 @@ function createStartGameDialogue(){
         if(startingGame) return;
         startingGame = true;
         socket.emit("startGame");
-        socket.on("startGameResponse", (response) => {
+        socket.once("startGameResponse", (response) => {
             if (response) {
                 fadeToBlack(() => {
                     setCurrentScene("build");

@@ -44,7 +44,7 @@ export function setCurrentScene(setScene) {
         initMenuScene();
     }
 
-    if(setScene === "menu" && (currentScene === "build" || currentScene === "endBattle")){
+    if(setScene === "menu" && (currentScene === "build" || currentScene === "endBattle" || currentScene === "endGame")){
         resetGame();
         initGUIScene();
         initMenuScene();

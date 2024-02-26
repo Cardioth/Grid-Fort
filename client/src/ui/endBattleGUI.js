@@ -1,13 +1,13 @@
 import * as GUI from "@babylonjs/gui";
 import * as BABYLON from "@babylonjs/core";
-import { GUITexture } from '../graphics/sceneInitialization.js';
+import { GUI3Dscene, GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { returnToBuildScene } from "../gameplay/endBattle.js";
 import { getImage } from "../graphics/loadImages.js";
 import { medals, strikes } from "../managers/gameSetup.js";
 import { playerBoard, enemyBoard } from "../managers/gameSetup.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
-import { currentScene } from "../managers/sceneManager.js";
+import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { createEndGameScreen } from "./endGameGUI.js";
 import { createCustomButton } from "./createCustomButton.js";
 import { socket } from "../network/connect.js";
@@ -122,12 +122,21 @@ export function createEndBattleScreen(victory){
             animation.setEasingFunction(ease);    
 
             if(strikes >= 7){
+                setCurrentScene("endGame");
                 GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){
                     container.dispose();
                 });
-                socket.emit("endGame");
-                socket.on("endGameResponse", (rewards) => {
-                    createEndGameScreen(rewards);
+                createEndGameScreen();
+                socket.emit("endGame");                
+                socket.once("endGameResponse", (rewards) => {
+                    GUIscene.rewardsReady = true;
+                    if(GUIscene.lootBoxReady && !GUIscene.rewardsDisplayed){
+                        createLootBoxes(GUI3Dscene, rewards);
+                        GUIscene.rewardsDisplayed = true;
+                    }
+                    if(!GUIscene.lootBoxReady){
+                        GUIscene.rewards = rewards;
+                    }
                 });
             } else {
                 GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 30, false, 1, function(){

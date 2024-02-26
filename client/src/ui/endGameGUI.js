@@ -11,7 +11,7 @@ import { createLootBoxes } from "../graphics/createLootBoxes.js";
 import { createMedalExplosionParticleSystem } from "../graphics/particleEffects/createMedalExplosion.js";
 import { createCustomButton } from "./createCustomButton.js";
 
-export function createEndGameScreen(rewards){
+export function createEndGameScreen(){
     //container
     const container = new GUI.Rectangle();
     container.width = "100%";
@@ -38,7 +38,7 @@ export function createEndGameScreen(rewards){
 
     //Continue Button
     const continueButton = createCustomButton("Continue", () => {
-        if(currentScene === "endBattle"){
+        if(currentScene === "endGame"){
             fadeToBlack(()=> {
                 setCurrentScene("menu");
             });
@@ -109,12 +109,20 @@ export function createEndGameScreen(rewards){
                 createMedalExplosionParticleSystem(new BABYLON.Vector3(0,0,0));
 
                 if(medalTextCount >= medals){
-                    createLootBoxes(GUI3Dscene, rewards);
+                    GUIscene.lootBoxReady = true;
+                    if(GUIscene.rewardsReady && !GUIscene.rewardsDisplayed){
+                        createLootBoxes(GUI3Dscene, GUIscene.rewards);
+                        GUIscene.rewardsDisplayed = true;
+                    }
                 }
             });
         }
     } else {
-        createLootBoxes(GUI3Dscene, rewards);
+        GUIscene.lootBoxReady = true;
+        if(GUIscene.rewardsReady && !GUIscene.rewardsDisplayed){
+            createLootBoxes(GUI3Dscene, GUIscene.rewards);
+            GUIscene.rewardsDisplayed = true;
+        }
     }
 
     container.zIndex = 300;

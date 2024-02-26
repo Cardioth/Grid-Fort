@@ -7,9 +7,9 @@ async function verifyNftInCollection(metadata, collectionMint, collectionAuthori
       metadata,
       collectionMint,
       authority: collectionAuthority,
-    }).sendAndConfirm(umi);
+    }).sendAndConfirm(umi, {confirm:{commitment: 'finalized'}});
 
-    console.log("NFT verification in collection successful", transactionSignature);
+    console.log("NFT verification in collection successful");
     return transactionSignature;
   } catch (error) {
     console.error("Failed to verify NFT in collection", error);

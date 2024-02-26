@@ -1,5 +1,4 @@
 const redisClient = require('../db/redis');
-const gameConfig = require('../data/config');
 const calculateRewards = require('../game/calculateRewards');
 
 function endGameListener(socket, username) {
@@ -9,13 +8,9 @@ function endGameListener(socket, username) {
 
       // Get game data
       const gameData = await redisClient.hGetAll(`game:${username}`);
-      console.log('Game Data:', gameData);
 
       const medals = gameData.medals;
-      console.log('Medals:', medals)
-
       const rewards = await calculateRewards(medals, username);
-      console.log('Rewards:', rewards);
 
       await redisClient.del(`game:${username}`);
       socket.emit('endGameResponse', rewards);

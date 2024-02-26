@@ -1,26 +1,35 @@
 const redisClient = require('../db/redis');
 const allBuildings = require('../data/buildings');
+const createMetadataJson = require('../arweave/cardData');
+const uploadToArweave = require('../arweave/uploadToArweave');
+const mintNFT = require('../solana/mintNFT');
 
 
-async function createCard(username, level = Math.floor(Math.random() * 4) + 1, BUID = Math.floor(Math.random() * 4) + 1) {
-    // If username is linked to a wallet create NFT of Card
-
+async function createCard(username, card) {
+    //Get user data
+    const user = await redisClient.hGetAll(`user:${username}`);
     //Get unique ID
     const uniqueID = await redisClient.incr('cardID');
-
     //Create card
-    await redisClient.hSet(`card:c${uniqueID}`, { BUID, level, bStats: convertLevelToBonusStats(level, BUID) });
-
+    await redisClient.hSet(`card:c${uniqueID}`, card);
     //Add card to user's collection
     await redisClient.sAdd(`user:${username}:cards`, `c${uniqueID}`);
 
-    //console.log('Card created:', BUID, level, username);
-   
-    const card = { BUID, level, bStats: convertLevelToBonusStats(level, BUID) };
-
-    //Create NFT of Card
-
-    return card;
+    if(user.wallet !== 'unlinked') {
+      //Create metadata JSON
+      console.log('Creating metadata JSON');
+      const cardMetaData = createMetadataJson( card.BUID, card.level, card.bStats);
+      //Upload metadata JSON to Arweave
+      console.log('Uploading to Arweave');
+      const cardURI = await uploadToArweave(cardMetaData);
+      //Mint NFT
+      console.log('Minting NFT');
+      const nft = await mintNFT(JSON.parse(cardMetaData).name, cardURI, user.wallet);
+      console.log('NFT minted:', nft);
+      //Delete card from db
+      redisClient.del(`card:c${uniqueID}`);
+      redisClient.sRem(`user:${username}:cards`, `c${uniqueID}`);
+    }
 }
 exports.createCard = createCard;
 
@@ -53,6 +62,8 @@ function convertLevelToBonusStats(level, BUID) {
   //Return bStats as string
   return bStats.join('/');
 }
+
+exports.convertLevelToBonusStats = convertLevelToBonusStats;
 
 function statBanned(stat) {
   const bannedStats = [

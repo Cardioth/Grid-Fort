@@ -1,4 +1,4 @@
-const { createCard } = require("./createCard");
+const { createCard, convertLevelToBonusStats } = require("./createCard");
 const redisClient = require('../db/redis');
 
 async function calculateRewards(medals, username){
@@ -12,7 +12,7 @@ async function calculateRewards(medals, username){
 
     // Calculate the number of loot boxes
     const lootBoxesCount = Math.floor(minLootBoxes + (level * (maxLootBoxes - minLootBoxes)) / 4);
-    const lootLevel = Math.floor(level)+1;
+    let lootLevel = Math.floor(level)+1;
 
     const allRewards = [];
     
@@ -34,11 +34,17 @@ async function calculateRewards(medals, username){
         }
 
         if(rewardType === "cards"){
+            // 50% chance of reducing lootLevel by 1
+            const levelReducer = Math.random() > 0.5 ? 1 : 0;
+            const randomBUID = Math.floor(Math.random() * 4) + 1;
+            const cardDetails = { BUID: randomBUID, level: lootLevel-levelReducer, bStats: convertLevelToBonusStats(lootLevel-levelReducer, randomBUID) }
             const reward = {
                 type: "card",
-                card: await createCard(username, lootLevel),
+                card: cardDetails,
             }
             allRewards.push(reward);
+
+            createCard(username, cardDetails);
         }
     }
 

@@ -5,25 +5,26 @@ const umi = require('./umi');
 const fetchNFT = require('./fetchNFT');
 const verifyNftInCollection = require('./verifyNFT');
 
-async function mintNFT() {
+async function mintNFT(cardName, uri, userWallet) {
   const mint = generateSigner(umi);
 
   try {
     const nftCreationResponse = await createNft(umi, {
       mint,
-      name: 'Basic Laser Test',
-      uri: 'https://test.com/basic-laser.json',
-      sellerFeeBasisPoints: percentAmount(1),
+      name: 'Grid Fort Card - ' + cardName,
+      uri,
+      sellerFeeBasisPoints: percentAmount(5),
       collection: {
         key: '7XHx2KkBCyw9Q7ExCrbu32J5NqLDfS8yTz3N6hTNqBxM',
         verified: false,
       },
     }).sendAndConfirm(umi, {confirm:{commitment: 'finalized'}});
-    const nft = await fetchNFT(mint.publicKey);
+    let nft = await fetchNFT(mint.publicKey);
     if (nft) {
       const verificationResponse = await verifyNftInCollection(nft.metadata.publicKey, '7XHx2KkBCyw9Q7ExCrbu32J5NqLDfS8yTz3N6hTNqBxM', umi.payer);
     }
-    return nft.metadata;
+    nft = await fetchNFT(mint.publicKey);
+    return nft;
   } catch (error) {
     console.error('Failed to create NFT or fetch digital asset:', error);
   }
