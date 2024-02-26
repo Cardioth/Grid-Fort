@@ -11,6 +11,7 @@ import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { createEndGameScreen } from "./endGameGUI.js";
 import { createCustomButton } from "./createCustomButton.js";
 import { socket } from "../network/connect.js";
+import { createLootBoxes } from "../graphics/createLootBoxes.js";
 
 export function createEndBattleScreen(victory){
     //container
