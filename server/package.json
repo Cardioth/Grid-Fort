@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "babel ../common --out-dir common && node server.js",
+    "build-common": "babel ../common --out-dir common"
   },
   "keywords": [],
   "author": "",
@@ -31,5 +33,13 @@
     "socket.io": "^4.7.3",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9"
+  },
+  "babel": {
+    "plugins": ["@babel/plugin-transform-modules-commonjs"]
   }
 }

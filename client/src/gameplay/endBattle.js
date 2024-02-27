@@ -1,7 +1,7 @@
 import { setCurrentScene } from "../managers/sceneManager";
 import { allBoards, updateMedals, updateStrikes } from "../managers/gameSetup";
 import { getTotalCredits, setAvailableCredits, updateTotalCredits } from "./credits";
-import allBuildings from "../components/buildings";
+import allBuildings from "../../../common/buildings";
 import { playerBoard, enemyBoard } from "../managers/gameSetup";
 import { GUIcamera, camera } from "../graphics/sceneInitialization";
 import { setZoomTarget } from "../graphics/renderLoop";

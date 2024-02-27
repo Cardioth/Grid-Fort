@@ -14,7 +14,7 @@ import { weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
 import { boosterRisingAnimation, createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
 import { setSelectedPlacedBuilding } from "../managers/eventListeners";
 import { addBuildingSpecificAnimations } from "../graphics/animations/buildingSpecificAnimations";
-import allBuildings from "../components/buildings";
+import allBuildings from "../../../common/buildings";
 import { createHealthBarGraphic } from "../graphics/buildingHealthBar";
 import { darkenBuilding } from "../graphics/darkenBuilding";
 

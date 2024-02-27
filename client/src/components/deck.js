@@ -1,6 +1,6 @@
 
 
-import allBuildings, { getRandomBuilding } from "./buildings";
+import allBuildings, { getRandomBuilding } from "../../../common/buildings";
 import { hand } from "./cards";
 import { setCardPositions, createCardGraphicsForHand } from "./cards";
 

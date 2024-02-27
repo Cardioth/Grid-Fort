@@ -3,7 +3,7 @@ import { baseMesh, baseBaseMesh } from "../graphics/sceneInitialization.js";
 import { camera, GUIcamera } from "../graphics/sceneInitialization.js";
 import { allBoards, enemyBoard, playerBoard } from "../managers/gameSetup.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
-import allBuildings from "../components/buildings.js";
+import allBuildings from "../../../common/buildings.js";
 import { updateBoardStats } from "../utilities/utils.js";
 import { circularizeGrids } from "../components/grids.js";
 import { boardWidth } from "../data/config.js";

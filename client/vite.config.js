@@ -6,7 +6,7 @@ export default {
   plugins: [
     copy({
       targets: [
-        { src: '../common', dest: 'src' }
+        { src: '../common', dest: 'src/common' }
       ],
       hook: 'writeBundle'
     })

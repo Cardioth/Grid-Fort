@@ -1,4 +1,4 @@
-import allBuildings from "../components/buildings";
+import allBuildings from "../../../common/buildings";
 
 export function createCardFromData(cardData) {
     for (let building in allBuildings) {

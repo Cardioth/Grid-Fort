@@ -1,5 +1,5 @@
 const redisClient = require('../db/redis');
-const allBuildings = require('../data/buildings');
+const allBuildings = require('../common/buildings');
 const createMetadataJson = require('../arweave/cardData');
 const uploadToArweave = require('../arweave/uploadToArweave');
 const mintNFT = require('../solana/mintNFT');

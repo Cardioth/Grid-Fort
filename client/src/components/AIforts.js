@@ -1,4 +1,4 @@
-import allBuildings from "./buildings";
+import allBuildings from "../../../common/buildings";
 
 export const AIforts = [
     {"name":"Player","layout":[{"BUID":3,"x":1,"y":-1,"rotation":"N"},{"BUID":2,"x":3,"y":-1,"rotation":"N"},{"BUID":2,"x":3,"y":1,"rotation":"R"}],"strikes":2,"medals":2},

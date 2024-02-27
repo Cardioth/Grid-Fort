@@ -1,6 +1,6 @@
 import * as GUI from "@babylonjs/gui";
 import { GUITexture } from './sceneInitialization.js';
-import allBuildings from "../components/buildings.js";
+import allBuildings from "../../../common/buildings.js";
 
 export function createHealthBarGraphic(building){
     const totalHealth = allBuildings[building.keyName].stats.health;

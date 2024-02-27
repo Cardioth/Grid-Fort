@@ -3,7 +3,7 @@ import { buildRandomDeck, drawCardFromDeckToHand } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
-import allBuildings from "../components/buildings.js";
+import allBuildings from "../../../common/buildings.js";
 import { boardWidth } from "../data/config.js";
 import { availableCredits, setAvailableCredits, setTotalCredits, totalCredits } from "../gameplay/credits.js";
 

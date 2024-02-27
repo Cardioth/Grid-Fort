@@ -1,6 +1,6 @@
 // Move to common files, used by both Client and Server
 
-const allBuildings = require('../data/buildings');
+const allBuildings = require('../common/buildings');
 
 function createCardFromData(cardData) {
     for (let building in allBuildings) {

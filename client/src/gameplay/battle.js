@@ -31,7 +31,7 @@ function battleLoop() {
             if (building.stats.kineticFirepower > 0  && building.destroyed === false) {
                 getPossibleCellTargets(enemy, building).then( targets => {
                     building.target = targets[Math.floor(Math.random() * targets.length)];
-                    pointTurretAtTarget(building);
+                    pointTurretAtTarget(building); //Client side only
                 });
             }
             //Fire Kinetic
@@ -127,9 +127,9 @@ function fireKineticTurret(building, board, target, enemy) {
             -((-target.y + 8) / 4)+enemy.position.y
         );
 
-        createKineticGraphic(building.buildingGraphic, targetPosition);
+        createKineticGraphic(building.buildingGraphic, targetPosition); //Client side only
 
-        setTimeout(function () {
+        setTimeout(function () { //Switch to standard ticks
             if (currentScene === "battle") {
                 let damage = building.stats.kineticFirepower - target.building.stats.armor;
                 if (Math.random() * 100 < building.stats.critChance) {
@@ -188,7 +188,7 @@ function fireEnergyTurret(building, board, target, enemy) {
             );
 
             if(!building.buildingGraphic.laserGraphic){
-                createLaserGraphic(building.buildingGraphic, targetPosition);
+                createLaserGraphic(building.buildingGraphic, targetPosition); //Client side only
             }
 
             let damage = (building.stats.energyFirepower - target.building.stats.energyResistance) / 10;
@@ -204,10 +204,10 @@ function fireEnergyTurret(building, board, target, enemy) {
             }
 
             setTimeout(function () {
-                createExplosion(targetPosition, "laserExplosion");
+                createExplosion(targetPosition, "laserExplosion"); //Client side only
             },500);
 
-            updateBuildingStatsText();
+            updateBuildingStatsText();  //Client side only
 
             updateTargetHealthAndDeath(target, enemy);
         }
@@ -224,8 +224,8 @@ function fireEnergyTurret(building, board, target, enemy) {
 function updateTargetHealthAndDeath(target, board) {
     if (target.building.stats.health <= 0) {
         if(target.building.destroyed === false){
-            createExplosion(target.building.buildingGraphic.position, "buildingExplosion");
-            darkenBuilding(target.building);
+            createExplosion(target.building.buildingGraphic.position, "buildingExplosion"); //Client side only
+            darkenBuilding(target.building); //Client side only
             removeBuldingEffectsFromBoard(target.building, board);
         }
         if(target.building.name !== "Core"){
@@ -233,22 +233,22 @@ function updateTargetHealthAndDeath(target, board) {
         }
         target.building.destroyed = true;
 
-        if (target.building.healthBarGraphic) {
+        if (target.building.healthBarGraphic) { //Client side only
             target.building.healthBarGraphic.dispose();
             target.building.healthBarGraphic = null;
         }
-        if(target.building.buildingGraphic.laserGraphic){
+        if(target.building.buildingGraphic.laserGraphic){ //Client side only
             for(let child of target.building.buildingGraphic.laserGraphic.getChildren()){
                 fadeOutLaserAnimation(child, 20);
             }
-            target.building.buildingGraphic.laserGraphic = null;
+            target.building.buildingGraphic.laserGraphic = null; //Client side only
         }
     } else {
-        if (!target.building.healthBarGraphic) {
+        if (!target.building.healthBarGraphic) { //Client side only
             createHealthBarGraphic(target.building);
         } else {
             if(target.building){
-                updateHealthBarGraphic(target.building);
+                updateHealthBarGraphic(target.building); //Client side only
             }
         }
     }
@@ -258,7 +258,6 @@ function getPossibleCellTargets(board, building) {
     return new Promise(resolve => {
         const possibleCellTargets = [];
         if (building.preferredTarget.length === 0) {
-            console.log("No preferred target");
             board.grid.forEach((cell) => {
                 if (cell.occupied && cell.building !== undefined && cell.building.destroyed === false) {
                     possibleCellTargets.push(cell);
