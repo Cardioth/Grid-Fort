@@ -20,11 +20,11 @@ async function createCard(username, card) {
       console.log('Creating metadata JSON');
       const cardMetaData = createMetadataJson( card.BUID, card.level, card.bStats);
       //Upload metadata JSON to Arweave
-      console.log('Uploading to Arweave');
-      const cardURI = await uploadToArweave(cardMetaData);
+      //console.log('Uploading to Arweave');
+      //const cardURI = await uploadToArweave(cardMetaData); //costs money
       //Mint NFT
       console.log('Minting NFT');
-      const nft = await mintNFT(JSON.parse(cardMetaData).name, cardURI, user.wallet);
+      const nft = await mintNFT(JSON.parse(cardMetaData).name, 'cardURI', user.wallet);
       console.log('NFT minted:', nft);
       //Delete card from db
       redisClient.del(`card:c${uniqueID}`);

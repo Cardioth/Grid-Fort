@@ -34,8 +34,7 @@ async function calculateRewards(medals, username){
         }
 
         if(rewardType === "cards"){
-            // 50% chance of reducing lootLevel by 1
-            const levelReducer = Math.random() > 0.5 ? 1 : 0;
+            const levelReducer = Math.random() > 0.5 ? 1 : 0; // 50% chance of reducing lootLevel by 1
             const randomBUID = Math.floor(Math.random() * 4) + 1;
             const cardDetails = { BUID: randomBUID, level: lootLevel-levelReducer, bStats: convertLevelToBonusStats(lootLevel-levelReducer, randomBUID) }
             const reward = {

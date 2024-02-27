@@ -6,7 +6,7 @@ import { menuBackgroundAnimation } from './animations/menuBackgroundAnimation.js
 import { currentScene } from '../managers/sceneManager.js';
 
 // Camera Zoom
-let zoomTarget = 3;
+let zoomTarget = 2.5;
 export let zoom = 3;
 
 export function setZoomTarget(size){
