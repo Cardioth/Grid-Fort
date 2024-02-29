@@ -6,7 +6,7 @@ import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../../../common/buildings.js";
 import { updateBoardStats } from "../utilities/utils.js";
 import { circularizeGrids } from "../components/grids.js";
-import { boardWidth } from "../data/config.js";
+import { boardWidth } from "../../../common/data/config.js";
 import { setZoomTarget } from "../graphics/renderLoop.js";
 import { startBattleLoop } from "./battle.js";
 import { removeExistingCreditIcons } from "../ui/gameGUI.js";

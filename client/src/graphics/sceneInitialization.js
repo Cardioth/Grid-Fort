@@ -2,7 +2,7 @@ import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders';
 import * as GUI from '@babylonjs/gui';
 import { getShaderMaterial } from '../shaders/gridMaterial.js';
-import { gridHeight, gridWidth, setUniCredits } from '../data/config.js';
+import { gridHeight, gridWidth, setUniCredits } from '../../../common/data/config.js';
 import { initializeGameControls } from '../managers/eventListeners.js';
 import { drawTestPlaneTexture } from './testingGraphics/drawTestPlaneTexture.js';
 import { currentScene, setCurrentScene } from '../managers/sceneManager.js';

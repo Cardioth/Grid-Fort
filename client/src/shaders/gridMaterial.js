@@ -1,6 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { scene, canvas } from '../graphics/sceneInitialization.js';
-import { gridHeight, gridWidth } from '../data/config.js';
+import { gridHeight, gridWidth } from '../../../common/data/config.js';
 import { playerBoard } from "../managers/gameSetup.js";
 
 let resolution; 

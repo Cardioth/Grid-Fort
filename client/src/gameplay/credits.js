@@ -1,5 +1,5 @@
 
-import { startingCredits } from "../data/config";
+import { startingCredits } from "../../../common/data/config";
 import { addCreditIcon, removeCreditIcon, removeExistingCreditIcons } from "../ui/gameGUI";
 
 export let availableCredits = startingCredits;

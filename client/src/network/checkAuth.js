@@ -1,4 +1,4 @@
-import { setUniCredits, uniCredits } from "../data/config";
+import { setUniCredits, uniCredits } from "../../../common/data/config";
 import { initGUIScene } from "../graphics/sceneInitialization";
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";

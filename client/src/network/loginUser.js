@@ -4,7 +4,7 @@ import { connectToServer } from "./connect";
 import { createAlertMessage } from "./createAlertMessage";
 import { unhideLoginButtons } from "../ui/loginInterface";
 import { serverUrl } from "./serverURL";
-import { setUniCredits } from "../data/config";
+import { setUniCredits } from "../../../common/data/config";
 
 export function loginUser(username, password) {
   fetch(serverUrl+"/auth/login", {

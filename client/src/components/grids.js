@@ -1,5 +1,5 @@
 import { unplaceBuilding } from "../gameplay/buildingPlacement";
-import { gridWidth, gridHeight } from "../data/config";
+import { gridWidth, gridHeight } from "../../../common/data/config";
 import { updateAvailableCredits, updateTotalCredits } from "../gameplay/credits";
 import { allBoards, playerBoard } from "../managers/gameSetup";
 import { updateBoardStats } from "../utilities/utils";

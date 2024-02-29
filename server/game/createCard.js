@@ -3,6 +3,7 @@ const allBuildings = require('../common/buildings');
 const createMetadataJson = require('../arweave/cardData');
 const uploadToArweave = require('../arweave/uploadToArweave');
 const mintNFT = require('../solana/mintNFT');
+require('dotenv').config();
 
 
 async function createCard(username, card) {
@@ -15,13 +16,13 @@ async function createCard(username, card) {
     //Add card to user's collection
     await redisClient.sAdd(`user:${username}:cards`, `c${uniqueID}`);
 
-    if(user.wallet !== 'unlinked') {
+    if(user.wallet !== 'unlinked' && process.env.NODE_ENV !== 'development') {
       //Create metadata JSON
       console.log('Creating metadata JSON');
       const cardMetaData = createMetadataJson( card.BUID, card.level, card.bStats);
       //Upload metadata JSON to Arweave
-      //console.log('Uploading to Arweave');
-      //const cardURI = await uploadToArweave(cardMetaData); //costs money
+      console.log('Uploading to Arweave');
+      const cardURI = await uploadToArweave(cardMetaData); //costs money
       //Mint NFT
       console.log('Minting NFT');
       const nft = await mintNFT(JSON.parse(cardMetaData).name, 'cardURI', user.wallet);
@@ -37,9 +38,9 @@ function convertLevelToBonusStats(level, BUID) {
   let bStats = [];
 
   let buildingStats;
-  for (const building in allBuildings) {
-    if (allBuildings[building].BUID === Number(BUID)) {
-      buildingStats = allBuildings[building].stats;
+  for (const building in allBuildings.default) {
+    if (allBuildings.default[building].BUID === Number(BUID)) {
+      buildingStats = allBuildings.default[building].stats;
       break;
     }
   }

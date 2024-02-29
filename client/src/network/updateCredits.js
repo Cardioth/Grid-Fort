@@ -1,5 +1,5 @@
 import { socket } from "./connect";
-import { setUniCredits } from "../data/config";
+import { setUniCredits } from "../../../common/data/config";
 
 export function updateUniCreditsListener(){
     socket.on("uniCreditsUpdate", (response) => {

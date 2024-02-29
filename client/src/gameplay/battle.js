@@ -1,6 +1,6 @@
 import { currentScene } from "../managers/sceneManager";
 import { allBoards } from "../managers/gameSetup";
-import { gridWidth, gridHeight, battleLoopTimeLength } from "../data/config";
+import { gridWidth, gridHeight, battleLoopTimeLength } from "../../../common/data/config";
 import { playerBoard, enemyBoard } from "../managers/gameSetup";
 import { removeBuldingEffectsFromBoard } from "./buildingPlacement";
 import { updateBuildingStatsText } from "../ui/gameGUI";
@@ -68,8 +68,8 @@ function battleLoop() {
         // End battle
         if (allBuildingsDestroyed) {
             let victory = board === enemyBoard;
-            removalAllLasers();
-            endBattle(victory);
+            removalAllLasers(); // Client side only
+            endBattle(victory); // Client side only
             clearInterval(battleLoopInterval);
         }
     }

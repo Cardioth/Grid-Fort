@@ -1,4 +1,4 @@
-import { gridHeight, gridWidth } from '../../data/config.js';
+import { gridHeight, gridWidth } from '../../../../common/data/config.js';
 import { testPlaneContext } from '../sceneInitialization.js';
 import { playerBoard } from '../../managers/gameSetup.js';
 

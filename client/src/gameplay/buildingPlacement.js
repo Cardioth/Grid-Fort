@@ -1,7 +1,7 @@
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToDefault, setMaterialToBlocked } from "../utilities/utils";
 import { updateAvailableCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard, selectedPlacedBuilding } from "../managers/eventListeners";
-import { gridHeight, gridWidth, shapeKeyLegend} from "../data/config";
+import { gridHeight, gridWidth, shapeKeyLegend} from "../../../common/data/config";
 import { playerBoard, enemyBoard } from "../managers/gameSetup";
 import { AIforts } from "../components/AIforts";
 import { circularizeGrids } from "../components/grids";

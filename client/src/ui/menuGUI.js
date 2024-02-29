@@ -3,7 +3,7 @@ import { GUITexture, GUIscene } from '../graphics/sceneInitialization.js';
 import * as BABYLON from "@babylonjs/core";
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
-import { uniCredits } from "../data/config.js";
+import { uniCredits } from "../../../common/data/config.js";
 import { signOutUser } from "../network/signOutUser.js";
 import { privs, socket } from "../network/connect.js";
 import { createAlertMessage } from "../network/createAlertMessage.js";
