@@ -8,6 +8,7 @@ export function createCardFromData(cardData) {
                 addBonusesToCard(cardData.bStats.split('/'), newCard);
             }
             newCard.level = cardData.level;
+            newCard.tradable = cardData.tradable;
             return newCard;
         }
     }

@@ -1,5 +1,5 @@
 const { verifyCollectionV1 } = require('@metaplex-foundation/mpl-token-metadata');
-const umi = require('./umi');
+const { umi } = require('./umi');
 
 async function verifyNftInCollection(metadata, collectionMint, collectionAuthority) {
   try {

@@ -1,7 +1,7 @@
 const { generateSigner, percentAmount } = require('@metaplex-foundation/umi');
 const { createNft } = require('@metaplex-foundation/mpl-token-metadata');
 const fetchNFT = require('./fetchNFT');
-const umi = require('./umi');
+const { umi } = require('./umi');
 
 async function mintCollection() {
   try {

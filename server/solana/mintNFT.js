@@ -1,9 +1,8 @@
 const { generateSigner, percentAmount } = require('@metaplex-foundation/umi');
-const { createNft } = require('@metaplex-foundation/mpl-token-metadata');
-const umi = require('./umi');
+const { createNft, transferV1, TokenStandard } = require('@metaplex-foundation/mpl-token-metadata');
+const { umi } = require('./umi');
 const fetchNFT = require('./fetchNFT');
 const verifyNftInCollection = require('./verifyNFT');
-const { transferV1, TokenStandard } = require('@metaplex-foundation/mpl-token-metadata');
 
 async function mintNFT(cardName, uri, userWallet) {
   const mint = generateSigner(umi);
@@ -34,7 +33,7 @@ async function mintNFT(cardName, uri, userWallet) {
       tokenStandard: TokenStandard.NonFungible,
     }).sendAndConfirm(umi, {confirm:{commitment: 'finalized'}});
 
-    console.log('NFT transfered:', response);
+    console.log('NFT transfered to owner');
     return nft;
   } catch (error) {
     console.error('Failed to create NFT or fetch digital asset:', error);

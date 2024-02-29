@@ -20,7 +20,12 @@ export function createCardGraphic(card) {
     //Card Name
     var nameText = new GUI.TextBlock();
     nameText.text = card.name;
-    nameText.color = "white";
+    if(card.tradable){
+        nameText.color = "#f0ec84";
+    } else {
+        nameText.color = "white";
+    }
+    
     nameText.fontSize = 60;
     nameText.top = "40px";
     nameText.shadowBlur = 0;

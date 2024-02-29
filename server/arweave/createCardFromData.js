@@ -3,9 +3,9 @@
 const allBuildings = require('../common/buildings');
 
 function createCardFromData(cardData) {
-    for (let building in allBuildings) {
-        if (allBuildings[building].BUID === cardData.BUID) {
-            const newCard = JSON.parse(JSON.stringify(allBuildings[building]));
+    for (let building in allBuildings.default) {
+        if (allBuildings.default[building].BUID === cardData.BUID) {
+            const newCard = JSON.parse(JSON.stringify(allBuildings.default[building]));
             if(cardData.bStats !== ''){
                 addBonusesToCard(cardData.bStats.split('/'), newCard);
             }

@@ -14,4 +14,7 @@ const myKeypair = umi.eddsa.createKeypairFromSecretKey(secretKey);
 const myKeypairSigner = createSignerFromKeypair(umi, myKeypair);
 umi.use(keypairIdentity(myKeypairSigner));
 
-module.exports = umi;
+module.exports = {
+    umi: umi,
+    myKeypairSigner: myKeypairSigner
+}

@@ -16,7 +16,7 @@ async function createCard(username, card) {
     //Add card to user's collection
     await redisClient.sAdd(`user:${username}:cards`, `c${uniqueID}`);
 
-    if(user.wallet !== 'unlinked' && process.env.NODE_ENV !== 'development') {
+    if(user.wallet !== 'unlinked' && process.env.MINTING === 'true') {
       //Create metadata JSON
       console.log('Creating metadata JSON');
       const cardMetaData = createMetadataJson( card.BUID, card.level, card.bStats);
@@ -25,8 +25,8 @@ async function createCard(username, card) {
       const cardURI = await uploadToArweave(cardMetaData); //costs money
       //Mint NFT
       console.log('Minting NFT');
-      const nft = await mintNFT(JSON.parse(cardMetaData).name, 'cardURI', user.wallet);
-      console.log('NFT minted:', nft);
+      const nft = await mintNFT(JSON.parse(cardMetaData).name, cardURI, user.wallet);
+      console.log('Minting Complete');
       //Delete card from db
       redisClient.del(`card:c${uniqueID}`);
       redisClient.sRem(`user:${username}:cards`, `c${uniqueID}`);

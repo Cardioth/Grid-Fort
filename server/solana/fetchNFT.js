@@ -1,5 +1,5 @@
 const { fetchDigitalAsset } = require("@metaplex-foundation/mpl-token-metadata");
-const umi = require('./umi');
+const { umi } = require('./umi');
 
 async function fetchNFT(address) {
   try {
