@@ -36,14 +36,12 @@ export function createAdminPanel() {
         socket.emit("consoleCommand", consoleInput.text);
         consoleInput.text = "";
     });
-    // On enter key press submit
     consoleInput.onKeyboardEventProcessedObservable.add((eventData) => {
-        if (eventData.type === 8) {
+        if(eventData.key === "Enter"){
             socket.emit("consoleCommand", consoleInput.text);
             consoleInput.text = "";
         }
     });
-
 
     container.addControl(consoleSubmit);
 

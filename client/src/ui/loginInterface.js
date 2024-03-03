@@ -4,6 +4,7 @@ import { GUITexture, initGUIScene } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { createRegisterInterface } from "./registerInterface.js";
 import { loginUser } from "../network/loginUser.js";
+import { createCustomButton } from "./createCustomButton.js";
 
 
 export function createLoginInterface(){
@@ -63,8 +64,7 @@ export function createLoginInterface(){
 
     // Create Username Input
     const usernameInput = new GUI.InputText();
-    usernameInput.width = 0.2;
-    usernameInput.maxWidth = 0.2;
+    usernameInput.width = "300px";
     usernameInput.height = "40px";
     usernameInput.color = "white";
     usernameInput.fontSize = 25;
@@ -96,7 +96,7 @@ export function createLoginInterface(){
 
     // Create Password Input
     const passwordInput = new GUI.InputPassword();
-    passwordInput.width = 0.2;
+    passwordInput.width = "300px";
     passwordInput.height = "40px";
     passwordInput.color = "white";
     passwordInput.fontSize = 25;
@@ -122,35 +122,21 @@ export function createLoginInterface(){
     });
 
     // Create Login Button
-    const loginButton = GUI.Button.CreateSimpleButton("registerButton", "Login");
-    loginButton.width = 0.12;
-    loginButton.height = "40px";
-    loginButton.color = "white";
-    loginButton.fontSize = 25;
-    loginButton.fontFamily = "GemunuLibre-Bold";
-    loginButton.top = 180;
-    loginButton.left = 0;
-    loginButton.thickness = 0;
-    loginButton.background = "black";
-    loginButton.zIndex = 102;
-    loginButton.name = "loginButton";
-    loginButton.onPointerClickObservable.add(() => {
+    const loginButton = createCustomButton("Login", () => {
         loginButton.isVisible = false;
         registerText.isVisible = false;
         loginUser(usernameInput.text, passwordInput.text);
     });
-    loginButton.onPointerEnterObservable.add(() => {
-        document.body.style.cursor = "pointer";
-    });
-    loginButton.onPointerOutObservable.add(() => {
-        document.body.style.cursor = "default";
-    });
+    loginButton.top = 180;
+    loginButton.left = 0;
+    loginButton.zIndex = 102;
+    loginButton.name = "loginButton";
     interfaceContainer.addControl(loginButton);
 
     // Register Button
     const registerText = new GUI.TextBlock();
     registerText.text = "Register";
-    registerText.width = 0.1;
+    registerText.width = "200px";
     registerText.height = "40px";
     registerText.color = "white";
     registerText.fontSize = 20;

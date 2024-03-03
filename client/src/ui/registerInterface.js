@@ -3,6 +3,7 @@ import { GUITexture, initGUIScene } from '../graphics/sceneInitialization.js';
 import { createLoginInterface } from "./loginInterface.js";
 import { registerUser } from "../network/registerUser.js";
 import { createAlertMessage } from "../network/createAlertMessage.js";
+import { createCustomButton } from "./createCustomButton.js";
 
 
 export function createRegisterInterface(){
@@ -58,8 +59,7 @@ export function createRegisterInterface(){
 
         // Create Username Input
         const usernameInput = new GUI.InputText();
-        usernameInput.width = 0.2;
-        usernameInput.maxWidth = 0.2;
+        usernameInput.width = "300px";
         usernameInput.height = "40px";
         usernameInput.color = "white";
         usernameInput.fontSize = 25;
@@ -90,7 +90,7 @@ export function createRegisterInterface(){
 
         // Create Password Input
         const passwordInput = new GUI.InputPassword();
-        passwordInput.width = 0.2;
+        passwordInput.width = "300px";
         passwordInput.height = "40px";
         passwordInput.color = "white";
         passwordInput.fontSize = 25;
@@ -121,7 +121,7 @@ export function createRegisterInterface(){
 
         // Create Confirm Password Input
         const confirmPasswordInput = new GUI.InputPassword();
-        confirmPasswordInput.width = 0.2;
+        confirmPasswordInput.width = "300px";
         confirmPasswordInput.height = "40px";
 
         confirmPasswordInput.color = "white";
@@ -148,27 +148,14 @@ export function createRegisterInterface(){
         });
     
         // Create Register Button
-        const registerButton = GUI.Button.CreateSimpleButton("registerButton", "Register");
-        registerButton.width = 0.12;
-        registerButton.height = "40px";
-        registerButton.color = "white";
-        registerButton.fontSize = 25;
-        registerButton.fontFamily = "GemunuLibre-Bold";
-        registerButton.top = 255;
-        registerButton.left = 100;
-        registerButton.thickness = 0;
-        registerButton.background = "black";
-        registerButton.onPointerClickObservable.add(() => {
+
+        const registerButton = createCustomButton("Register", () => {
             registerButton.isVisible = false;
             returnToSignInText.isVisible = false;
             register(usernameInput.text, passwordInput.text, confirmPasswordInput.text);
         });
-        registerButton.onPointerEnterObservable.add(() => {
-            document.body.style.cursor = "pointer";
-        });
-        registerButton.onPointerOutObservable.add(() => {
-            document.body.style.cursor = "default";
-        });
+        registerButton.top = 255;
+        registerButton.left = 100;
         interfaceContainer.addControl(registerButton);
 
         // Return To Sign In Text
