@@ -1,5 +1,4 @@
 import * as GUI from "@babylonjs/gui";
-import { GUITexture } from './sceneInitialization.js';
 import { availableCredits } from "../gameplay/credits.js";
 import { currentScene } from "../managers/sceneManager.js";
 import { getImage } from "./loadImages.js";
