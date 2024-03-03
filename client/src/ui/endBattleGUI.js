@@ -8,7 +8,7 @@ import { medals, strikes } from "../managers/gameSetup.js";
 import { playerBoard, enemyBoard } from "../managers/gameSetup.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
-import { createEndGameScreen } from "./endGameGUI.js";
+import { createEndGameScreen, fadeInContinueButton } from "./endGameGUI.js";
 import { createCustomButton } from "./createCustomButton.js";
 import { socket } from "../network/connect.js";
 import { createLootBoxes } from "../graphics/createLootBoxes.js";
@@ -137,6 +137,9 @@ export function createEndBattleScreen(victory){
                     }
                     if(!GUIscene.lootBoxReady){
                         GUIscene.rewards = rewards;
+                    }
+                    if(rewards.length === 0){
+                        fadeInContinueButton(GUIscene.continueButtonEndGame);
                     }
                 });
             } else {

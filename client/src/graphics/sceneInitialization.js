@@ -26,72 +26,12 @@ export const canvas = document.getElementById('renderCanvas');
 
 export const engine = new BABYLON.Engine(canvas, true, { antialias: true });
 
-engine.loadingScreen = {
-    displayLoadingUI: function() {},
-    hideLoadingUI: function() {}
-};
-
-export let scene;
-export let GUIscene;
-export let fadeScene;
-export let GUI3Dscene;
-
-// Meshs
-let allMeshes;
-export let baseMesh;
-export let baseBaseMesh;
-export let backgroundMesh;
-export let gridPlane;
-export let gridShaderMaterial;
-export let buildingAssets;
-export let weaponAssets;
-export let shadowGenerator;
-export let menuBackgrounds = [];
-export let boostedCellGraphic;
-export let lights;
-export let lootBoxes = [];
-
-// Material Atlas
-export const materialAtlas = [];
-
-// Laser Material Pool
-export const laserMaterialPool = [];
-
-// Testing Plane
-let testPlane;
-export let testPlaneContext;
-export let testPlaneTexture;
-
-// Raycasting Collision Plane
-export let collisionPlane;
-
-// Cameras
-export let camera;
-export let GUIcamera;
-export let GUI3Dcamera;
-let orthoSize = 3;
-export let cameraHeight = 6.5;
-
-// GUI
-export let GUITexture;
-
-// Fade Texture
-export let fadeTexture;
-
 export const initPreloadScene = () => {
     scene = new BABYLON.Scene(engine);
 
     camera = initCamera(scene); //Camera
     
-    WebFont.load({
-        custom: {
-            families: ['GemunuLibre-Bold', 'GemunuLibre-Medium', 'RussoOne-Regular'],
-            urls: ['style.css']
-        },
-        active: function () {
-            createPreloadScreen();
-        }
-    });
+    loadFonts(createPreloadScreen());
 
     initFadeScene();
 
@@ -166,6 +106,18 @@ export const initGameScene = () => {
     updateStrikeDialoguePanelStrikes();
 };
 
+function loadFonts(next) {
+    WebFont.load({
+        custom: {
+            families: ['GemunuLibre-Bold', 'GemunuLibre-Medium', 'RussoOne-Regular'],
+            urls: ['style.css']
+        },
+        active: function () {
+            next();
+        }
+    });
+}
+
 function initFadeScene() {
     fadeScene = new BABYLON.Scene(engine);
     const fadeCamera = new BABYLON.FreeCamera("fadeCamera", new BABYLON.Vector3(5, 5, 5), fadeScene);
@@ -174,7 +126,7 @@ function initFadeScene() {
     fadeTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("fadeTexture", true, fadeScene);
 }
 
-function initGUI3DScene() {
+async function initGUI3DScene() {
     GUI3Dscene = new BABYLON.Scene(engine);
     GUI3Dscene.autoClear = false;
     GUI3Dscene.autoClearDepthAndStencil = true;
@@ -419,20 +371,20 @@ function initLights(scene) {
 }
 
 function postProcessEffects(scene, camera) {
-    // const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
-    // scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
-    // ssaoPipeline.totalStrength = 1;
-    // ssaoPipeline.radius = 0.00005;
+    const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
+    scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
+    ssaoPipeline.totalStrength = 1;
+    ssaoPipeline.radius = 0.00005;
 
-    // const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
-    // bloomPipeline.bloomEnabled = true;
-    // bloomPipeline.bloomThreshold = 0.32;
-    // bloomPipeline.bloomWeight = 0.5;
-    // bloomPipeline.bloomKernel = 25;
-    // bloomPipeline.bloomScale = 0.5;
+    const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
+    bloomPipeline.bloomEnabled = true;
+    bloomPipeline.bloomThreshold = 0.32;
+    bloomPipeline.bloomWeight = 0.5;
+    bloomPipeline.bloomKernel = 25;
+    bloomPipeline.bloomScale = 0.5;
 
-    // var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
-    // fxaaPostProcess.samples = 1;
+    var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
+    fxaaPostProcess.samples = 1;
 }
 
 function initCamera(scene) {

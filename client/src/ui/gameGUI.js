@@ -420,7 +420,8 @@ export function displayStrikeDialogue(){
     const container = new GUI.Rectangle();
     container.width = "430px";
     container.height = "44px";
-    container.top = "-48%";
+    container.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    container.top = "-10px";
     container.thickness = 0;
     container.scaleX = 0.9;
     container.scaleY = 0.9;

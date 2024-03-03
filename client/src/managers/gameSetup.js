@@ -41,7 +41,7 @@ export const enemyBoard = {
 };
 
 export let strikes;
-export let medals = 10;
+export let medals = 0;
 
 export let allBoards = [];
 
@@ -49,7 +49,7 @@ export function gameSetup(){
     buildRandomDeck();
 
     strikes = 6;
-    medals = 10;
+    medals = 0;
 
     setAvailableCredits(startingCredits);
     setTotalCredits(startingCredits);

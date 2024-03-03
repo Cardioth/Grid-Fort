@@ -20,7 +20,7 @@ export function updateCardAnimation() {
                 card.rotationAsCard = 0;
                 card.container.scaleX = .4;
                 card.container.scaleY = .4;
-                card.targetPosition = { x: card.originalPosition.x, y: 150 };
+                card.targetPosition = { x: card.originalPosition.x, y: canvas.height/2-180 };
                 card.zIndex = 100;
             } else {
                 // Reset to normal size and position when not hovered

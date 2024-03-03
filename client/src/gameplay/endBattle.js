@@ -67,8 +67,6 @@ export function resetCameraTargetPositions() {
     camera.targetPosition = camera.defaultTargetPosition.clone();
     GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     GUIcamera.targetPosition = GUIcamera.defaultTargetPosition.clone();
-    camera.currentSetTargetPosition = new BABYLON.Vector3(0, 0, 0);
-    GUIcamera.currentSetTargetPosition = new BABYLON.Vector3(0, 0, 0);
 
     setZoomTarget(2.5);
 }

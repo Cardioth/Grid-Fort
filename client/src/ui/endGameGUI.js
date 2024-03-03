@@ -1,12 +1,11 @@
 import * as GUI from "@babylonjs/gui";
 import * as BABYLON from "@babylonjs/core";
-import { GUI3Dscene, GUITexture, setOrthoSize } from '../graphics/sceneInitialization.js';
+import { GUI3Dscene, GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 import { getImage } from "../graphics/loadImages.js";
-import { enemyBoard, medals, playerBoard } from "../managers/gameSetup.js";
+import { medals} from "../managers/gameSetup.js";
 import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
-import { clearBoard } from "../utilities/utils.js";
 import { createLootBoxes } from "../graphics/createLootBoxes.js";
 import { createMedalExplosionParticleSystem } from "../graphics/particleEffects/createMedalExplosion.js";
 import { createCustomButton } from "./createCustomButton.js";
@@ -59,7 +58,6 @@ export function createEndGameScreen(){
     continueButton.animations.push(continueButtonAnimation);
 
     GUIscene.continueButtonEndGame = continueButton;
-
     container.addControl(continueButton);
 
     //Medal Icons
