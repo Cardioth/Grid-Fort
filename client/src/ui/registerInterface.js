@@ -156,6 +156,7 @@ export function createRegisterInterface(){
         });
         registerButton.top = 255;
         registerButton.left = 100;
+        registerButton.name = "registerButton";
         interfaceContainer.addControl(registerButton);
 
         // Return To Sign In Text

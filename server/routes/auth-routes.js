@@ -32,6 +32,7 @@ router.post('/register', async (req, res) => {
       username, 
       password: hashedPassword,
       uniCredits: gameConfig.registrationCredits,
+      wallet: 'unlinked',
     };
 
     // Store the user data in Redis
