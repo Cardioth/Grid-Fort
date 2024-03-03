@@ -254,6 +254,5 @@ function setProfileData(data){
         wallet: data.wallet,
         uniCredits: data.uniCredits,
     };
-    console.log(data);
     localStorage.setItem("profile", JSON.stringify(profile));
 }

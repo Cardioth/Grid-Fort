@@ -15,3 +15,7 @@
 +++ Retrieving card data +++
 
 'HGETALL', 'card.card1'
+
++++ Update user data +++
+
+'HSET', 'user:bhop', 'wallet', 'unlinked'

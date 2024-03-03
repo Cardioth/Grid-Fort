@@ -83,7 +83,7 @@ export const initPreloadScene = () => {
 
     camera = initCamera(scene); //Camera
     
-    newFunction();
+    loadFonts();
 
     initFadeScene();
 
@@ -95,11 +95,11 @@ export const initPreloadScene = () => {
 
     loadModels(scene);
 
+    loadLootBoxes(GUI3Dscene);
+
     initializeGameControls(canvas); //Event listeners
 
     addLaserMaterialsToMaterialPool(200);
-
-    loadLootBoxes(GUI3Dscene);
 
     return scene;
 }
@@ -158,7 +158,7 @@ export const initGameScene = () => {
     updateStrikeDialoguePanelStrikes();
 };
 
-function newFunction() {
+function loadFonts() {
     WebFont.load({
         custom: {
             families: ['GemunuLibre-Bold', 'GemunuLibre-Medium', 'RussoOne-Regular'],
