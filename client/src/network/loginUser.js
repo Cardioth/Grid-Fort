@@ -1,6 +1,6 @@
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
-import { connectToServer } from "./connect";
+import { connectToServer, socket } from "./connect";
 import { createAlertMessage } from "./createAlertMessage";
 import { unhideLoginButtons } from "../ui/loginInterface";
 import { serverUrl } from "./serverURL";
@@ -29,6 +29,7 @@ export function loginUser(username, password) {
         fadeToBlack(()=>{
           setUniCredits(data.uniCredits);
           setCurrentScene("menu");
+          socket.emit("getCollection");
         });
       });
   })

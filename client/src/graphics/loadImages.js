@@ -47,6 +47,10 @@ export function loadImages(scene) {
         'Phantom-Icon_App_60x60.png',
         'solflareIcon.png',
         'emptyButtonHighlight.png',
+        'collectionCardPanel.png',
+        'collectionDeckPanel.png',
+        'arrowButton.png',
+        'arrowButtonR.png',
     ];
     
     paths.forEach(path => {

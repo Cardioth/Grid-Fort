@@ -49,12 +49,8 @@ export function createMenuScreen(){
     const collectionButton = createCustomButton("Collection", () => {
         hideMenuButtons();
         document.body.style.cursor='pointer'
-        socket.emit("getCollection");
-        socket.once("getCollectionResponse", (response) => {
-            setCollection(response);
-            fadeToBlack(() => {
-                setCurrentScene("collection");
-            });
+        fadeToBlack(() => {
+            setCurrentScene("collection");
         });
     });
     collectionButton.top = 80;

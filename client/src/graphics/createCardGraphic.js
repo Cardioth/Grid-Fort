@@ -4,16 +4,22 @@ import { currentScene } from "../managers/sceneManager.js";
 import { getImage } from "./loadImages.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 
-export function createCardGraphic(card) {
+export function createCardGraphic(card, shadow = false) {
     var container = new GUI.Rectangle();
     container.width = "620px";
-    container.height = "920px";
+    container.height = "950px";
     container.thickness = 0;
 
     //Card Backing
     var cardBack = new GUI.Image("but", getImage("cardArtwork.png"));
     cardBack.width = "620px";
     cardBack.height = "920px";
+    if(shadow){
+        cardBack.shadowBlur = 20;
+        cardBack.shadowColor = "#070D16";
+        cardBack.shadowOffsetX = 0;
+        cardBack.shadowOffsetY = 10;
+    }
     container.addControl(cardBack);
 
     //Card Name
@@ -28,7 +34,7 @@ export function createCardGraphic(card) {
     nameText.fontSize = 60;
     nameText.top = "40px";
     nameText.shadowBlur = 0;
-    nameText.shadowColor = "#7F7F7C";
+    nameText.shadowColor = "#262626";
     nameText.shadowOffsetX = 0;
     nameText.shadowOffsetY = 2;
     nameText.scaleY = 0.9;
@@ -42,7 +48,7 @@ export function createCardGraphic(card) {
     classText.fontSize = 50;
     classText.top = "100px";
     classText.shadowBlur = 0;
-    classText.shadowColor = "#242529";
+    classText.shadowColor = "#262626";
     classText.shadowOffsetX = 0;
     classText.shadowOffsetY = 2;
     classText.scaleY = 0.9;
