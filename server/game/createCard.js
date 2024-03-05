@@ -16,6 +16,8 @@ async function createCard(username, card) {
     //Add card to user's collection
     await redisClient.sAdd(`user:${username}:cards`, `c${uniqueID}`);
 
+    console.log('Card created');
+
     if(user.wallet !== 'unlinked' && process.env.MINTING === 'true') {
       //Create metadata JSON
       console.log('Creating metadata JSON');

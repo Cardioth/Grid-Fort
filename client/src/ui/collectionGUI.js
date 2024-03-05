@@ -47,9 +47,60 @@ export function createCollectionInterface(){
     cardContainerBacking.isPointerBlocker = false;
     container.addControl(cardContainerBacking);
 
+    // Create filter buttons
+    const filterButtons = [];
+    const filterButtonNames = ["Weapons", "Boosters", "Shields", "Repairs", "Radars"];
+    const filterButtonNameToType = {
+        "Weapons": "Weapon",
+        "Boosters": "Booster",
+        "Shields": "Shield",
+        "Repairs": "Repair",
+        "Radars": "Radar"
+    };
+    const activeFilters = [];
+    let filteredCollection = [...collection];
+    filterButtonNames.forEach((name, index) => {
+        const button = createCustomButton(name, () => { //toggle button
+            if(activeFilters.includes(filterButtonNameToType[name])){
+                // Remove filter
+                activeFilters.splice(activeFilters.indexOf(filterButtonNameToType[name]), 1);
+                // Remove selected graphic around button
+                const selectorGraphic = container.getChildByName(filterButtonNameToType[name]);
+                selectorGraphic.dispose();
+            } else {
+                // Add filter
+                activeFilters.push(filterButtonNameToType[name]);
+                // Create selected graphic around button
+                const selectorGraphic = createSelectorGraphic(filterButtonNameToType[name], button);
+                container.addControl(selectorGraphic);
+            }
+            // Filter Collection
+            filteredCollection = [];
+            activeFilters.forEach(filterTest => {
+                filteredCollection = filteredCollection.concat(...collection.filter(card => card.class === filterTest));
+            });
+            if (activeFilters.length === 0) {
+                filteredCollection = [...collection];
+            }
+            // Update Card Container
+            GUIscene.currentPage = 0;
+            cardContainer.dispose();
+            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
+            cardContainer.zIndex = 1;
+            container.addControl(cardContainer);
+            totalPages = Math.ceil(filteredCollection.length / 10);           
+        });
+        button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        button.top = "320px";
+        button.left = (index * 140 - 290) + "px";
+        container.addControl(button);
+        filterButtons.push(button);
+    });
+
     // Create Card Container
     GUIscene.currentPage = 0;
-    let cardContainer = createCardContainer(GUIscene.currentPage, collection);
+    let cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
     container.addControl(cardContainer);
     let totalPages = Math.ceil(collection.length / 10);
 
@@ -61,7 +112,7 @@ export function createCollectionInterface(){
         if(GUIscene.currentPage < totalPages - 1){
             GUIscene.currentPage++;
             cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, collection);
+            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
             container.addControl(cardContainer);
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
@@ -81,7 +132,7 @@ export function createCollectionInterface(){
         if(GUIscene.currentPage > 0){
             GUIscene.currentPage--;
             cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, collection);
+            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
             container.addControl(cardContainer);
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
@@ -94,61 +145,6 @@ export function createCollectionInterface(){
     container.addControl(previousPageButton);
 
     updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
-
-    // Create filter buttons
-    const filterButtons = [];
-    const filterButtonNames = ["Weapons", "Boosters", "Shields", "Repairs", "Radars"];
-    const filterButtonNameToType = {
-        "Weapons": "Weapon",
-        "Boosters": "Booster",
-        "Shields": "Shield",
-        "Repairs": "Repair",
-        "Radars": "Radar"
-    };
-    const activeFilters = [];
-    filterButtonNames.forEach((name, index) => {
-        const button = createCustomButton(name, () => {
-            if(activeFilters.includes(filterButtonNameToType[name])){
-                // Remove filter
-                activeFilters.splice(activeFilters.indexOf(filterButtonNameToType[name]), 1);
-                // Remove selected graphic around button
-                const selectorGraphic = container.getChildByName(filterButtonNameToType[name]);
-                selectorGraphic.dispose();
-            } else {
-                // Add filter
-                activeFilters.push(filterButtonNameToType[name]);
-                // Create selected graphic around button
-                const selectorGraphic = createSelectorGraphic(filterButtonNameToType[name], button);
-                container.addControl(selectorGraphic);
-            }
-            // Filter Collection
-            let filteredCollection = [];
-            activeFilters.forEach(filter => {
-                filteredCollection = filteredCollection.concat(...collection.filter(card => card.class === filter));
-            });
-            if(activeFilters.length === 0){
-                filteredCollection = collection;
-            }
-
-            for(let i = 0; i < filteredCollection.length; i++){
-                    console.log(filteredCollection[i].class, filteredCollection[i].name);
-            }
-            // Update Card Container
-            GUIscene.currentPage = 0;
-            cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
-            cardContainer.zIndex = 1;
-            container.addControl(cardContainer);
-            totalPages = Math.ceil(filteredCollection.length / 10);
-            updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
-        });
-        button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        button.top = "320px";
-        button.left = (index * 140 - 290) + "px";
-        container.addControl(button);
-        filterButtons.push(button);
-    });
 
     // Return to Menu Button
     const returnButton = createCustomButton("Return", () => {
@@ -192,7 +188,7 @@ function updateNextPreviousButtonVisibility(currentPage, totalPages, nextPageBut
     }
 }
 
-function createCardContainer(currentPage, collection) {
+function createCardContainer(currentPage, newCollection) {
     const cardContainer = new GUI.Rectangle();
     cardContainer.width = "900px";
     cardContainer.height = "510px";
@@ -207,20 +203,20 @@ function createCardContainer(currentPage, collection) {
 
     const itemsPerPage = 10;
     let startIndex = currentPage * itemsPerPage;
-    let endIndex = Math.min(startIndex + itemsPerPage, collection.length);
+    let endIndex = Math.min(startIndex + itemsPerPage, newCollection.length);
 
     // Loop through the items for the current page
     for(let i = startIndex; i < endIndex; i++){
         let columnIndex = i % 5;
         let rowIndex = Math.floor((i - startIndex) / 5);
-        collection[i].currentPosition = { x: ((columnIndex) * 180) - 360 + "px", y: rowIndex * rowHeight - 125 + "px" };
-        collection[i].rotation = 0;
-        collection[i].zIndex = 1;
-        const cardGraphic = createCardGraphic(collection[i], true);
+        newCollection[i].currentPosition = { x: ((columnIndex) * 180) - 360 + "px", y: rowIndex * rowHeight - 125 + "px" };
+        newCollection[i].rotation = 0;
+        newCollection[i].zIndex = 1;
+        const cardGraphic = createCardGraphic(newCollection[i], true);
 
         makeAnimatedClickable(cardGraphic, () => {
             // Select Card
-            console.log("Selected Card: ", collection[i]);
+            console.log("Selected Card: ", newCollection[i].class);
         });
 
         cardImages.push(cardGraphic);

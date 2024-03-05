@@ -119,16 +119,13 @@ function adminListeners(socket, username) {
         }
       }
       
-      // /createcardallusers count
-      if(command.startsWith('/createcardallusers')){
+      // /createcard count
+      if(command.startsWith('/createcard')){
         const commandCount = command.split(' ')[1];
         for(let i = 0; i < commandCount; i++){
-          const users = await redisClient.sMembers('users');
-          users.forEach(async user => {
-            const commandBUID = Math.floor(Math.random() * 4) + 1;
-            const commandLevel = Math.floor(Math.random() * 4) + 1;
-            createCard(commandBUID, commandLevel, user);
-          });
+          const randomLevel = Math.floor(Math.random() * 4) + 1;
+          const randomBUID = Math.floor(Math.random() * 4) + 1;
+          createCard('admin', { BUID: randomBUID, level: randomLevel, bStats: ''});
         }
       }
 

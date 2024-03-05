@@ -55,8 +55,8 @@ const sessionMiddleware = session({
     expires: 1000 * 60 * 60 * 24 * 7 // 1 week
   }
 });
-app.set('trust proxy', 2)
-app.use(sessionMiddleware)
+app.set('trust proxy', 2);
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
