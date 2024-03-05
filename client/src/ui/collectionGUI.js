@@ -7,6 +7,7 @@ import { createCardGraphic } from "../graphics/createCardGraphic.js";
 import { createCustomButton } from "./createCustomButton.js";
 import { makeAnimatedClickable } from "./makeAnimatedClickable.js";
 import { getImage } from "../graphics/loadImages.js";
+import { createToggleButton } from "./createToggleButton.js";
 
 export function createCollectionInterface(){
     // Create container
@@ -57,19 +58,11 @@ export function createCollectionInterface(){
     const activeFilters = [];
     let filteredCollection = [...collection];
     filterButtonNames.forEach((name, index) => {
-        const button = createCustomButton(name, () => { //toggle button
+        const button = createToggleButton(name, () => {
             if(activeFilters.includes(filterButtonNameToType[name])){
-                // Remove filter
                 activeFilters.splice(activeFilters.indexOf(filterButtonNameToType[name]), 1);
-                // Remove selected graphic around button
-                const selectorGraphic = container.getChildByName(filterButtonNameToType[name]);
-                selectorGraphic.dispose();
             } else {
-                // Add filter
                 activeFilters.push(filterButtonNameToType[name]);
-                // Create selected graphic around button
-                const selectorGraphic = createSelectorGraphic(filterButtonNameToType[name], button);
-                container.addControl(selectorGraphic);
             }
             // Filter Collection
             filteredCollection = [];
@@ -91,7 +84,7 @@ export function createCollectionInterface(){
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         button.top = "320px";
-        button.left = (index * 140 - 290) + "px";
+        button.left = (index * 140 - 270) + "px";
         container.addControl(button);
         filterButtons.push(button);
     });
@@ -160,20 +153,6 @@ export function createCollectionInterface(){
     container.addControl(returnButton);
     
     GUITexture.addControl(container);
-}
-
-function createSelectorGraphic(name, attachTo) {
-    const selectorGraphic = new GUI.Rectangle();
-    selectorGraphic.width = "150px";
-    selectorGraphic.height = "50px";
-    selectorGraphic.horizontalAlignment = attachTo.horizontalAlignment;
-    selectorGraphic.verticalAlignment = attachTo.verticalAlignment;
-    selectorGraphic.top = attachTo.top;
-    selectorGraphic.left = attachTo.left;
-    selectorGraphic.thickness = 1;
-    selectorGraphic.name = name;
-    selectorGraphic.zIndex = attachTo.zIndex - 1;
-    return selectorGraphic;
 }
 
 function updateNextPreviousButtonVisibility(currentPage, totalPages, nextPageButton, previousPageButton) {

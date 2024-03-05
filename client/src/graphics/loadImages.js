@@ -53,6 +53,7 @@ export function loadImages(scene) {
         'arrowButtonR.png',
         'emptyDot.png',
         'filledDot.png',
+        'checkButton.png',
     ];
     
     paths.forEach(path => {
