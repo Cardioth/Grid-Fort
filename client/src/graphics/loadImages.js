@@ -51,6 +51,8 @@ export function loadImages(scene) {
         'collectionDeckPanel.png',
         'arrowButton.png',
         'arrowButtonR.png',
+        'emptyDot.png',
+        'filledDot.png',
     ];
     
     paths.forEach(path => {

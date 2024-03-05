@@ -212,7 +212,7 @@ export const initGUIScene = () => {
     GUIcamera.setTargetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     GUIcamera.currentSetTargetPosition = new BABYLON.Vector3(0, 0, 0);
     GUIcamera.setTarget(GUIcamera.currentSetTargetPosition);
-    updateCameraOrtho();    
+    updateCameraOrtho();
 
     GUIscene.autoClear = false;
     GUIscene.autoClearDepthAndStencil = false;

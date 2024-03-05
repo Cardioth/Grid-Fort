@@ -4,7 +4,7 @@ import { currentScene } from "../managers/sceneManager.js";
 import { getImage } from "./loadImages.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 
-export function createCardGraphic(card, shadow = false) {
+export function createCardGraphic(card) {
     var container = new GUI.Rectangle();
     container.width = "620px";
     container.height = "950px";
@@ -14,12 +14,6 @@ export function createCardGraphic(card, shadow = false) {
     var cardBack = new GUI.Image("but", getImage("cardArtwork.png"));
     cardBack.width = "620px";
     cardBack.height = "920px";
-    if(shadow){
-        cardBack.shadowBlur = 20;
-        cardBack.shadowColor = "#070D16";
-        cardBack.shadowOffsetX = 0;
-        cardBack.shadowOffsetY = 10;
-    }
     container.addControl(cardBack);
 
     //Card Name

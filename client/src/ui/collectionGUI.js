@@ -2,11 +2,8 @@ import * as GUI from "@babylonjs/gui";
 import { GUITexture, GUIscene } from '../graphics/sceneInitialization.js';
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
-import { uniCredits } from "../../../common/data/config.js";
-import { createAlertMessage } from "../network/createAlertMessage.js";
 import { collection } from "../managers/collectionManager.js";
 import { createCardGraphic } from "../graphics/createCardGraphic.js";
-import { signOutUser } from "../network/signOutUser.js";
 import { createCustomButton } from "./createCustomButton.js";
 import { makeAnimatedClickable } from "./makeAnimatedClickable.js";
 import { getImage } from "../graphics/loadImages.js";
@@ -85,10 +82,11 @@ export function createCollectionInterface(){
             // Update Card Container
             GUIscene.currentPage = 0;
             cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
+            totalPages = Math.ceil(filteredCollection.length / 10);
+            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
             cardContainer.zIndex = 1;
             container.addControl(cardContainer);
-            totalPages = Math.ceil(filteredCollection.length / 10);           
+            updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);     
         });
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -100,9 +98,10 @@ export function createCollectionInterface(){
 
     // Create Card Container
     GUIscene.currentPage = 0;
-    let cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
-    container.addControl(cardContainer);
     let totalPages = Math.ceil(collection.length / 10);
+    let cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
+    container.addControl(cardContainer);
+    
 
     // Create Next Page Button
     const nextPageButton = new GUI.Image("nextPageButton", getImage("arrowButtonR.png"));
@@ -112,7 +111,7 @@ export function createCollectionInterface(){
         if(GUIscene.currentPage < totalPages - 1){
             GUIscene.currentPage++;
             cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
+            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
             container.addControl(cardContainer);
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
@@ -132,7 +131,7 @@ export function createCollectionInterface(){
         if(GUIscene.currentPage > 0){
             GUIscene.currentPage--;
             cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection);
+            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
             container.addControl(cardContainer);
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
@@ -186,12 +185,16 @@ function updateNextPreviousButtonVisibility(currentPage, totalPages, nextPageBut
     if(currentPage === totalPages - 1){
         nextPageButton.isVisible = false;
     }
+    if(totalPages <= 1){
+        nextPageButton.isVisible = false;
+        previousPageButton.isVisible = false;
+    }
 }
 
-function createCardContainer(currentPage, newCollection) {
+function createCardContainer(currentPage, newCollection, totalPages) {
     const cardContainer = new GUI.Rectangle();
     cardContainer.width = "900px";
-    cardContainer.height = "510px";
+    cardContainer.height = "555px";
     cardContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     cardContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     cardContainer.left = "0px";
@@ -212,15 +215,44 @@ function createCardContainer(currentPage, newCollection) {
         newCollection[i].currentPosition = { x: ((columnIndex) * 180) - 360 + "px", y: rowIndex * rowHeight - 125 + "px" };
         newCollection[i].rotation = 0;
         newCollection[i].zIndex = 1;
-        const cardGraphic = createCardGraphic(newCollection[i], true);
+        const cardGraphic = createCardGraphic(newCollection[i]);
 
         makeAnimatedClickable(cardGraphic, () => {
-            // Select Card
-            console.log("Selected Card: ", newCollection[i].class);
         });
 
         cardImages.push(cardGraphic);
     }
+
+    // Create Dots Container
+    const dotsContainer = new GUI.Rectangle();
+    dotsContainer.width = "100px";
+    dotsContainer.height = "100px";
+    dotsContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    dotsContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    dotsContainer.top = "-268px";
+    dotsContainer.left = "0px";
+    dotsContainer.thickness = 0;
+    cardContainer.addControl(dotsContainer);
+
+    // Create Dots
+    for(let i = 0; i < totalPages; i++){
+        const dot = new GUI.Image("emptyDot", getImage("emptyDot.png"));
+        dot.width = "20px";
+        dot.height = "20px";
+        dot.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        dot.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        dot.left = (i * 20 - (totalPages - 1) * 10) + "px";
+        dotsContainer.addControl(dot);
+    }
+
+    // Create Filled Dot
+    const filledDot = new GUI.Image("filledDot", getImage("filledDot.png"));
+    filledDot.width = "20px";
+    filledDot.height = "20px";
+    filledDot.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    filledDot.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    filledDot.left = (currentPage * 20 - (totalPages - 1) * 10) + "px";
+    dotsContainer.addControl(filledDot);
 
     cardImages.forEach(card => {
         cardContainer.addControl(card);
