@@ -129,6 +129,8 @@ export function createCardGraphic(card) {
     container.left = card.currentPosition.x;
     container.rotation = card.rotation;
     container.zIndex = card.zIndex;
+    container.ignoreAdaptiveScaling = true;
+    container.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 
     card.container = container;
 

@@ -217,6 +217,9 @@ export const initGUIScene = () => {
     GUIscene.autoClear = false;
     GUIscene.autoClearDepthAndStencil = false;
     GUITexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
+    
+    //GUITexture.idealWidth = 1580;
+    GUITexture.idealHeight = 1080;
 
     return GUIscene;
 }

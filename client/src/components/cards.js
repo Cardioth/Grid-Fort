@@ -1,6 +1,7 @@
 import { currentScene } from "../managers/sceneManager";
 import { GUITexture, canvas } from "../graphics/sceneInitialization";
 import { createCardGraphic } from "../graphics/createCardGraphic";
+import * as GUI from "@babylonjs/gui";
 
 export let hand = [];
 
@@ -18,16 +19,16 @@ export function updateCardAnimation() {
             if (card.isHovered) {
                 // Set target size and position for hovered card
                 card.rotationAsCard = 0;
-                card.container.scaleX = .4;
-                card.container.scaleY = .4;
-                card.targetPosition = { x: card.originalPosition.x, y: canvas.height/2-180 };
-                card.zIndex = 100;
+                card.container.scaleX = .5;
+                card.container.scaleY = .5;
+                card.targetPosition = { x: card.originalPosition.x, y: 200};
+                card.zIndex = 200;
             } else {
                 // Reset to normal size and position when not hovered
                 card.rotationAsCard = card.originalRotation;
-                card.container.scaleX = .25;
-                card.container.scaleY = .25;
-                card.targetPosition = card.originalPosition;
+                card.container.scaleX = .3;
+                card.container.scaleY = .3;
+                card.targetPosition = { x: card.originalPosition.x, y: card.originalPosition.y };
                 card.zIndex = card.originalZIndex;
             }
             // Animate position
@@ -52,7 +53,7 @@ export function updateCardAnimation() {
 }
 
 export function setCardPositions() {
-    let yCardOffset = canvas.height/2-80; // Initial offset from middle
+    let yCardOffset = 350; // Initial offset from middle
     const gap = 100 - hand.length * 2; // Gap between cards
 
     hand.forEach((buildingCard, index) => {

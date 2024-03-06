@@ -34,6 +34,17 @@ export function createCollectionInterface(){
     titleText.isPointerBlocker = false;
     container.addControl(titleText);
 
+    // Create container
+    const cardSelectionContainer = new GUI.Rectangle();
+    cardSelectionContainer.thickness = 0;
+    cardSelectionContainer.width = "1050px";
+    cardSelectionContainer.height = "700px";
+    cardSelectionContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    cardSelectionContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    cardSelectionContainer.top = "0px";
+    cardSelectionContainer.left = "-200px";
+    container.addControl(cardSelectionContainer);
+
     // Create Card Container Backing Graphic
     const cardContainerBacking = new GUI.Image("cardContainerBacking", getImage("collectionCardPanel.png"));
     cardContainerBacking.width = "1008px";
@@ -43,7 +54,7 @@ export function createCollectionInterface(){
     cardContainerBacking.top = "30px";
     cardContainerBacking.left = "0px";
     cardContainerBacking.isPointerBlocker = false;
-    container.addControl(cardContainerBacking);
+    cardSelectionContainer.addControl(cardContainerBacking);
 
     // Create filter buttons
     const filterButtons = [];
@@ -78,14 +89,14 @@ export function createCollectionInterface(){
             totalPages = Math.ceil(filteredCollection.length / 10);
             cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
             cardContainer.zIndex = 1;
-            container.addControl(cardContainer);
+            cardSelectionContainer.addControl(cardContainer);
             updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);     
         });
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         button.top = "320px";
         button.left = (index * 140 - 270) + "px";
-        container.addControl(button);
+        cardSelectionContainer.addControl(button);
         filterButtons.push(button);
     });
 
@@ -93,7 +104,7 @@ export function createCollectionInterface(){
     GUIscene.currentPage = 0;
     let totalPages = Math.ceil(collection.length / 10);
     let cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-    container.addControl(cardContainer);
+    cardSelectionContainer.addControl(cardContainer);
     
 
     // Create Next Page Button
@@ -105,7 +116,7 @@ export function createCollectionInterface(){
             GUIscene.currentPage++;
             cardContainer.dispose();
             cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-            container.addControl(cardContainer);
+            cardSelectionContainer.addControl(cardContainer);
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
     });
@@ -114,7 +125,7 @@ export function createCollectionInterface(){
     nextPageButton.top = "0px";
     nextPageButton.left = "504px";
     nextPageButton.zIndex = 2;
-    container.addControl(nextPageButton);
+    cardSelectionContainer.addControl(nextPageButton);
 
     // Create Previous Page Button
     const previousPageButton = new GUI.Image("previousPageButton", getImage("arrowButton.png"));
@@ -125,7 +136,7 @@ export function createCollectionInterface(){
             GUIscene.currentPage--;
             cardContainer.dispose();
             cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-            container.addControl(cardContainer);
+            cardSelectionContainer.addControl(cardContainer);
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
     });
@@ -134,7 +145,7 @@ export function createCollectionInterface(){
     previousPageButton.top = "0px";
     previousPageButton.left = "-506px";
     previousPageButton.zIndex = 3;
-    container.addControl(previousPageButton);
+    cardSelectionContainer.addControl(previousPageButton);
 
     updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
 
@@ -195,6 +206,7 @@ function createCardContainer(currentPage, newCollection, totalPages) {
         newCollection[i].rotation = 0;
         newCollection[i].zIndex = 1;
         const cardGraphic = createCardGraphic(newCollection[i]);
+        cardGraphic.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
 
         makeAnimatedClickable(cardGraphic, () => {
         });

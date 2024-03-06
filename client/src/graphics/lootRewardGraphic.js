@@ -46,6 +46,7 @@ export function createLootReward(reward, position){
         card.rotation = 0;
         card.zIndex = 5;
         const cardGraphic = createCardGraphic(card);
+        cardGraphic.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         container.addControl(cardGraphic);
     }
 
