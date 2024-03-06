@@ -218,7 +218,6 @@ export const initGUIScene = () => {
     GUIscene.autoClearDepthAndStencil = false;
     GUITexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI", true, GUIscene);
     
-    //GUITexture.idealWidth = 1580;
     GUITexture.idealHeight = 1080;
 
     return GUIscene;
@@ -425,21 +424,23 @@ function initLights(scene) {
     //return backLight;
 }
 
+export let bloomPipeline;
+
 function postProcessEffects(scene, camera) {
     const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
     scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
     ssaoPipeline.totalStrength = 1;
     ssaoPipeline.radius = 0.00005;
 
-    const bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
+    bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
     bloomPipeline.bloomEnabled = true;
-    bloomPipeline.bloomThreshold = 0.32;
-    bloomPipeline.bloomWeight = 0.5;
-    bloomPipeline.bloomKernel = 25;
-    bloomPipeline.bloomScale = 0.5;
+    bloomPipeline.bloomThreshold = 0.27;
+    bloomPipeline.bloomWeight = 1;
+    bloomPipeline.bloomKernel = 20;
+    bloomPipeline.bloomScale = 0.7;
 
-    var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
-    fxaaPostProcess.samples = 1;
+    // var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
+    // fxaaPostProcess.samples = 1;
 }
 
 function initCamera(scene) {

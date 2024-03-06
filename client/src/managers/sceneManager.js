@@ -1,4 +1,5 @@
-import { initGameScene, initMenuScene, initGUIScene, initPreloadScene, initAuthenticationScene} from "../graphics/sceneInitialization";
+import { initGameScene, initMenuScene, initGUIScene, initPreloadScene, initAuthenticationScene, bloomPipeline} from "../graphics/sceneInitialization";
+import { createBloomAdjuster } from '../graphics/testingGraphics/createBloomAdjuster';
 import { resetGame } from './resetGame';
 import { createLoginInterface } from "../ui/loginInterface";
 import { createCollectionInterface } from "../ui/collectionGUI";
@@ -53,6 +54,7 @@ export function setCurrentScene(setScene) {
     if(setScene === "build" && currentScene === "menu"){
         initGUIScene();
         initGameScene();
+        //createBloomAdjuster(bloomPipeline);
     }
 
     currentScene = setScene;
