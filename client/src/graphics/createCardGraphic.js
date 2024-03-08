@@ -10,6 +10,13 @@ export function createCardGraphic(card) {
     container.height = "950px";
     container.thickness = 0;
 
+    //Card Artwork
+    var cardArtwork = new GUI.Image("but", "cardArt/"+ card.keyName +".png");
+    cardArtwork.width = "500px";
+    cardArtwork.height = "500px";
+    cardArtwork.top = "-200px";
+    container.addControl(cardArtwork);
+
     //Card Backing
     var cardBack = new GUI.Image("but", getImage("cardArtwork.png"));
     cardBack.width = "620px";

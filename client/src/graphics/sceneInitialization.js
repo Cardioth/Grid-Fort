@@ -425,21 +425,23 @@ function initLights(scene) {
 }
 
 export let bloomPipeline;
+export let ssaoPipeline
+export let fxaaPostProcess;
 
 function postProcessEffects(scene, camera) {
-    const ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
-    scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
-    ssaoPipeline.totalStrength = 1;
-    ssaoPipeline.radius = 0.00005;
+    // ssaoPipeline = new BABYLON.SSAORenderingPipeline("ssao", scene, 1);
+    // scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
+    // ssaoPipeline.totalStrength = 1;
+    // ssaoPipeline.radius = 0.00005;
 
-    bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
-    bloomPipeline.bloomEnabled = true;
-    bloomPipeline.bloomThreshold = 0.27;
-    bloomPipeline.bloomWeight = 1;
-    bloomPipeline.bloomKernel = 20;
-    bloomPipeline.bloomScale = 0.7;
+    // bloomPipeline = new BABYLON.DefaultRenderingPipeline("bloom", true, scene);
+    // bloomPipeline.bloomEnabled = true;
+    // bloomPipeline.bloomThreshold = 0.27;
+    // bloomPipeline.bloomWeight = 1;
+    // bloomPipeline.bloomKernel = 20;
+    // bloomPipeline.bloomScale = 0.7;
 
-    // var fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
+    // fxaaPostProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
     // fxaaPostProcess.samples = 1;
 }
 
@@ -490,7 +492,6 @@ export function updateCameraOrtho() {
 }
 
 engine.runRenderLoop(() => {
-    
     if (currentScene === "menu" || currentScene === "authentication" || currentScene === "collection" || currentScene === "profile") {
         updateMenuGraphics();
     }
@@ -498,6 +499,7 @@ engine.runRenderLoop(() => {
     if (currentScene === "build" || currentScene === "battle" || currentScene === "battleCountdown" || currentScene === "endBattle") {
         updateGraphics();
     }
+    
     scene.render();
     GUIscene.render();
     GUI3Dscene.render();

@@ -5,7 +5,7 @@ import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../../../common/data/config.js";
 import { createAlertMessage } from "../network/createAlertMessage.js";
-import { createCustomButton } from "./createCustomButton.js";
+import { createCustomButton } from "./uiElements/createCustomButton.js";
 import { connectWallet } from "../network/solana/connectWallet.js";
 import { socket } from "../network/connect.js";
 import { getImage } from "../graphics/loadImages.js";

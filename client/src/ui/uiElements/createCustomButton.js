@@ -1,10 +1,10 @@
 import * as GUI from "@babylonjs/gui";
 import * as BABYLON from "@babylonjs/core";
-import { getImage } from "../graphics/loadImages.js";
-import { GUIscene } from "../graphics/sceneInitialization.js";
+import { getImage } from "../../graphics/loadImages.js";
+import { GUIscene } from "../../graphics/sceneInitialization.js";
 
 
-export function createToggleButton(text, functionToCall) {
+export function createCustomButton(text, functionToCall) {
     // Create container
     const container = new GUI.Rectangle();
     container.thickness = 0;
@@ -12,20 +12,17 @@ export function createToggleButton(text, functionToCall) {
     container.height = "35px";
 
     // Create Button Base
-    const buttonGraphic = new GUI.Image("emptyCheckButton", getImage("checkButton.png"));
-    buttonGraphic.width = "129px";
+    const buttonGraphic = new GUI.Image("emptyButton", getImage("emptyButton.png"));
+    buttonGraphic.width = "134px";
     buttonGraphic.height = "33px";
     container.addControl(buttonGraphic);
 
-    // Create Button Selected Dot
-    const buttonDot = new GUI.Image("filledDot", getImage("filledDot.png"));
-    buttonDot.width = "20px";
-    buttonDot.height = "20px";
-    buttonDot.left = "-50px";
-    buttonDot.top = "0px";
-    buttonDot.zIndex = 3;
-    buttonDot.isVisible = false;
-    container.addControl(buttonDot);
+    // Create Button Highlight
+    const buttonHighlight = new GUI.Image("buttonHighlight", getImage("emptyButtonHighlight.png"));
+    buttonHighlight.width = "134px";
+    buttonHighlight.height = "33px";
+    buttonHighlight.isVisible = false;
+    container.addControl(buttonHighlight);
 
     // Animate Button Highlight Scale
     const buttonAnimationScaleXUP = new BABYLON.Animation("buttonHighlightAnimationxu", "scaleX", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -55,8 +52,11 @@ export function createToggleButton(text, functionToCall) {
     buttonAnimationScaleYUP.setEasingFunction(easingFunction);
     buttonAnimationScaleXDOWN.setEasingFunction(easingFunction);
     buttonAnimationScaleYDOWN.setEasingFunction(easingFunction);
-    container.animations = [];
-    container.animations.push(buttonAnimationScaleXUP, buttonAnimationScaleYUP, buttonAnimationScaleXDOWN, buttonAnimationScaleYDOWN);
+
+    buttonHighlight.animations = [];
+    buttonHighlight.animations.push(buttonAnimationScaleXUP, buttonAnimationScaleYUP);
+    buttonGraphic.animations = [];
+    buttonGraphic.animations.push(buttonAnimationScaleXDOWN, buttonAnimationScaleYDOWN);
 
     // Create Button Text
     const buttonText = new GUI.TextBlock();
@@ -64,25 +64,28 @@ export function createToggleButton(text, functionToCall) {
     buttonText.height = "33px";
     buttonText.text = text;
     buttonText.color = "white";
-    buttonText.fontSize = 17;
+    buttonText.fontSize = 20;
     buttonText.fontFamily = "GemunuLibre-Medium";
     container.addControl(buttonText);
 
     container.onPointerClickObservable.add(() => {
-        if(buttonDot.isVisible){
-            buttonDot.isVisible = false;
-        } else {
-            buttonDot.isVisible = true;
-        }
+        document.body.style.cursor = 'default';
         functionToCall();
     });
     container.onPointerEnterObservable.add(function () {
         document.body.style.cursor = 'pointer';
-        GUIscene.beginDirectAnimation(container, [container.animations[0], container.animations[1]], 0, 10, false, 1);
+        buttonHighlight.isVisible = true;
+        buttonGraphic.isVisible = false;
+        // Play button highlight animation
+        GUIscene.beginDirectAnimation(buttonHighlight, [buttonHighlight.animations[0], buttonHighlight.animations[1]], 0, 10, false, 1);
+        
     });
     container.onPointerOutObservable.add(function () {
         document.body.style.cursor = 'default';
-        GUIscene.beginDirectAnimation(container, [container.animations[2], container.animations[3]], 0, 10, false, 1);
+        buttonHighlight.isVisible = false;
+        buttonGraphic.isVisible = true;
+        // Play button highlight animation
+        GUIscene.beginDirectAnimation(buttonGraphic, [buttonGraphic.animations[0], buttonGraphic.animations[1]], 0, 10, false, 1);
     });
 
     return container;

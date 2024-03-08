@@ -1,7 +1,7 @@
 import { initGameScene, initMenuScene, initGUIScene, initPreloadScene, initAuthenticationScene, bloomPipeline} from "../graphics/sceneInitialization";
 import { createBloomAdjuster } from '../graphics/testingGraphics/createBloomAdjuster';
 import { resetGame } from './resetGame';
-import { createLoginInterface } from "../ui/loginInterface";
+import { createLoginInterface } from "../ui/uiElements/loginInterface";
 import { createCollectionInterface } from "../ui/collectionGUI";
 import { resizeCanvas } from "../graphics/resizeCanvas";
 import { createProfileInterface } from "../ui/profileGUI";

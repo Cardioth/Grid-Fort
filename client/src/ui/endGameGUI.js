@@ -8,7 +8,7 @@ import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { createLootBoxes } from "../graphics/createLootBoxes.js";
 import { createMedalExplosionParticleSystem } from "../graphics/particleEffects/createMedalExplosion.js";
-import { createCustomButton } from "./createCustomButton.js";
+import { createCustomButton } from "./uiElements/createCustomButton.js";
 
 export function createEndGameScreen(){
     //container

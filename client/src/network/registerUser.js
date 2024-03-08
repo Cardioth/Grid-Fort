@@ -1,5 +1,5 @@
 import { serverUrl } from "./serverURL";
-import { unhideRegisterButtons, returnToLoginFromRegister } from "../ui/registerInterface";
+import { unhideRegisterButtons, returnToLoginFromRegister } from "../ui/uiElements/registerInterface";
 import { createAlertMessage } from "./createAlertMessage";
 
 export function registerUser(username, password) {

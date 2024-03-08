@@ -9,7 +9,7 @@ import { playerBoard, enemyBoard } from "../managers/gameSetup.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { createEndGameScreen, fadeInContinueButton } from "./endGameGUI.js";
-import { createCustomButton } from "./createCustomButton.js";
+import { createCustomButton } from "./uiElements/createCustomButton.js";
 import { socket } from "../network/connect.js";
 import { createLootBoxes } from "../graphics/createLootBoxes.js";
 

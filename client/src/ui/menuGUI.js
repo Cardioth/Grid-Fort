@@ -10,8 +10,8 @@ import { createAlertMessage } from "../network/createAlertMessage.js";
 import { getImage } from "../graphics/loadImages.js";
 import { serverUrl } from "../network/serverURL.js";
 import { setCollection } from "../managers/collectionManager.js";
-import { createAdminPanel } from "./createAdminPanel.js";
-import { createCustomButton } from "./createCustomButton.js";
+import { createAdminPanel } from "./uiElements/createAdminPanel.js";
+import { createCustomButton } from "./uiElements/createCustomButton.js";
 
 export function createMenuScreen(){
     // Create container

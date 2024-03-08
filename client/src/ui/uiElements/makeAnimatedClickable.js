@@ -1,4 +1,4 @@
-import { GUIscene } from '../graphics/sceneInitialization.js';
+import { GUIscene } from '../../graphics/sceneInitialization.js';
 import * as BABYLON from "@babylonjs/core";
 
 export function makeAnimatedClickable(clickableObject, clickFunction) {

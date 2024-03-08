@@ -1,8 +1,8 @@
 import * as GUI from "@babylonjs/gui";
-import { GUITexture, initGUIScene } from '../graphics/sceneInitialization.js';
+import { GUITexture, initGUIScene } from '../../graphics/sceneInitialization.js';
 import { createLoginInterface } from "./loginInterface.js";
-import { registerUser } from "../network/registerUser.js";
-import { createAlertMessage } from "../network/createAlertMessage.js";
+import { registerUser } from "../../network/registerUser.js";
+import { createAlertMessage } from "../../network/createAlertMessage.js";
 import { createCustomButton } from "./createCustomButton.js";
 
 

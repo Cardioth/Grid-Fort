@@ -1,6 +1,6 @@
 import * as GUI from "@babylonjs/gui";
-import { GUITexture } from '../graphics/sceneInitialization.js';
-import { socket } from "../network/connect.js";
+import { GUITexture } from '../../graphics/sceneInitialization.js';
+import { socket } from "../../network/connect.js";
 
 export function createAdminPanel() {
     // Create container
