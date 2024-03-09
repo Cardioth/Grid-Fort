@@ -66,6 +66,8 @@ export function loadImages(scene) {
         'bigButton.png',
         'addDeckButton.png',
         'addDeckButtonOver.png',
+        'gameDialogueBacking.png',
+
     ];
     
     paths.forEach(path => {

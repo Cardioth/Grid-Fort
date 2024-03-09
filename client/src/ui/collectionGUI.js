@@ -197,10 +197,100 @@ function createDeckBuilderInterface(container){
 
     //Create build deck button
     const buildDeckButton = createBuildDeckButton();
-    
     deckBuilderContainer.addControl(buildDeckButton);
 
     container.addControl(deckBuilderContainer);
+}
+
+function createDeckNameDialogue(buildDeckButton){
+    // Create container
+    const container = new GUI.Rectangle();
+    container.thickness = 0;
+
+    // Create Dark Screen
+    const darkScreen = new GUI.Rectangle();
+    darkScreen.width = "100%";
+    darkScreen.height = "100%";
+    darkScreen.thickness = 0;
+    darkScreen.background = "black";
+    darkScreen.alpha = 0.5;
+    container.addControl(darkScreen);
+
+    // Create Game Dialogue Backing
+    const deckNameDialogueBacking = new GUI.Image("startGameDialogueBacking", getImage("gameDialogueBacking.png"));
+    deckNameDialogueBacking.width = "516px";
+    deckNameDialogueBacking.height = "136px";
+    container.addControl(deckNameDialogueBacking);
+
+    // Create Deck Name Input
+    const deckNameInput = new GUI.InputText();
+    deckNameInput.width = "270px";
+    deckNameInput.height = "40px";
+    deckNameInput.color = "white";
+    deckNameInput.background = "rgba(0, 0, 0, 0.3)";
+    deckNameInput.focusedBackground = "rgba(0, 0, 0, 0.4)";
+    deckNameInput.thickness = 0;
+    deckNameInput.left = "-80px";
+    deckNameInput.top = "-12px";
+    deckNameInput.text = "Deck Name";
+    deckNameInput.fontFamily = "GemunuLibre-Medium";
+    deckNameInput.onTextChangedObservable.add(function () {
+        deckNameInput.text = deckNameInput.text.replace(/[^a-zA-Z]/g, '');
+      });
+
+    container.addControl(deckNameInput);
+
+    // Create Continue Button
+    const continueButton = createCustomButton("Continue", () => {
+        buildDeckButton.isVisible = false;
+        GUIscene.beginDirectAnimation(container, [container.animations[1]], 0, 10, false, 1, () => {
+            container.dispose();
+           
+        });
+    });
+    continueButton.left = "135px";
+    continueButton.top = "-10px";
+    container.addControl(continueButton);
+
+    // Create Cancel Button
+    const cancelButton = new GUI.Image("cancelButton", getImage("cancelButton.png"));
+    cancelButton.width = "14px";
+    cancelButton.height = "14px";
+    cancelButton.left = "230px";
+    cancelButton.top = "-49px";
+    container.addControl(cancelButton);
+    cancelButton.onPointerClickObservable.add(() => {
+        GUIscene.beginDirectAnimation(container, [container.animations[1]], 0, 10, false, 1, () => {
+            container.dispose();
+        });
+    });
+    cancelButton.onPointerEnterObservable.add(function () {
+        document.body.style.cursor='pointer'
+    });
+    cancelButton.onPointerOutObservable.add(function () {
+        document.body.style.cursor='default'
+    });
+
+    container.alpha = 0;
+
+    //Animate container fade in
+    const animation = new BABYLON.Animation("fadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const animation2 = new BABYLON.Animation("fadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const keys = [
+        { frame: 0, value: 0 },
+        { frame: 10, value: 1 },
+    ];
+    const keys2 = [
+        { frame: 0, value: 1 },
+        { frame: 10, value: 0 },
+    ];
+    animation.setKeys(keys);
+    animation2.setKeys(keys2);
+    container.animations = [];
+    container.animations.push(animation, animation2);
+    GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 10, false, 1);
+
+    GUITexture.addControl(container);
 }
 
 function createBuildDeckButton() {
@@ -229,6 +319,7 @@ function createBuildDeckButton() {
     });
 
     buildDeckButton.onPointerClickObservable.add(() => {
+        createDeckNameDialogue(container);
     });
 
     container.addControl(buildDeckButton);
