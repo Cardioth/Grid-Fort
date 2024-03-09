@@ -14,14 +14,16 @@ export function createCardGraphic(card) {
     var cardArtwork = new GUI.Image("but", "cardArt/"+ card.keyName +".png");
     cardArtwork.width = "500px";
     cardArtwork.height = "500px";
-    cardArtwork.top = "-200px";
+    cardArtwork.top = "-150px";
     container.addControl(cardArtwork);
 
     //Card Backing
-    var cardBack = new GUI.Image("but", getImage("cardArtwork.png"));
+    if(card.level >= 1){
+    var cardBack = new GUI.Image("but", getImage("cardArtwork"+card.level+".png"));
     cardBack.width = "620px";
     cardBack.height = "920px";
     container.addControl(cardBack);
+    }
 
     //Card Name
     var nameText = new GUI.TextBlock();
@@ -100,17 +102,6 @@ export function createCardGraphic(card) {
         healthText.left = "230px";
         healthText.fontFamily = "RussoOne-Regular";
         container.addControl(healthText);
-    }
-
-    //Card Level
-    if(card.level >= 1){
-        const imageName = getImage("cardLevel"+card.level+".png");
-        var levelImage = new GUI.Image("but", imageName);
-        levelImage.width = "323px";
-        levelImage.height = "44px";
-        levelImage.top = "-385px";
-        levelImage.left = "0px";
-        container.addControl(levelImage);
     }
 
     //Bonus stats

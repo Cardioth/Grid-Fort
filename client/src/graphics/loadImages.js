@@ -11,14 +11,13 @@ export function loadImages(scene) {
         "bottomUI.png",
         "buildingStatsPanel.png",
         "buildingStatsPanelBottom.png",
-        "cardArtwork.png",
+        "cardArtwork1.png",
+        "cardArtwork2.png",
+        "cardArtwork3.png",
+        "cardArtwork4.png",
         "cardArtworkBackground.png",
         "cardDamage.png",
         "cardHealth.png",
-        "cardLevel1.png",
-        "cardLevel2.png",
-        "cardLevel3.png",
-        "cardLevel4.png",
         "endTurnButton.png",
         "endTurnButtonBack.png",
         "gameCredit.png",
@@ -64,6 +63,9 @@ export function loadImages(scene) {
         'panelSliced/panelSlicedBottomRight.png',
         'wires.png',
         'collectionCardPanelFilters.png',
+        'bigButton.png',
+        'addDeckButton.png',
+        'addDeckButtonOver.png',
     ];
     
     paths.forEach(path => {

@@ -1,4 +1,5 @@
 import * as GUI from "@babylonjs/gui";
+import * as BABYLON from "@babylonjs/core";
 import { GUITexture, GUIscene } from '../graphics/sceneInitialization.js';
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
@@ -132,12 +133,6 @@ function createCardCollectionPanel(container) {
         filterButtons.push(button);
     });
 
-    // Create Card Container
-    GUIscene.currentPage = 0;
-    let totalPages = Math.ceil(collection.length / 10);
-    let cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-    cardSelectionContainer.addControl(cardContainer);
-
 
     // Create Next Page Button
     const nextPageButton = new GUI.Image("nextPageButton", getImage("arrowButtonR.png"));
@@ -179,6 +174,13 @@ function createCardCollectionPanel(container) {
     previousPageButton.zIndex = 3;
     cardSelectionContainer.addControl(previousPageButton);
 
+    // Create Card Container
+    GUIscene.currentPage = 0;
+    let totalPages = Math.ceil(collection.length / 10);
+    let cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
+    cardContainer.zIndex = 5;
+    cardSelectionContainer.addControl(cardContainer);
+
     updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
 }
 
@@ -193,7 +195,46 @@ function createDeckBuilderInterface(container){
     const newPanel = createPanel(354,580);
     deckBuilderContainer.addControl(newPanel);
 
+    //Create build deck button
+    const buildDeckButton = createBuildDeckButton();
+    
+    deckBuilderContainer.addControl(buildDeckButton);
+
     container.addControl(deckBuilderContainer);
+}
+
+function createBuildDeckButton() {
+    const container = new GUI.Rectangle();
+    container.thickness = 0;
+    container.isHitTestVisible = false;
+
+    const buildDeckButton = new GUI.Image("buildDeckButton", getImage("addDeckButton.png"));
+    buildDeckButton.width = "309px";
+    buildDeckButton.height = "55px";
+
+    const buildDeckButtonHighlight = new GUI.Image("buildDeckButton", getImage("addDeckButtonOver.png"));
+    buildDeckButtonHighlight.width = "309px";
+    buildDeckButtonHighlight.height = "55px";
+    buildDeckButtonHighlight.isHitTestVisible = false;
+    buildDeckButtonHighlight.isVisible = false;
+
+    buildDeckButton.onPointerEnterObservable.add(() => {
+        document.body.style.cursor = 'pointer';
+        buildDeckButtonHighlight.isVisible = true;
+    });
+
+    buildDeckButton.onPointerOutObservable.add(() => {
+        document.body.style.cursor = 'default';
+        buildDeckButtonHighlight.isVisible = false;
+    });
+
+    buildDeckButton.onPointerClickObservable.add(() => {
+    });
+
+    container.addControl(buildDeckButton);
+    container.addControl(buildDeckButtonHighlight);
+
+    return container;
 }
 
 function updateNextPreviousButtonVisibility(currentPage, totalPages, nextPageButton, previousPageButton) {
@@ -235,7 +276,7 @@ function createCardContainer(currentPage, newCollection, totalPages) {
         cardGraphic.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
 
         makeAnimatedClickable(cardGraphic, () => {
-        });
+        }, 1.05);
 
         cardImages.push(cardGraphic);
     }
