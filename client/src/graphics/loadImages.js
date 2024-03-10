@@ -15,6 +15,10 @@ export function loadImages(scene) {
         "cardArtwork2.png",
         "cardArtwork3.png",
         "cardArtwork4.png",
+        "cardLevel1.png",
+        "cardLevel2.png",
+        "cardLevel3.png",
+        "cardLevel4.png",
         "cardArtworkBackground.png",
         "cardDamage.png",
         "cardHealth.png",
@@ -66,8 +70,19 @@ export function loadImages(scene) {
         'bigButton.png',
         'addDeckButton.png',
         'addDeckButtonOver.png',
+        'saveDeckButton.png',
+        'saveDeckButtonOver.png',
         'gameDialogueBacking.png',
-
+        'miniCard1.png',
+        'miniCard2.png',
+        'miniCard3.png',
+        'miniCard4.png',
+        'boosterIcon.png',
+        'weaponIcon.png',
+        'shieldIcon.png',
+        'repairIcon.png',
+        'radarIcon.png',
+        'scrollBarHandle.png',
     ];
     
     paths.forEach(path => {

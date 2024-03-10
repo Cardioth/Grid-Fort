@@ -82,6 +82,9 @@ export function createLoginInterface(){
             passwordInput.focus();
         }
     });
+    usernameInput.onTextChangedObservable.add(function () {
+        usernameInput.text = usernameInput.text.replace(/[^a-zA-Z]/g, '');
+    });
 
     // Create Password Text
     const passwordText = new GUI.TextBlock();
