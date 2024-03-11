@@ -5,6 +5,11 @@ import { setCollection } from '../managers/collectionManager';
 
 export let socket;
 export let privs;
+export let fetchingCollection = false;
+
+export function setFetchingCollection(value){
+  fetchingCollection = value;
+}
 
 export function connectToServer(functionOnPrivs){
   socket = io(serverUrl, { withCredentials: true });
@@ -29,6 +34,7 @@ export function connectToServer(functionOnPrivs){
   });
 
   socket.on("getCollectionResponse", (response) => {
+      fetchingCollection = false
       setCollection(response, true);
       localStorage.setItem('collectionDate', Date.now());
   });

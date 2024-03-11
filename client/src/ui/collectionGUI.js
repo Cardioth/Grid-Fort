@@ -11,7 +11,7 @@ import { getImage } from "../graphics/loadImages.js";
 import { createToggleButton } from "./uiElements/createToggleButton.js";
 import { createPanel } from "./uiElements/createPanel.js";
 import { createLoadingIcon } from "./uiElements/createLoadingIcon.js";
-import { socket } from "../network/connect.js";
+import { fetchingCollection, setFetchingCollection, socket } from "../network/connect.js";
 import { createAlertMessage } from "../network/createAlertMessage.js";
 import { deckSize } from "../../../common/data/config.js";
 import { createLoadingIconScreen } from "./uiElements/createLoadingIconScreen.js";
@@ -110,6 +110,7 @@ function createRefreshButton(container) {
             }
         }, 30000);
         socket.emit("getCollection");
+        setFetchingCollection(true);
         socket.once("getCollectionResponse", () => {
             // Refresh Collection
             GUIscene.currentPage = 0;

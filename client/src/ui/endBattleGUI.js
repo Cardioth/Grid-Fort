@@ -10,7 +10,7 @@ import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { currentScene, setCurrentScene } from "../managers/sceneManager.js";
 import { createEndGameScreen, fadeInContinueButton } from "./endGameGUI.js";
 import { createCustomButton } from "./uiElements/createCustomButton.js";
-import { socket } from "../network/connect.js";
+import { setFetchingCollection, socket } from "../network/connect.js";
 import { createLootBoxes } from "../graphics/createLootBoxes.js";
 
 export function createEndBattleScreen(victory){
@@ -131,6 +131,7 @@ export function createEndBattleScreen(victory){
                 socket.emit("endGame");                
                 socket.once("endGameResponse", (rewards) => {
                     socket.emit("getCollection");
+                    setFetchingCollection(true);
                     GUIscene.rewardsReady = true;
                     if(GUIscene.lootBoxReady && !GUIscene.rewardsDisplayed){
                         createLootBoxes(GUI3Dscene, rewards);
