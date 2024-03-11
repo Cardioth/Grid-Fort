@@ -48,11 +48,11 @@ export function createMenuScreen(){
     const collectionButton = createCustomButton("Collection", () => {
         hideMenuButtons();
         document.body.style.cursor='pointer'
-        if(!localStorage.getItem("decks")){
-            fadeToBlack(() => {
-                setCurrentScene("collection");
-            });
-        } else {
+        // if(localStorage.getItem("decks")){
+        //     fadeToBlack(() => {
+        //         setCurrentScene("collection");
+        //     });
+        // } else {
             const loadingScreen = createLoadingIconScreen("Loading Decks...");
             container.addControl(loadingScreen);
             socket.emit("getDecks")
@@ -63,7 +63,7 @@ export function createMenuScreen(){
                     setCurrentScene("collection");
                 });
             });
-        }
+        //}
     });
     collectionButton.top = 80;
     collectionButton.left = 0;
