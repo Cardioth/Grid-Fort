@@ -9,6 +9,7 @@ export function createCardFromData(cardData) {
             }
             newCard.level = cardData.level;
             newCard.tradable = cardData.tradable;
+            newCard.UID = cardData.UID;
             return newCard;
         }
     }

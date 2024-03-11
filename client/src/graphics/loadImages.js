@@ -85,6 +85,7 @@ export function loadImages(scene) {
         'scrollBarHandle.png',
         'loadIcon1.png',
         'loadIcon2.png',
+        'miniDeckBacking.png',
     ];
     
     paths.forEach(path => {

@@ -5,6 +5,9 @@ const { adminListeners } = require('./adminListeners');
 const { getProfileListener } = require('./getProfileListener');
 const { verifySignatureListener } = require('./verifySignatureListener');
 const { endGameListener } = require('./endGameListener');
+const { saveDeckListener } = require('./saveDeckListener');
+const { getDecksListener } = require('./getDecksListener');
+const { deleteDeckListener } = require('./deleteDeckListener');
 
 const setupSocketEvents = (socket, username) => {
     // Define the event listeners for this socket
@@ -25,6 +28,9 @@ const setupSocketEvents = (socket, username) => {
     getProfileListener(socket, username);
     verifySignatureListener(socket, username);
     endGameListener(socket, username);
+    saveDeckListener(socket, username);
+    getDecksListener(socket, username);
+    deleteDeckListener(socket, username);
   };
   
   module.exports = { setupSocketEvents };

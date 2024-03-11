@@ -8,10 +8,9 @@ import { signOutUser } from "../network/signOutUser.js";
 import { privs, socket } from "../network/connect.js";
 import { createAlertMessage } from "../network/createAlertMessage.js";
 import { getImage } from "../graphics/loadImages.js";
-import { serverUrl } from "../network/serverURL.js";
-import { setCollection } from "../managers/collectionManager.js";
 import { createAdminPanel } from "./uiElements/createAdminPanel.js";
 import { createCustomButton } from "./uiElements/createCustomButton.js";
+import { createLoadingIconScreen } from "./uiElements/createLoadingIconScreen.js";
 
 export function createMenuScreen(){
     // Create container
@@ -49,9 +48,22 @@ export function createMenuScreen(){
     const collectionButton = createCustomButton("Collection", () => {
         hideMenuButtons();
         document.body.style.cursor='pointer'
-        fadeToBlack(() => {
-            setCurrentScene("collection");
-        });
+        if(!localStorage.getItem("decks")){
+            fadeToBlack(() => {
+                setCurrentScene("collection");
+            });
+        } else {
+            const loadingScreen = createLoadingIconScreen("Loading Decks...");
+            container.addControl(loadingScreen);
+            socket.emit("getDecks")
+            socket.once("getDecksResponse", (response) => {
+                localStorage.setItem("decks", JSON.stringify(response));
+                fadeToBlack(() => {
+                    loadingScreen.dispose();
+                    setCurrentScene("collection");
+                });
+            });
+        }
     });
     collectionButton.top = 80;
     collectionButton.left = 0;

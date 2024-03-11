@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.gridWidth = exports.gridHeight = exports.cellSize = exports.boardWidth = exports.battleLoopTimeLength = void 0;
+exports.maxDecks = exports.gridWidth = exports.gridHeight = exports.deckSize = exports.cellSize = exports.boardWidth = exports.battleLoopTimeLength = void 0;
 exports.setUniCredits = setUniCredits;
 exports.uniCredits = exports.startingCredits = exports.startingCardCount = exports.shapeKeyLegend = void 0;
 exports.updateUniCredits = updateUniCredits;
@@ -14,6 +14,8 @@ const boardWidth = exports.boardWidth = 2.875;
 const startingCredits = exports.startingCredits = 2;
 const startingCardCount = exports.startingCardCount = 2;
 const battleLoopTimeLength = exports.battleLoopTimeLength = 20;
+const deckSize = exports.deckSize = 5;
+const maxDecks = exports.maxDecks = 10;
 let uniCredits = exports.uniCredits = 0;
 function updateUniCredits(amount) {
   exports.uniCredits = uniCredits = uniCredits + amount;

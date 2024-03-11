@@ -7,6 +7,9 @@ export const startingCredits = 2;
 export const startingCardCount = 2;
 export const battleLoopTimeLength = 20;
 
+export const deckSize = 5;
+export const maxDecks = 10;
+
 export let uniCredits = 0;
 
 export function updateUniCredits(amount){

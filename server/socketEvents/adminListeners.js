@@ -2,8 +2,6 @@ const redisClient = require('../db/redis');
 const fetchNFT = require('../solana/fetchNFT');
 const fetchNFTsByOwner = require('../solana/fetchNFTsByOwner');
 const mintCollection = require('../solana/mintCollection');
-const mintNFT = require('../solana/mintNFT');
-const { createCard } = require('../game/createCard');
 const calculateRewards = require('../game/calculateRewards');
 
 function adminListeners(socket, username) {
@@ -127,7 +125,7 @@ function adminListeners(socket, username) {
           const users = await redisClient.sMembers('users');
           for(const user of users){
             for(let i = 0; i < commandCount; i++){
-              const randomMedals = Math.floor(Math.random() * 40);
+              const randomMedals = Math.floor(Math.random() * 30);
               calculateRewards(randomMedals, user);
             }
           }
@@ -172,6 +170,17 @@ function adminListeners(socket, username) {
         }
       }
 
+      // /removedecks username
+      if(command.startsWith('/removedecks')){
+        const commandUser = command.split(' ')[1];
+        try {
+          await redisClient.del(`decks:${commandUser}`);
+          console.log('Decks removed for', commandUser);
+        } catch (error) {
+          console.error('Error removing decks:', error);
+        }
+      }
+
     } else {
       //Database commands
       try {
@@ -210,7 +219,7 @@ async function deleteAllCards() {
 
     // Delete each key found
     for (const key of keys) {
-      await redisClient.del(key);
+      redisClient.del(key);
     }
 
     console.log('All card keys deleted.');

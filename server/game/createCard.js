@@ -13,6 +13,7 @@ async function createCard(username, card) {
     const uniqueID = await redisClient.incr('cardID');
     //Create card
     await redisClient.hSet(`card:c${uniqueID}`, card);
+    await redisClient.hSet(`card:c${uniqueID}`, 'UID', `c${uniqueID}`);
     //Add card to user's collection
     await redisClient.sAdd(`user:${username}:cards`, `c${uniqueID}`);
 

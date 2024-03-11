@@ -1,6 +1,6 @@
 import * as GUI from "@babylonjs/gui";
 import * as BABYLON from "@babylonjs/core";
-import { GUITexture, GUIscene, canvas } from '../graphics/sceneInitialization.js';
+import { GUITexture, GUIscene } from '../graphics/sceneInitialization.js';
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { collection } from "../managers/collectionManager.js";
@@ -12,6 +12,11 @@ import { createToggleButton } from "./uiElements/createToggleButton.js";
 import { createPanel } from "./uiElements/createPanel.js";
 import { createLoadingIcon } from "./uiElements/createLoadingIcon.js";
 import { socket } from "../network/connect.js";
+import { createAlertMessage } from "../network/createAlertMessage.js";
+import { deckSize } from "../../../common/data/config.js";
+import { createLoadingIconScreen } from "./uiElements/createLoadingIconScreen.js";
+import { createInputDialogue } from "./createInputDialogue.js";
+import { camelCaseToTitleCase } from "../utilities/utils.js";
 
 let filteredCollection = [];
 let newTempCollection = [];
@@ -21,6 +26,9 @@ let deckBuilderContainer;
 let cardSelectionContainer;
 let deckCompleteness;
 let miniCardContainer;
+let nextPageButton;
+let previousPageButton;
+let buildDeckButton;
 
 export function createCollectionInterface(){
     newTempCollection = [...collection];
@@ -46,12 +54,24 @@ export function createCollectionInterface(){
     titleText.left = 0;
     container.addControl(titleText);
 
-    // Create container
+    // Create Card Collection Panel
     createCardCollectionPanel(container);
 
+    // Create Deck Builder Interface
     createDeckBuilderInterface(container);
 
     // Return to Menu Button
+    const returnButton = createReturnButton();
+    container.addControl(returnButton);
+    
+    // Refresh Collection Button
+    const refreshButton = createRefreshButton(container);
+    container.addControl(refreshButton);
+    
+    GUITexture.addControl(container);
+}
+
+function createReturnButton() {
     const returnButton = createCustomButton("Return", () => {
         fadeToBlack(() => {
             setCurrentScene("menu");
@@ -62,9 +82,10 @@ export function createCollectionInterface(){
     returnButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     returnButton.top = "-20px";
     returnButton.left = "15px";
+    return returnButton;
+}
 
-    container.addControl(returnButton);
-    
+function createRefreshButton(container) {
     const loadingIcon = createLoadingIcon();
     loadingIcon.zIndex = 10;
     loadingIcon.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -83,7 +104,7 @@ export function createCollectionInterface(){
         refreshButton.alpha = 0.5;
         refreshButton.isDisabled = true;
         setTimeout(() => {
-            if(refreshButton){
+            if (refreshButton) {
                 refreshButton.alpha = 1;
                 refreshButton.isDisabled = false;
             }
@@ -94,7 +115,7 @@ export function createCollectionInterface(){
             GUIscene.currentPage = 0;
             newTempCollection = [...collection];
             filteredCollection = [...newTempCollection];
-            if(GUIscene.buildMode){
+            if (GUIscene.buildMode) {
                 GUIscene.newDeck.cards.forEach(card => {
                     card.miniCardContainer.dispose();
                 });
@@ -102,6 +123,8 @@ export function createCollectionInterface(){
                 updateMiniCardPositions();
             }
             resetCardContainer();
+            GUIscene.currentPage = 0;
+            updateNextPreviousButtonVisibility(GUIscene.currentPage);
             loadingIcon.isVisible = false;
         });
 
@@ -111,10 +134,7 @@ export function createCollectionInterface(){
     refreshButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     refreshButton.top = "-20px";
     refreshButton.left = "150px";
-
-    container.addControl(refreshButton);
-    
-    GUITexture.addControl(container);
+    return refreshButton;
 }
 
 function createCardCollectionPanel(container) {
@@ -180,7 +200,7 @@ function createCardCollectionPanel(container) {
             // Update Card Container
             GUIscene.currentPage = 0;
             resetCardContainer();
-            updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
+            updateNextPreviousButtonVisibility(GUIscene.currentPage);
         });
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -192,7 +212,7 @@ function createCardCollectionPanel(container) {
 
 
     // Create Next Page Button
-    const nextPageButton = new GUI.Image("nextPageButton", getImage("arrowButtonR.png"));
+    nextPageButton = new GUI.Image("nextPageButton", getImage("arrowButtonR.png"));
     nextPageButton.width = "36px";
     nextPageButton.height = "129px";
     makeAnimatedClickable(nextPageButton, () => {
@@ -200,7 +220,7 @@ function createCardCollectionPanel(container) {
             GUIscene.currentPage++;
             resetCardContainer();
         }
-        updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
+        updateNextPreviousButtonVisibility(GUIscene.currentPage);
     });
     nextPageButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     nextPageButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -210,7 +230,7 @@ function createCardCollectionPanel(container) {
     cardSelectionContainer.addControl(nextPageButton);
 
     // Create Previous Page Button
-    const previousPageButton = new GUI.Image("previousPageButton", getImage("arrowButton.png"));
+    previousPageButton = new GUI.Image("previousPageButton", getImage("arrowButton.png"));
     previousPageButton.width = "36px";
     previousPageButton.height = "129px";
     makeAnimatedClickable(previousPageButton, () => {
@@ -218,7 +238,7 @@ function createCardCollectionPanel(container) {
             GUIscene.currentPage--;
             resetCardContainer();
         }
-        updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
+        updateNextPreviousButtonVisibility(GUIscene.currentPage);
     });
     previousPageButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     previousPageButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -236,7 +256,7 @@ function createCardCollectionPanel(container) {
 
     cardSelectionContainer.zIndex = 4;
 
-    updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
+    updateNextPreviousButtonVisibility(GUIscene.currentPage);
 }
 
 function createDeckBuilderInterface(container){
@@ -276,8 +296,10 @@ function createDeckBuilderInterface(container){
     miniCardContainer.isHitTestVisible = false;
     scrollViewer.addControl(miniCardContainer);
 
+    addDecksToMiniCardContainer();
+
     //Create build deck button
-    const buildDeckButton = createBuildDeckButton();
+    buildDeckButton = createBuildDeckButton();
     buildDeckButton.top = "231px";
     buildDeckButton.left = "-9px";
     deckBuilderContainer.addControl(buildDeckButton);
@@ -285,121 +307,99 @@ function createDeckBuilderInterface(container){
     container.addControl(deckBuilderContainer);
 }
 
-function createDeckNameDialogue(buildDeckButton){
-    // Create container
+function addDecksToMiniCardContainer(){
+    const decks = JSON.parse(localStorage.getItem("decks"));
+    miniCardContainer.miniDecks =[];
+    decks.forEach(deck => {
+        const miniDeck = createMiniDeck(deck);
+        miniCardContainer.addControl(miniDeck);
+        miniCardContainer.miniDecks.push(miniDeck);
+
+        miniDeck.top = (decks.indexOf(deck) * 50)-((decks.length-1) * 50/2) + "px";
+        miniCardContainer.height = (decks.length * 50) + "px";
+        miniCardContainer.top = (decks.length * 50) / 2 + "px";
+    });
+}
+
+function clearMiniCardContainer(){
+    miniCardContainer.miniDecks.forEach(deck => {
+        deck.dispose();
+    });
+    miniCardContainer.miniDecks = [];
+}
+
+function createMiniDeck(deck){
     const container = new GUI.Rectangle();
     container.thickness = 0;
+    container.width = "320px";
+    container.height = "42px";
+    container.isHitTestVisible = false;
+    container.left = "3px";
 
-    // Create Dark Screen
-    const darkScreen = new GUI.Rectangle();
-    darkScreen.width = "100%";
-    darkScreen.height = "100%";
-    darkScreen.thickness = 0;
-    darkScreen.background = "black";
-    darkScreen.alpha = 0.5;
-    container.addControl(darkScreen);
-
-    // Create Game Dialogue Backing
-    const deckNameDialogueBacking = new GUI.Image("startGameDialogueBacking", getImage("gameDialogueBacking.png"));
-    deckNameDialogueBacking.width = "516px";
-    deckNameDialogueBacking.height = "136px";
-    container.addControl(deckNameDialogueBacking);
-
-    // Create Deck Name Input
-    const deckNameInput = new GUI.InputText();
-    deckNameInput.width = "270px";
-    deckNameInput.height = "40px";
-    deckNameInput.color = "white";
-    deckNameInput.background = "rgba(0, 0, 0, 0.3)";
-    deckNameInput.focusedBackground = "rgba(0, 0, 0, 0.4)";
-    deckNameInput.thickness = 0;
-    deckNameInput.left = "-80px";
-    deckNameInput.top = "-12px";
-    deckNameInput.text = "Deck Name";
-    deckNameInput.fontFamily = "GemunuLibre-Medium";
-    deckNameInput.onTextChangedObservable.add(function () {
-        deckNameInput.text = deckNameInput.text.replace(/[^a-zA-Z]/g, '');
-    });
-    deckNameInput.onFocusObservable.add(function () {
-        deckNameInput.text = "";
-    });
-
-    deckNameInput.onKeyboardEventProcessedObservable.add((eventData) => {
-        if(eventData.key === "Enter"){
-            eventData.preventDefault();
-            enterBuildMode();
-        }
-    });
-
-
-    container.addControl(deckNameInput);
-
-    // Create Continue Button
-    const continueButton = createCustomButton("Continue", () => {
-        enterBuildMode();
-    });
-
+    const miniDeckBacking = new GUI.Image("miniDeckBacking", getImage("miniDeckBacking.png"));
+    miniDeckBacking.width = "320px";
+    miniDeckBacking.height = "42px";
     
-    continueButton.left = "135px";
-    continueButton.top = "-10px";
-    container.addControl(continueButton);
+    const miniDeckText = new GUI.TextBlock();
+    miniDeckText.text = deck;
+    miniDeckText.color = "white";
+    miniDeckText.fontSize = 20;
+    miniDeckText.fontFamily = "GemunuLibre-Medium";
+    miniDeckText.shadowBlur = 0;
+    miniDeckText.shadowColor = "#262626";
+    miniDeckText.shadowOffsetX = 0;
+    miniDeckText.shadowOffsetY = 2;
+    miniDeckText.top = "-3px";
+    miniDeckText.left = "-10px";
+    miniDeckText.zIndex = 3;
 
-    // Create Cancel Button
-    const cancelButton = new GUI.Image("cancelButton", getImage("cancelButton.png"));
-    cancelButton.width = "14px";
-    cancelButton.height = "14px";
-    cancelButton.left = "230px";
-    cancelButton.top = "-49px";
-    container.addControl(cancelButton);
-    cancelButton.onPointerClickObservable.add(() => {
-        GUIscene.beginDirectAnimation(container, [container.animations[1]], 0, 10, false, 1, () => {
-            container.dispose();
+    // Create Remove Button
+    const removeButton = new GUI.Image("removeButton", getImage("cancelButton.png"));
+    removeButton.width = "14px";
+    removeButton.height = "14px";
+    removeButton.left = "120px";
+    removeButton.top = "-2px";
+    removeButton.zIndex = 4;
+    makeAnimatedClickable(removeButton, () => {
+        socket.emit("deleteDeck", deck);
+        const loadingScreen = createLoadingIconScreen("Deleting Deck...");
+        loadingScreen.zIndex = 10;
+        GUITexture.addControl(loadingScreen);
+        socket.once("deleteDeckResponse", (response) => {
+            createAlertMessage(response);
+            loadingScreen.dispose();
+            if(response === "Deck deleted"){
+                const decks = JSON.parse(localStorage.getItem("decks"));
+                decks.splice(decks.indexOf(deck), 1);
+                localStorage.setItem("decks", JSON.stringify(decks));
+                container.dispose();
+                miniCardContainer.miniDecks.splice(miniCardContainer.miniDecks.indexOf(container), 1);
+                miniCardContainer.height = (miniCardContainer.miniDecks.length * 50) + "px";
+                miniCardContainer.top = (miniCardContainer.miniDecks.length * 50) / 2 + "px";
+            }
         });
     });
-    cancelButton.onPointerEnterObservable.add(function () {
-        document.body.style.cursor='pointer'
-    });
-    cancelButton.onPointerOutObservable.add(function () {
-        document.body.style.cursor='default'
-    });
 
-    container.alpha = 0;
+    container.addControl(removeButton);
+    container.addControl(miniDeckBacking);
+    container.addControl(miniDeckText);
 
-    //Animate container fade in
-    const animation = new BABYLON.Animation("fadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-    const animation2 = new BABYLON.Animation("fadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-    const keys = [
-        { frame: 0, value: 0 },
-        { frame: 10, value: 1 },
-    ];
-    const keys2 = [
-        { frame: 0, value: 1 },
-        { frame: 10, value: 0 },
-    ];
-    animation.setKeys(keys);
-    animation2.setKeys(keys2);
-    container.animations = [];
-    container.animations.push(animation, animation2);
-    GUIscene.beginDirectAnimation(container, [container.animations[0]], 0, 10, false, 1);
+    return container;
+}
 
-    GUITexture.addControl(container);
-
-    function enterBuildMode() {
-        if (deckNameInput.text.length > 0 && deckNameInput.text !== "Deck Name") {
-            buildDeckButton.isVisible = false;
-            GUIscene.buildMode = true;
-            GUIscene.newDeck = {
-                name: deckNameInput.text,
-                cards: []
-            };
-            const saveDeckButton = createSaveDeckButton();
-            saveDeckButton.top = "231px";
-            saveDeckButton.left = "-9px";
-            deckBuilderContainer.addControl(saveDeckButton);
-            GUIscene.beginDirectAnimation(container, [container.animations[1]], 0, 10, false, 1, () => {
-                container.dispose();
-            });
-        }
+function enterBuildMode(input) {
+    if (input.length > 0 && input !== "Deck Name") {
+        clearMiniCardContainer();
+        buildDeckButton.isVisible = false;
+        GUIscene.buildMode = true;
+        GUIscene.newDeck = {
+            name: input,
+            cards: []
+        };
+        const saveDeckButton = createSaveDeckButton();
+        saveDeckButton.top = "231px";
+        saveDeckButton.left = "-9px";
+        deckBuilderContainer.addControl(saveDeckButton);
     }
 }
 
@@ -429,7 +429,7 @@ function createBuildDeckButton() {
     });
 
     buildDeckButton.onPointerClickObservable.add(() => {
-        createDeckNameDialogue(container);
+        createInputDialogue(enterBuildMode, "Deck Name");
     });
 
     container.addControl(buildDeckButton);
@@ -453,21 +453,62 @@ function createSaveDeckButton() {
     buildDeckButtonHighlight.isHitTestVisible = false;
     buildDeckButtonHighlight.isVisible = false;
 
+    saveDeckButton.isDisabled = false;
     saveDeckButton.onPointerEnterObservable.add(() => {
+        if(saveDeckButton.isDisabled) return;
         document.body.style.cursor = 'pointer';
         buildDeckButtonHighlight.isVisible = true;
     });
 
     saveDeckButton.onPointerOutObservable.add(() => {
+        if(saveDeckButton.isDisabled) return;
         document.body.style.cursor = 'default';
         buildDeckButtonHighlight.isVisible = false;
     });
 
     saveDeckButton.onPointerClickObservable.add(() => {
+        if(saveDeckButton.isDisabled) return;
+        saveDeckButton.isDisabled = true;
+        document.body.style.cursor = 'default';
+        const loadingScreen = createLoadingIconScreen("Saving Deck...");
+        loadingScreen.zIndex = 10;
+        GUITexture.addControl(loadingScreen);
+
+        const deckCardList = GUIscene.newDeck.cards.map(card => card.UID);
+        socket.emit("saveDeck", {deck:deckCardList, name:GUIscene.newDeck.name});
+        socket.once("saveDeckResponse", (response) => {
+            createAlertMessage(response);
+            if(response === "Deck saved successfully"){
+                GUIscene.buildMode = false;
+                GUIscene.newDeck.cards.forEach(card => {
+                    card.miniCardContainer.dispose();
+                });
+
+                const decks = JSON.parse(localStorage.getItem("decks"));
+                decks.push(GUIscene.newDeck.name);
+                localStorage.setItem("decks", JSON.stringify(decks));
+                
+                GUIscene.newDeck.cards = [];
+                GUIscene.newDeck.name = "";
+                GUIscene.currentPage = 0;
+                newTempCollection = [...collection];
+                filteredCollection = [...newTempCollection];
+                totalPages = Math.ceil(filteredCollection.length / 10);
+                resetCardContainer();
+                updateNextPreviousButtonVisibility(GUIscene.currentPage);
+                addDecksToMiniCardContainer();
+                container.dispose();
+                buildDeckButton.isVisible = true;
+                loadingScreen.dispose();
+            } else {
+                saveDeckButton.isDisabled = false;
+                loadingScreen.dispose();
+            }
+        });
     });
 
     deckCompleteness = new GUI.TextBlock();
-    deckCompleteness.text = GUIscene.newDeck.cards.length + "/ 16";
+    deckCompleteness.text = GUIscene.newDeck.cards.length + "/ " + deckSize;
     deckCompleteness.name = "deckCompleteness";
     deckCompleteness.color = "white";
     deckCompleteness.fontSize = 20;
@@ -484,7 +525,7 @@ function createSaveDeckButton() {
     return container;
 }
 
-function updateNextPreviousButtonVisibility(currentPage, totalPages, nextPageButton, previousPageButton) {
+function updateNextPreviousButtonVisibility(currentPage) {
     previousPageButton.isVisible = true;
     nextPageButton.isVisible = true;
     if(currentPage === 0){
@@ -524,7 +565,11 @@ function createCardContainer(currentPage, newCollection, totalPages) {
         cardGraphic.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
 
         makeAnimatedClickable(cardGraphic, () => {
-            addCardToDeck(cardGraphic.card, cardGraphic);
+            if(!GUIscene.buildMode){
+                displayCard(cardGraphic.card)
+            } else {
+                addCardToDeck(cardGraphic.card, cardGraphic);
+            }
         }, 1.05);
      
 
@@ -570,7 +615,7 @@ function createCardContainer(currentPage, newCollection, totalPages) {
 }
 
 function addCardToDeck(card, cardGraphic) {
-    if (GUIscene.buildMode && GUIscene.newDeck.cards.length < 16) {
+    if (GUIscene.buildMode && GUIscene.newDeck.cards.length < deckSize) {
         GUIscene.newDeck.cards.push(card);
         const miniCard = createMiniCard(card);
         card.miniCard = miniCard;
@@ -585,7 +630,7 @@ function addCardToDeck(card, cardGraphic) {
 }
 
 function updateMiniCardPositions(){
-    deckCompleteness.text = GUIscene.newDeck.cards.length + "/ 16";
+    deckCompleteness.text = GUIscene.newDeck.cards.length + "/ " + deckSize;
     for(let i = 0; i < GUIscene.newDeck.cards.length; i++){
         GUIscene.newDeck.cards[i].miniCard.top = (i * 45)-((GUIscene.newDeck.cards.length-1) * 45/2) + "px";
         GUIscene.newDeck.cards[i].miniCard.left = "7px";
@@ -643,6 +688,7 @@ function createMiniCard(card) {
         filteredCollection.push(card);
         newTempCollection.push(card);
         resetCardContainer();
+        updateNextPreviousButtonVisibility(GUIscene.currentPage);
     });
     container.addControl(removeButton);
 
@@ -668,4 +714,123 @@ function resetCardContainer() {
     cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
     cardContainer.zIndex = 5;
     cardSelectionContainer.addControl(cardContainer);
+}
+
+function displayCard(card) {
+    //Container
+    const container = new GUI.Rectangle();
+    container.thickness = 0;
+    
+    //Black Screen
+    const blackScreen = new GUI.Rectangle();
+    blackScreen.width = "100%";
+    blackScreen.height = "100%";
+    blackScreen.thickness = 0;
+    blackScreen.background = "black";
+    blackScreen.alpha = 0.8;
+    blackScreen.zIndex = 1;
+    container.addControl(blackScreen);
+
+    //Card Graphic
+    const cardGraphic = createCardGraphic(card);
+    cardGraphic.zIndex = 2;
+    cardGraphic.scaleX = .7;
+    cardGraphic.scaleY = .7;
+    cardGraphic.top = "-80px";
+    cardGraphic.left = "-450px";
+    container.addControl(cardGraphic);
+
+    //Card description text
+    const cardDescription = new GUI.TextBlock();
+    cardDescription.text = card.description;
+    cardDescription.color = "white";
+    cardDescription.fontSize = 30;
+    cardDescription.fontFamily = "GemunuLibre-Medium";
+    cardDescription.top = "0px";
+    cardDescription.left = "200px";
+    cardDescription.zIndex = 2;
+    container.addControl(cardDescription);
+  
+    //card effects text
+    if(Object.keys(card.effects).length > 0){
+        let lineHeight = 0;
+        let column = 0;
+        for(let key in card.effects){
+            if(card.effects[key] !== 0){
+                const text = camelCaseToTitleCase(key) + ": " + card.effects[key];
+                const effectsText = new GUI.TextBlock();
+                effectsText.text = text;
+                effectsText.color = "white";
+                effectsText.fontSize = 22;
+                effectsText.top = 40 + lineHeight + "px";
+                effectsText.left = column === 0 ? "200px" : "300px";
+                effectsText.scaleX = 1;
+                effectsText.fontFamily = "GemunuLibre-Medium";
+                effectsText.zIndex = 10;
+                container.addControl(effectsText);
+                lineHeight += 22;
+                if (lineHeight > 80) {
+                    lineHeight = 0;
+                    column++;
+                }
+            }
+        }
+    }
+
+
+    //Animate Card Description fade in
+    cardDescription.alpha = 0;
+    const fadeInAnimationText = new BABYLON.Animation("fadeIn", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const fadeInKeysText = [
+        { frame: 0, value: 0 },
+        { frame: 50, value: 1 },
+    ];
+    fadeInAnimationText.setKeys(fadeInKeysText);
+    cardDescription.animations = [];
+    cardDescription.animations.push(fadeInAnimationText);
+    GUIscene.beginAnimation(cardDescription, 0, 50, false, 1);
+
+    //Animate container fade in
+    container.alpha = 0;
+    const fadeInAnimation = new BABYLON.Animation("fadeIn", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const fadeInKeys = [
+        { frame: 0, value: 0 },
+        { frame: 10, value: 1 },
+    ];
+    fadeInAnimation.setKeys(fadeInKeys);
+    container.animations = [];
+    container.animations.push(fadeInAnimation);
+    GUIscene.beginAnimation(container, 0, 10, false, 1);
+    
+    //Animate Card slide in from left with easing
+    const slideInAnimation = new BABYLON.Animation("slideIn", "left", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const slideInKeys = [
+        { frame: 0, value: -650 },
+        { frame: 10, value: -450 },
+    ];
+    slideInAnimation.setKeys(slideInKeys);
+    const easingFunction = new BABYLON.QuadraticEase();
+    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+    slideInAnimation.setEasingFunction(easingFunction);
+    cardGraphic.animations = [];
+    cardGraphic.animations.push(slideInAnimation);
+    GUIscene.beginAnimation(cardGraphic, 0, 10, false, 1);
+
+    //On mouse click remove the container
+    makeAnimatedClickable(container, () => {
+        //Animate container fade out
+        const fadeOutAnimation = new BABYLON.Animation("fadeOut", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const fadeOutKeys = [
+            { frame: 0, value: 1 },
+            { frame: 10, value: 0 },
+        ];
+        fadeOutAnimation.setKeys(fadeOutKeys);
+        container.animations = [];
+        container.animations.push(fadeOutAnimation);
+        GUIscene.beginAnimation(container, 0, 10, false, 1, () => {
+            container.dispose();
+        });
+    },1);
+
+    GUITexture.addControl(container);
 }
