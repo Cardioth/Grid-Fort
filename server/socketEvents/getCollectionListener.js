@@ -4,8 +4,20 @@ const fetchAllNFTByOwner = require('../solana/fetchNFTsByOwner');
 const fetchDataFromArweave = require('../arweave/fetchData.js');
 const burnNFT = require('../solana/burnNFT');
 
+const rateLimitCache = new Map();
+const rateLimitDuration = 30 * 1000;
+
 function getCollectionListener(socket, username) {
     socket.on('getCollection', async () => {
+        const currentTime = Date.now();
+        const lastRequestTime = rateLimitCache.get(username);
+
+        if (lastRequestTime && currentTime - lastRequestTime < rateLimitDuration) {
+            console.log('Rate limit exceeded for ', username, ' - getCollectionListener');
+            socket.emit('getCollectionError', 'Too many requests. Please try again later.');
+            return;
+        }
+
         try {
             console.log('Fetching collection for ', username, "...");
             let collection = [];

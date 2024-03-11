@@ -10,6 +10,8 @@ import { makeAnimatedClickable } from "./uiElements/makeAnimatedClickable.js";
 import { getImage } from "../graphics/loadImages.js";
 import { createToggleButton } from "./uiElements/createToggleButton.js";
 import { createPanel } from "./uiElements/createPanel.js";
+import { createLoadingIcon } from "./uiElements/createLoadingIcon.js";
+import { socket } from "../network/connect.js";
 
 let filteredCollection = [];
 let newTempCollection = [];
@@ -62,6 +64,47 @@ export function createCollectionInterface(){
     returnButton.left = "15px";
 
     container.addControl(returnButton);
+    
+    const loadingIcon = createLoadingIcon();
+    loadingIcon.zIndex = 10;
+    loadingIcon.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    loadingIcon.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    loadingIcon.top = "10px";
+    loadingIcon.left = "320px";
+    loadingIcon.scaleX = 0.5;
+    loadingIcon.scaleY = 0.5;
+    loadingIcon.isHitTestVisible = false;
+    loadingIcon.isVisible = true;
+    container.addControl(loadingIcon);
+
+    // Refresh Collection Button
+    const refreshButton = createCustomButton("Refresh", () => {
+        loadingIcon.isVisible = true;
+        socket.emit("getCollection");
+        socket.once("getCollectionResponse", () => {
+            // Refresh Collection
+            GUIscene.currentPage = 0;
+            newTempCollection = [...collection];
+            filteredCollection = [...newTempCollection];
+            if(GUIscene.buildMode){
+                GUIscene.newDeck.cards.forEach(card => {
+                    card.miniCardContainer.dispose();
+                });
+                GUIscene.newDeck.cards = [];
+                updateMiniCardPositions();
+            }
+            resetCardContainer();
+            loadingIcon.isVisible = false;
+        });
+
+    });
+
+    refreshButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    refreshButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    refreshButton.top = "-20px";
+    refreshButton.left = "150px";
+
+    container.addControl(refreshButton);
     
     GUITexture.addControl(container);
 }
@@ -128,11 +171,7 @@ function createCardCollectionPanel(container) {
             }
             // Update Card Container
             GUIscene.currentPage = 0;
-            cardContainer.dispose();
-            totalPages = Math.ceil(filteredCollection.length / 10);
-            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-            cardContainer.zIndex = 5;
-            cardSelectionContainer.addControl(cardContainer);
+            resetCardContainer();
             updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
         });
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
@@ -151,10 +190,7 @@ function createCardCollectionPanel(container) {
     makeAnimatedClickable(nextPageButton, () => {
         if (GUIscene.currentPage < totalPages - 1) {
             GUIscene.currentPage++;
-            cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-            cardContainer.zIndex = 5;
-            cardSelectionContainer.addControl(cardContainer);
+            resetCardContainer();
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
     });
@@ -172,10 +208,7 @@ function createCardCollectionPanel(container) {
     makeAnimatedClickable(previousPageButton, () => {
         if (GUIscene.currentPage > 0) {
             GUIscene.currentPage--;
-            cardContainer.dispose();
-            cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-            cardContainer.zIndex = 5;
-            cardSelectionContainer.addControl(cardContainer);
+            resetCardContainer();
         }
         updateNextPreviousButtonVisibility(GUIscene.currentPage, totalPages, nextPageButton, previousPageButton);
     });
@@ -534,8 +567,6 @@ function addCardToDeck(card, cardGraphic) {
         const miniCard = createMiniCard(card);
         card.miniCard = miniCard;
         miniCardContainer.addControl(miniCard);
-
-        deckCompleteness.text = GUIscene.newDeck.cards.length + "/ 16";
         updateMiniCardPositions();
         //remove from collection
         newTempCollection.splice(newTempCollection.indexOf(card), 1);
@@ -546,6 +577,7 @@ function addCardToDeck(card, cardGraphic) {
 }
 
 function updateMiniCardPositions(){
+    deckCompleteness.text = GUIscene.newDeck.cards.length + "/ 16";
     for(let i = 0; i < GUIscene.newDeck.cards.length; i++){
         GUIscene.newDeck.cards[i].miniCard.top = (i * 45)-((GUIscene.newDeck.cards.length-1) * 45/2) + "px";
         GUIscene.newDeck.cards[i].miniCard.left = "7px";
@@ -602,11 +634,7 @@ function createMiniCard(card) {
         updateMiniCardPositions();
         filteredCollection.push(card);
         newTempCollection.push(card);
-        totalPages = Math.ceil(filteredCollection.length / 10);
-        cardContainer.dispose();
-        cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
-        cardContainer.zIndex = 5;
-        cardSelectionContainer.addControl(cardContainer);
+        resetCardContainer();
     });
     container.addControl(removeButton);
 
@@ -619,7 +647,17 @@ function createMiniCard(card) {
     classIcon.zIndex = 4;
     container.addControl(classIcon);
 
+    card.miniCardContainer = container;
+
     container.addControl(backingImage);
 
     return container;
+}
+
+function resetCardContainer() {
+    totalPages = Math.ceil(filteredCollection.length / 10);
+    cardContainer.dispose();
+    cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
+    cardContainer.zIndex = 5;
+    cardSelectionContainer.addControl(cardContainer);
 }

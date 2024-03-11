@@ -4,6 +4,7 @@ const fetchNFTsByOwner = require('../solana/fetchNFTsByOwner');
 const mintCollection = require('../solana/mintCollection');
 const mintNFT = require('../solana/mintNFT');
 const { createCard } = require('../game/createCard');
+const calculateRewards = require('../game/calculateRewards');
 
 function adminListeners(socket, username) {
   socket.on('consoleCommand', async (command) => {
@@ -119,13 +120,19 @@ function adminListeners(socket, username) {
         }
       }
       
-      // /createcard count
-      if(command.startsWith('/createcard')){
+      // /createcardallusers count
+      if(command.startsWith('/createcardallusers')){
         const commandCount = command.split(' ')[1];
-        for(let i = 0; i < commandCount; i++){
-          const randomLevel = Math.floor(Math.random() * 4) + 1;
-          const randomBUID = Math.floor(Math.random() * 4) + 1;
-          createCard('admin', { BUID: randomBUID, level: randomLevel, bStats: ''});
+        try{
+          const users = await redisClient.sMembers('users');
+          for(const user of users){
+            for(let i = 0; i < commandCount; i++){
+              const randomMedals = Math.floor(Math.random() * 40);
+              calculateRewards(randomMedals, user);
+            }
+          }
+        } catch (error) {
+          console.error('Error creating cards for all users:', error);
         }
       }
 

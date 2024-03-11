@@ -83,6 +83,8 @@ export function loadImages(scene) {
         'repairIcon.png',
         'radarIcon.png',
         'scrollBarHandle.png',
+        'loadIcon1.png',
+        'loadIcon2.png',
     ];
     
     paths.forEach(path => {
