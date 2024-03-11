@@ -68,11 +68,15 @@ export function createCustomButton(text, functionToCall) {
     buttonText.fontFamily = "GemunuLibre-Medium";
     container.addControl(buttonText);
 
+    container.isDisabled = false;
+
     container.onPointerClickObservable.add(() => {
+        if(container.isDisabled) return;
         document.body.style.cursor = 'default';
         functionToCall();
     });
     container.onPointerEnterObservable.add(function () {
+        if(container.isDisabled) return;
         document.body.style.cursor = 'pointer';
         buttonHighlight.isVisible = true;
         buttonGraphic.isVisible = false;
@@ -81,6 +85,7 @@ export function createCustomButton(text, functionToCall) {
         
     });
     container.onPointerOutObservable.add(function () {
+        if(container.isDisabled) return;
         document.body.style.cursor = 'default';
         buttonHighlight.isVisible = false;
         buttonGraphic.isVisible = true;

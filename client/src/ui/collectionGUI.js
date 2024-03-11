@@ -74,12 +74,20 @@ export function createCollectionInterface(){
     loadingIcon.scaleX = 0.5;
     loadingIcon.scaleY = 0.5;
     loadingIcon.isHitTestVisible = false;
-    loadingIcon.isVisible = true;
+    loadingIcon.isVisible = false;
     container.addControl(loadingIcon);
 
     // Refresh Collection Button
     const refreshButton = createCustomButton("Refresh", () => {
         loadingIcon.isVisible = true;
+        refreshButton.alpha = 0.5;
+        refreshButton.isDisabled = true;
+        setTimeout(() => {
+            if(refreshButton){
+                refreshButton.alpha = 1;
+                refreshButton.isDisabled = false;
+            }
+        }, 30000);
         socket.emit("getCollection");
         socket.once("getCollectionResponse", () => {
             // Refresh Collection

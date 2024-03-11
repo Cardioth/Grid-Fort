@@ -19,7 +19,8 @@ function getCollectionListener(socket, username) {
         }
 
         try {
-            console.log('Fetching collection for ', username, "...");
+            rateLimitCache.set(username, currentTime);
+            console.log('Fetching collection for ',username, "...");
             let collection = [];
             const uniqueCards = await redisClient.sMembers(`user:${username}:cards`); // returns an array of unique card IDs. Example: ['c1', 'c2', 'c3']
             const cardPromises = uniqueCards.map(card => redisClient.hGetAll(`card:${card}`)); // returns an array of card data promises.
