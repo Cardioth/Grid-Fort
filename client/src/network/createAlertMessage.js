@@ -4,7 +4,7 @@ import { GUITexture } from '../graphics/sceneInitialization.js';
 import { GUIscene } from "../graphics/sceneInitialization.js";
 
 
-export function createAlertMessage(messageText, endOfMessageFunction, displayTime = 30) {
+export function createAlertMessage(messageText, endOfMessageFunction, displayTime = 30, backing = false) {
     // Remove any previous message text blocks
     const previousMessage = GUITexture.getControlByName("messageText");
     if (previousMessage) {

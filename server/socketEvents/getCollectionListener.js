@@ -36,9 +36,11 @@ function getCollectionListener(socket, username) {
             if(user.wallet !== 'unlinked') {
                 const nftCardDataArray = await fetchNFTCards(user);
                 collection = collection.concat(nftCardDataArray, formattedCardDataArray, defaultCards);
+                console.log('Fetched collection for', username);
                 socket.emit('getCollectionResponse', collection);
             } else {
                 collection = collection.concat(formattedCardDataArray, defaultCards);
+                console.log('Fetched collection for', username);
                 socket.emit('getCollectionResponse', collection);
             }
 
