@@ -81,6 +81,9 @@ export function createLoginInterface(){
             eventData.preventDefault();
             passwordInput.focus();
         }
+        if(eventData.key === "Backspace"){
+            eventData.preventDefault();
+        }
     });
     usernameInput.onTextChangedObservable.add(function () {
         usernameInput.text = usernameInput.text.replace(/[^a-zA-Z]/g, '');
@@ -121,6 +124,9 @@ export function createLoginInterface(){
             loginButton.isVisible = false;
             registerText.isVisible = false;
             loginUser(usernameInput.text, passwordInput.text);
+        }
+        if(eventData.key === "Backspace"){
+            eventData.preventDefault();
         }
     });
 

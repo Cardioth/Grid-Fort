@@ -76,6 +76,9 @@ export function createRegisterInterface(){
                 eventData.preventDefault();
                 passwordInput.focus();
             }
+            if(eventData.key === "Backspace"){
+                eventData.preventDefault();
+            }
         });
 
         // Create Password Text
@@ -106,6 +109,9 @@ export function createRegisterInterface(){
             if(eventData.key === "Enter" || eventData.key === "Tab"){
                 eventData.preventDefault();
                 confirmPasswordInput.focus();
+            }
+            if(eventData.key === "Backspace"){
+                eventData.preventDefault();
             }
         });
 
@@ -144,6 +150,9 @@ export function createRegisterInterface(){
                 registerButton.isVisible = false;
                 returnToSignInText.isVisible = false;
                 register(usernameInput.text, passwordInput.text, confirmPasswordInput.text);
+            }
+            if(eventData.key === "Backspace"){
+                eventData.preventDefault();
             }
         });
     
