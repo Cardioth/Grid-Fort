@@ -4,7 +4,7 @@ import * as BABYLON from "@babylonjs/core";
 import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../../../common/data/config.js";
-import { createAlertMessage } from "../network/createAlertMessage.js";
+import { createAlertMessage } from "./uiElements/createAlertMessage.js";
 import { createCustomButton } from "./uiElements/createCustomButton.js";
 import { connectWallet } from "../network/solana/connectWallet.js";
 import { socket } from "../network/connect.js";

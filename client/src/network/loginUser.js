@@ -1,7 +1,7 @@
 import { setCurrentScene } from "../managers/sceneManager";
 import { fadeToBlack } from "../ui/generalGUI";
 import { connectToServer, setFetchingCollection, socket } from "./connect";
-import { createAlertMessage } from "./createAlertMessage";
+import { createAlertMessage } from "../ui/uiElements/createAlertMessage";
 import { unhideLoginButtons } from "../ui/uiElements/loginInterface";
 import { serverUrl } from "./serverURL";
 import { setUniCredits } from "../../../common/data/config";
@@ -23,18 +23,22 @@ export function loginUser(username, password) {
       }
   })
   .then(data => {
-      localStorage.setItem('loggedIn', true); // Store a flag in local storage
-      localStorage.setItem('username', username); // Optionally store the username
-      connectToServer(()=>{
-        fadeToBlack(()=>{
-          setUniCredits(data.uniCredits);
-          setCurrentScene("menu");
-          socket.emit("getCollection");
-          setFetchingCollection(true);
-        });
-      });
+      loginProceed(username, data);
   })
   .catch(error => {
     createAlertMessage("Login failed", unhideLoginButtons);
+  });
+}
+
+export function loginProceed(username, data) {
+  localStorage.setItem('loggedIn', true); // Store a flag in local storage
+  localStorage.setItem('username', username); // Optionally store the username
+  connectToServer(() => {
+    fadeToBlack(() => {
+      setUniCredits(data.uniCredits);
+      setCurrentScene("menu");
+      socket.emit("getCollection");
+      setFetchingCollection(true);
+    });
   });
 }

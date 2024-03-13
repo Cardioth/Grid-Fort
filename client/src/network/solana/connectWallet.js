@@ -1,4 +1,4 @@
-import { createAlertMessage } from "../createAlertMessage";
+import { createAlertMessage } from "../../ui/uiElements/createAlertMessage";
 import { signMessage } from "./signWallet";
 
 export const connectWallet = async () => {

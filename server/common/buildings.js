@@ -62,7 +62,7 @@ const allBuildings = {
   miniArty: {
     name: "Artillery",
     class: "Weapon",
-    description: "Basic Artillery Weapon",
+    description: "A compact artillery piece that delivers a punch with its kinetic rounds.",
     cost: 1,
     width: 3,
     height: 2,
@@ -81,7 +81,7 @@ const allBuildings = {
   basicLaser: {
     name: "Basic Laser",
     class: "Weapon",
-    description: "Basic Laser Weapon",
+    description: "A simple yet effective laser weapon that draws power from energy reserves.",
     cost: 1,
     width: 2,
     height: 2,
@@ -100,7 +100,7 @@ const allBuildings = {
   damageBooster: {
     name: "Damage Booster",
     class: "Booster",
-    description: "Basic Damage Booster",
+    description: "Amplifies the firepower of nearby weapons, both kinetic and energy-based.",
     cost: 2,
     width: 3,
     height: 3,
@@ -116,7 +116,7 @@ const allBuildings = {
   powerStation: {
     name: "Power Station",
     class: "Booster",
-    description: "Let your laser weapons shoot for longer!",
+    description: "Generates additional power, allowing laser weapons to fire for extended periods.",
     cost: 1,
     width: 4,
     height: 4,
@@ -137,6 +137,7 @@ const allBuildings = {
   ammoStation: {
     name: "Ammo Station",
     class: "Booster",
+    description: "Stores additional ammunition, allowing artillery and other kinetic weapons to fire for longer without running dry.",
     cost: 3,
     width: 4,
     height: 4,
@@ -157,6 +158,7 @@ const allBuildings = {
   protector: {
     name: "Protector",
     class: "Booster",
+    description: "Enhances the durability of the fort with improved armor and energy resistance.",
     cost: 1,
     width: 2,
     height: 3,
@@ -176,6 +178,7 @@ const allBuildings = {
   energyResistance: {
     name: "Energy Shield",
     class: "Shield",
+    description: "Projects an energy shield that absorbs incoming energy-based attacks, providing extra protection to the fort.",
     cost: 2,
     width: 6,
     height: 3,
@@ -190,6 +193,7 @@ const allBuildings = {
   radar: {
     name: "Radar",
     class: "Radar",
+    description: "Increases the fort's visibility range, allowing it to detect and target enemies from a greater distance.",
     cost: 2,
     width: 3,
     height: 3,
@@ -208,6 +212,7 @@ const allBuildings = {
   powerRing: {
     name: "Power Ring",
     class: "Booster",
+    description: "A powerful generator that significantly boosts the energy firepower and power storage of anything within.",
     cost: 9,
     width: 6,
     height: 6,
@@ -223,6 +228,7 @@ const allBuildings = {
   core: {
     name: "Core",
     class: "Core",
+    description: "This is your core.",
     cost: 9,
     width: 3,
     height: 3,
@@ -243,6 +249,7 @@ const allBuildings = {
   matador: {
     name: "Matador",
     class: "Booster",
+    description: "A versatile defensive structure that enhances armor, energy resistance, and radar range of the fort.",
     cost: 1,
     width: 2,
     height: 3,
@@ -264,6 +271,7 @@ const allBuildings = {
   salvador: {
     name: "Salvador",
     class: "Weapon",
+    description: "A heavy artillery piece with devastating kinetic firepower, a large ammo capacity, and an impressive blast radius.",
     cost: 5,
     width: 4,
     height: 3,

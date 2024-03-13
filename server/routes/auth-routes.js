@@ -4,9 +4,22 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const redisClient = require('../db/redis');
 const gameConfig = require('../data/config');
+const rateLimit = require('express-rate-limit');
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login attempts per window
+  message: 'Too many login attempts. Please try again later.',
+});
+
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 registration attempts per window
+  message: 'Too many registration attempts. Please try again later.',
+});
 
 // Register route
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimiter, async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const username = req.body.username.toLowerCase();
@@ -41,7 +54,23 @@ router.post('/register', async (req, res) => {
     // Add user to the set of all users
     await redisClient.sAdd('users', username);
 
-    res.status(201).json({ message: "User registered successfully" });
+    // Log the user in
+    req.login(newUser, (err) => {
+      if (err) {
+        console.error("Login error:", err);
+        return res.status(500).json({ message: "Failed to log in user", error: err.message });
+      }
+
+      // Save the session
+      req.session.save((err) => {
+        if (err) {
+          console.error("Session save error:", err);
+          return res.status(500).json({ message: "Failed to save session", error: err.message });
+        }
+
+        res.status(201).json({ message: "User registered and logged in successfully", uniCredits: newUser.uniCredits });
+      });
+    });
   } catch (error) {
     console.error("Registration error:", error);
     res.status(400).json({ message: "Failed to register user", error: error.message });
@@ -50,7 +79,7 @@ router.post('/register', async (req, res) => {
 
 
 // Login route
-router.post('/login', (req, res, next) => {
+router.post('/login', loginLimiter, (req, res, next) => {
   if (req.body.username) {
     req.body.username = req.body.username.toLowerCase();
   }

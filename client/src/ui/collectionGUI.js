@@ -12,11 +12,12 @@ import { createToggleButton } from "./uiElements/createToggleButton.js";
 import { createPanel } from "./uiElements/createPanel.js";
 import { createLoadingIcon } from "./uiElements/createLoadingIcon.js";
 import { fetchingCollection, setFetchingCollection, socket } from "../network/connect.js";
-import { createAlertMessage } from "../network/createAlertMessage.js";
+import { createAlertMessage } from "./uiElements/createAlertMessage.js";
 import { deckSize } from "../../../common/data/config.js";
 import { createLoadingIconScreen } from "./uiElements/createLoadingIconScreen.js";
 import { createInputDialogue } from "./createInputDialogue.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
+import { createBuildingShapeGraphic } from "./uiElements/createBuildingShapeGraphic.js";
 
 let filteredCollection = [];
 let newTempCollection = [];
@@ -355,10 +356,10 @@ function createMiniDeck(deck){
     miniDeckText.zIndex = 3;
 
     // Create Remove Button
-    const removeButton = new GUI.Image("removeButton", getImage("cancelButton.png"));
+    const removeButton = new GUI.Image("removeButton", getImage("binIcon.png"));
     removeButton.width = "14px";
-    removeButton.height = "14px";
-    removeButton.left = "120px";
+    removeButton.height = "16px";
+    removeButton.left = "60px";
     removeButton.top = "-2px";
     removeButton.zIndex = 4;
     makeAnimatedClickable(removeButton, () => {
@@ -367,7 +368,7 @@ function createMiniDeck(deck){
         loadingScreen.zIndex = 10;
         GUITexture.addControl(loadingScreen);
         socket.once("deleteDeckResponse", (response) => {
-            createAlertMessage(response);
+            createAlertMessage(response, null, 30, true);
             loadingScreen.dispose();
             if(response === "Deck deleted"){
                 const decks = JSON.parse(localStorage.getItem("decks"));
@@ -478,7 +479,7 @@ function createSaveDeckButton() {
         const deckCardList = GUIscene.newDeck.cards.map(card => card.UID);
         socket.emit("saveDeck", {deck:deckCardList, name:GUIscene.newDeck.name});
         socket.once("saveDeckResponse", (response) => {
-            createAlertMessage(response);
+            createAlertMessage(response, null, 30, true);
             if(response === "Deck saved successfully"){
                 GUIscene.buildMode = false;
                 GUIscene.newDeck.cards.forEach(card => {
@@ -741,6 +742,9 @@ function displayCard(card) {
     cardGraphic.left = "-450px";
     container.addControl(cardGraphic);
 
+    const cardTextContainer = new GUI.Rectangle();
+    cardTextContainer.thickness = 0;
+
     //Card description text
     const cardDescription = new GUI.TextBlock();
     cardDescription.text = card.description;
@@ -750,8 +754,9 @@ function displayCard(card) {
     cardDescription.top = "0px";
     cardDescription.left = "200px";
     cardDescription.zIndex = 2;
-    container.addControl(cardDescription);
-  
+    cardTextContainer.addControl(cardDescription);
+
+
     //card effects text
     if(Object.keys(card.effects).length > 0){
         let lineHeight = 0;
@@ -768,7 +773,7 @@ function displayCard(card) {
                 effectsText.scaleX = 1;
                 effectsText.fontFamily = "GemunuLibre-Medium";
                 effectsText.zIndex = 10;
-                container.addControl(effectsText);
+                cardTextContainer.addControl(effectsText);
                 lineHeight += 22;
                 if (lineHeight > 80) {
                     lineHeight = 0;
@@ -778,18 +783,24 @@ function displayCard(card) {
         }
     }
 
+    cardTextContainer.zIndex = 20;
+
+    //Create building shape graphic
+    //const buildingShape = createBuildingShapeGraphic(card);
 
     //Animate Card Description fade in
-    cardDescription.alpha = 0;
+    cardTextContainer.alpha = 0;
     const fadeInAnimationText = new BABYLON.Animation("fadeIn", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     const fadeInKeysText = [
         { frame: 0, value: 0 },
         { frame: 50, value: 1 },
     ];
     fadeInAnimationText.setKeys(fadeInKeysText);
-    cardDescription.animations = [];
-    cardDescription.animations.push(fadeInAnimationText);
-    GUIscene.beginAnimation(cardDescription, 0, 50, false, 1);
+    cardTextContainer.animations = [];
+    cardTextContainer.animations.push(fadeInAnimationText);
+    GUIscene.beginAnimation(cardTextContainer, 0, 50, false, 1);
+
+    container.addControl(cardTextContainer);
 
     //Animate container fade in
     container.alpha = 0;

@@ -2,7 +2,6 @@ import * as GUI from "@babylonjs/gui";
 import * as BABYLON from "@babylonjs/core";
 import { GUIscene } from '../../graphics/sceneInitialization.js';
 import { getImage } from "../../graphics/loadImages.js";
-import { load } from "webfontloader";
 
 export function createLoadingIconScreen(message) {
     const container = new GUI.Rectangle();

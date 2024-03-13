@@ -86,6 +86,7 @@ export function loadImages(scene) {
         'loadIcon1.png',
         'loadIcon2.png',
         'miniDeckBacking.png',
+        'binIcon.png',
     ];
     
     paths.forEach(path => {

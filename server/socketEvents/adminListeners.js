@@ -181,6 +181,27 @@ function adminListeners(socket, username) {
         }
       }
 
+      // /deleteuser username
+      if (command.startsWith('/deleteuser')) {
+        const commandUser = command.split(' ')[1];
+        try {
+          await redisClient.del(`user:${commandUser}`);
+          await redisClient.sRem('users', commandUser);
+          await redisClient.del(`decks:${commandUser}`);
+
+          // Delete user cards
+          const userCardsKey = `user:${commandUser}:cards`;
+          const userCards = await redisClient.sMembers(userCardsKey);
+          if (userCards.length > 0) {
+            const cardKeys = userCards.map(card => `card:${card}`);
+            await redisClient.unlink(cardKeys);
+            await redisClient.del(userCardsKey);
+          }
+          console.log('User deleted:', commandUser);
+        } catch (error) {
+          console.error('Error deleting user:', error);
+        }
+      }
     } else {
       //Database commands
       try {

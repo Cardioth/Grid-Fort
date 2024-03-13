@@ -1,10 +1,12 @@
 import { serverUrl } from "./serverURL";
 import { unhideRegisterButtons, returnToLoginFromRegister } from "../ui/uiElements/registerInterface";
-import { createAlertMessage } from "./createAlertMessage";
+import { createAlertMessage } from "../ui/uiElements/createAlertMessage";
+import { loginProceed } from "./loginUser";
 
 export function registerUser(username, password) {
     fetch(serverUrl+"/auth/register", {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -27,8 +29,8 @@ export function registerUser(username, password) {
         }
     })
     .then(data => {
-      if (data.message && data.message === "User registered successfully") {
-        createAlertMessage("Registration Successful", returnToLoginFromRegister);
+      if (data.message && data.message === "User registered and logged in successfully") {
+        createAlertMessage("Registration Successful", loginProceed(username, data));
       }
     })
     .catch(error => {

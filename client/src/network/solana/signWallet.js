@@ -1,6 +1,6 @@
 import { createWalletAddressAndUnlinkButton, hideLinkWalletButton } from "../../ui/profileGUI";
 import { socket } from "../connect";
-import { createAlertMessage } from "../createAlertMessage";
+import { createAlertMessage } from "../../ui/uiElements/createAlertMessage";
 
 export const signMessage = async () => {
     try {
@@ -19,14 +19,14 @@ export const signMessage = async () => {
         socket.on('signatureVerified', (response) => {
             const verified = response.verified;
             const message = response.message;
-            createAlertMessage(message);
+            createAlertMessage(message, null, 30, true);
             if (verified) {
                 createWalletAddressAndUnlinkButton();
                 hideLinkWalletButton();
             }
         });
       } else {
-        createAlertMessage('Solana wallet not found');
+        createAlertMessage('Solana wallet not found', null, 30, true);
       }
     } catch (error) {
       console.error('Error signing message:', error);
