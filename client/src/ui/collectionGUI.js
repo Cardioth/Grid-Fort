@@ -376,8 +376,7 @@ function createMiniDeck(deck){
                 localStorage.setItem("decks", JSON.stringify(decks));
                 container.dispose();
                 miniCardContainer.miniDecks.splice(miniCardContainer.miniDecks.indexOf(container), 1);
-                miniCardContainer.height = (miniCardContainer.miniDecks.length * 50) + "px";
-                miniCardContainer.top = (miniCardContainer.miniDecks.length * 50) / 2 + "px";
+                updateMiniDeckPositions();
             }
         });
     });
@@ -391,17 +390,24 @@ function createMiniDeck(deck){
 
 function enterBuildMode(input) {
     if (input.length > 0 && input !== "Deck Name") {
-        clearMiniCardContainer();
-        buildDeckButton.isVisible = false;
-        GUIscene.buildMode = true;
-        GUIscene.newDeck = {
-            name: input,
-            cards: []
-        };
-        const saveDeckButton = createSaveDeckButton();
-        saveDeckButton.top = "231px";
-        saveDeckButton.left = "-9px";
-        deckBuilderContainer.addControl(saveDeckButton);
+        socket.emit("createDeck", input);
+        socket.once("createDeckResponse", (response) => {
+            if(response === "Deck created"){
+                clearMiniCardContainer();
+                buildDeckButton.isVisible = false;
+                GUIscene.buildMode = true;
+                GUIscene.newDeck = {
+                    name: input,
+                    cards: []
+                };
+                const saveDeckButton = createSaveDeckButton();
+                saveDeckButton.top = "231px";
+                saveDeckButton.left = "-9px";
+                deckBuilderContainer.addControl(saveDeckButton);
+            } else {
+                createAlertMessage(response, null, 30, true);
+            }
+        });
     }
 }
 
@@ -641,6 +647,14 @@ function updateMiniCardPositions(){
     }
 }
 
+function updateMiniDeckPositions(){
+    for(let i = 0; i < miniCardContainer.miniDecks.length; i++){
+        miniCardContainer.miniDecks[i].top = (i * 50)-((miniCardContainer.miniDecks.length-1) * 50/2) + "px";
+        miniCardContainer.height = (miniCardContainer.miniDecks.length * 50) + "px";
+        miniCardContainer.top = (miniCardContainer.miniDecks.length * 50) / 2 + "px";
+    }
+}
+
 function createMiniCard(card) {
     const container = new GUI.Rectangle();
     container.thickness = 0;
@@ -747,6 +761,8 @@ function displayCard(card) {
 
     //Card description text
     const cardDescription = new GUI.TextBlock();
+    cardDescription.textWrapping = true;
+    cardDescription.width = "600px";
     cardDescription.text = card.description;
     cardDescription.color = "white";
     cardDescription.fontSize = 30;
@@ -768,13 +784,13 @@ function displayCard(card) {
                 effectsText.text = text;
                 effectsText.color = "white";
                 effectsText.fontSize = 22;
-                effectsText.top = 40 + lineHeight + "px";
-                effectsText.left = column === 0 ? "200px" : "300px";
+                effectsText.top = 80 + lineHeight + "px";
+                effectsText.left = column === 0 ? "100px" : "200px";
                 effectsText.scaleX = 1;
                 effectsText.fontFamily = "GemunuLibre-Medium";
                 effectsText.zIndex = 10;
                 cardTextContainer.addControl(effectsText);
-                lineHeight += 22;
+                lineHeight += 35;
                 if (lineHeight > 80) {
                     lineHeight = 0;
                     column++;

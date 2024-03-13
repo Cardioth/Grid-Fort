@@ -8,6 +8,7 @@ const { endGameListener } = require('./endGameListener');
 const { saveDeckListener } = require('./saveDeckListener');
 const { getDecksListener } = require('./getDecksListener');
 const { deleteDeckListener } = require('./deleteDeckListener');
+const { createDeckListener } = require('./createDeckListener');
 
 const setupSocketEvents = (socket, username) => {
     // Define the event listeners for this socket
@@ -31,6 +32,7 @@ const setupSocketEvents = (socket, username) => {
     saveDeckListener(socket, username);
     getDecksListener(socket, username);
     deleteDeckListener(socket, username);
+    createDeckListener(socket, username);
   };
   
   module.exports = { setupSocketEvents };

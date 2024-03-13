@@ -37,7 +37,7 @@ export function createInputDialogue(functionToCall, defaultText = "") {
     input.text = defaultText;
     input.fontFamily = "GemunuLibre-Medium";
     input.onTextChangedObservable.add(function () {
-        input.text = input.text.replace(/[^a-zA-Z]/g, '');
+        input.text = input.text.replace(/[^a-zA-Z ]/g, '');
     });
     input.onFocusObservable.add(function () {
         input.text = "";

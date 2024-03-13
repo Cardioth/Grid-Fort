@@ -17,7 +17,7 @@ function saveDeckListener(socket, username) {
                 socket.emit('saveDeckResponse', 'Deck name is too short');
                 return;
             }
-            if (!/^[a-zA-Z]+$/.test(deckName)) {
+            if (!/^[a-zA-Z ]+$/.test(deckName)) {
                 socket.emit('saveDeckResponse', 'Deck name can only contain letters');
                 return;
             }
