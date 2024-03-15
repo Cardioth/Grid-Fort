@@ -1,5 +1,5 @@
 const gameConfig = {
-    startGameCost: 50,
+    startGameCost: 100,
     registrationCredits: 100,
 }
 

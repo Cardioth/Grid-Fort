@@ -5,6 +5,7 @@ import { createAlertMessage } from "../ui/uiElements/createAlertMessage";
 import { unhideLoginButtons } from "../ui/uiElements/loginInterface";
 import { serverUrl } from "./serverURL";
 import { setUniCredits } from "../../../common/data/config";
+import { goToCollection } from "../ui/menuGUI";
 
 export function loginUser(username, password) {
   fetch(serverUrl+"/auth/login", {
@@ -36,9 +37,9 @@ export function loginProceed(username, data) {
   connectToServer(() => {
     fadeToBlack(() => {
       setUniCredits(data.uniCredits);
-      setCurrentScene("menu");
-      socket.emit("getCollection");
       setFetchingCollection(true);
+      socket.emit("getCollection");
+      goToCollection();
     });
   });
 }

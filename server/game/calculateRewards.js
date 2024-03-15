@@ -1,7 +1,7 @@
 const { createCard, convertLevelToBonusStats } = require("./createCard");
 const redisClient = require('../db/redis');
 
-async function calculateRewards(medals, username){
+async function calculateRewards(medals, username, cardsOnly = false){
     // Define the parameters
     const maxMedals = 40;
     const maxLootBoxes = 6;
@@ -15,10 +15,13 @@ async function calculateRewards(medals, username){
     let lootLevel = Math.floor(level)+1;
 
     const allRewards = [];
+    const createCardPromises = [];
     
     for(let i = 0; i < lootBoxesCount; i++){
         const rewardType = Math.floor(Math.random() * 2) === 0 ? "cards" : "credits";
-
+        if(cardsOnly){
+            rewardType = "cards";
+        }
 
         if(rewardType === "credits"){
             const baseReward = (lootLevel*25);
@@ -42,12 +45,16 @@ async function calculateRewards(medals, username){
                 card: cardDetails,
             }
             allRewards.push(reward);
-
-            createCard(username, cardDetails);
+            createCardPromises.push(createCard(username, cardDetails));
         }
     }
 
-    return allRewards;
+    const createCardsComplete = Promise.all(createCardPromises);
+
+    return {
+        rewards: allRewards,
+        createCardsComplete,
+      };
 }
 
 module.exports = calculateRewards;

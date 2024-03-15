@@ -20,38 +20,25 @@ export function setCurrentScene(setScene) {
         initAuthenticationScene();
     }
 
-    if(setScene === "authentication" && currentScene === "menu"){
+    if(setScene === "authentication" && currentScene === "collection"){
         initGUIScene();
         createLoginInterface();
     }
 
-    if(setScene === "menu" && (currentScene === "authentication" || currentScene === "profile")){
-        initGUIScene();
-        initMenuScene();
-    }
-
-    if(setScene === "collection" && currentScene === "menu"){
+    if(setScene === "collection"){
+        if(currentScene === "build" || currentScene === "endBattle" || currentScene === "endGame"){
+            resetGame();
+        }
         initGUIScene();
         createCollectionInterface();
     }
 
-    if(setScene === "profile" && currentScene === "menu"){
+    if(setScene === "profile"){
         initGUIScene();
         createProfileInterface();
     }
 
-    if(setScene === "menu" && currentScene === "collection"){
-        initGUIScene();
-        initMenuScene();
-    }
-
-    if(setScene === "menu" && (currentScene === "build" || currentScene === "endBattle" || currentScene === "endGame")){
-        resetGame();
-        initGUIScene();
-        initMenuScene();
-    }
-
-    if(setScene === "build" && currentScene === "menu"){
+    if(setScene === "build"){
         initGUIScene();
         initGameScene();
         //createBloomAdjuster(bloomPipeline);

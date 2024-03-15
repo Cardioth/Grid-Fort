@@ -34,7 +34,11 @@ export function connectToServer(functionOnPrivs){
   });
 
   socket.on("getCollectionResponse", (response) => {
-      fetchingCollection = false
+    fetchingCollection = false
+    if(response === 'Too many requests. Please try again later.') {
+      console.log('Rate limit exceeded - getCollectionResponse');
+      return;
+    }
       setCollection(response, true);
       localStorage.setItem('collectionDate', Date.now());
   });

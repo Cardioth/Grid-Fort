@@ -9,6 +9,7 @@ import { fadeToBlack } from "./generalGUI.js";
 import { createLootBoxes } from "../graphics/createLootBoxes.js";
 import { createMedalExplosionParticleSystem } from "../graphics/particleEffects/createMedalExplosion.js";
 import { createCustomButton } from "./uiElements/createCustomButton.js";
+import { goToCollection } from "./menuGUI.js";
 
 export function createEndGameScreen(){
     //container
@@ -38,9 +39,7 @@ export function createEndGameScreen(){
     //Continue Button
     const continueButton = createCustomButton("Continue", () => {
         if(currentScene === "endGame"){
-            fadeToBlack(()=> {
-                setCurrentScene("menu");
-            });
+            goToCollection();
         }
     });
     continueButton.isVisible = false;

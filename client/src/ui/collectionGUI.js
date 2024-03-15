@@ -11,13 +11,17 @@ import { getImage } from "../graphics/loadImages.js";
 import { createToggleButton } from "./uiElements/createToggleButton.js";
 import { createPanel } from "./uiElements/createPanel.js";
 import { createLoadingIcon } from "./uiElements/createLoadingIcon.js";
-import { fetchingCollection, setFetchingCollection, socket } from "../network/connect.js";
+import { setFetchingCollection, socket, privs } from "../network/connect.js";
 import { createAlertMessage } from "./uiElements/createAlertMessage.js";
-import { deckSize } from "../../../common/data/config.js";
+import { deckSize, uniCredits } from "../../../common/data/config.js";
 import { createLoadingIconScreen } from "./uiElements/createLoadingIconScreen.js";
 import { createInputDialogue } from "./createInputDialogue.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { createBuildingShapeGraphic } from "./uiElements/createBuildingShapeGraphic.js";
+import { createStartGameDialogue } from "./uiElements/createStartGameDialogue.js";
+import { signOutUser } from "../network/signOutUser.js";
+import { createAdminPanel } from "./uiElements/createAdminPanel.js";
+import { setProfileData } from "./menuGUI.js";
 
 let filteredCollection = [];
 let newTempCollection = [];
@@ -45,45 +49,143 @@ export function createCollectionInterface(){
     blackScreen.alpha = 0.5;
     container.addControl(blackScreen);
 
-    // Create Collection Text
+    // Create Title Text
     const titleText = new GUI.TextBlock();
-    titleText.text = "Collection";
+    titleText.text = "Grid Fort";
+    titleText.height = "80px";
+    titleText.width = "180px";
     titleText.color = "white";
     titleText.fontSize = 50;
     titleText.fontFamily = "GemunuLibre-Bold";
-    titleText.top = "-45%";
+    titleText.top = "50px";
+    titleText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
     titleText.left = 0;
+    titleText.zIndex = 30;
     container.addControl(titleText);
+
+    // Create Collection Text
+    const collectionText = new GUI.TextBlock();
+    collectionText.text = "Collection";
+    collectionText.color = "white";
+    collectionText.width = "150px";
+    collectionText.height = "50px";
+    collectionText.fontSize = 30;
+    collectionText.fontFamily = "GemunuLibre-Bold";
+    collectionText.top = "-300px";
+    collectionText.left = "-550px";
+    collectionText.zIndex = 30;
+    container.addControl(collectionText);
+
+    // Create Deck Text
+    const deckText = new GUI.TextBlock();
+    deckText.text = "Deck";
+    deckText.color = "white";
+    deckText.width = "150px";
+    deckText.height = "50px";
+    deckText.fontSize = 30;
+    deckText.fontFamily = "GemunuLibre-Bold";
+    deckText.top = "-300px";
+    deckText.left = "465px";
+    deckText.zIndex = 30;
+    container.addControl(deckText);
 
     // Create Card Collection Panel
     createCardCollectionPanel(container);
 
     // Create Deck Builder Interface
     createDeckBuilderInterface(container);
-
-    // Return to Menu Button
-    const returnButton = createReturnButton();
-    container.addControl(returnButton);
-    
+  
     // Refresh Collection Button
     const refreshButton = createRefreshButton(container);
     container.addControl(refreshButton);
-    
-    GUITexture.addControl(container);
-}
 
-function createReturnButton() {
-    const returnButton = createCustomButton("Return", () => {
-        fadeToBlack(() => {
-            setCurrentScene("menu");
+    // Create Play Button
+    const playButton = createCustomButton("Play", () => {
+        createStartGameDialogue();
+    });
+    playButton.top = "340px";
+    playButton.left = "500px";
+    playButton.name = "playButton";
+    container.addControl(playButton);
+
+    // Create Profile Button
+    const profileButton = createCustomButton("Profile", () => {
+        document.body.style.cursor='pointer'
+        socket.emit("getProfile");
+        socket.once("getProfileResponse", (response) => {
+            setProfileData(response);
+            fadeToBlack(() => {
+                setCurrentScene("profile");
+            });
         });
     });
+    profileButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    profileButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    profileButton.top = "-20px";
+    profileButton.left = "-350px";
+    profileButton.name = "profileButton";
+    container.addControl(profileButton);
 
-    returnButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    returnButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-    returnButton.top = "-20px";
-    returnButton.left = "15px";
-    return returnButton;
+    // Sign Out Button
+    const signOutButton = createCustomButton("Sign Out", () => {
+        signOutUser();
+    });
+    signOutButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    signOutButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    signOutButton.top = "-20px";
+    signOutButton.left = "-10px";
+    signOutButton.name = "signOutButton";
+    container.addControl(signOutButton);
+
+    // Create Uni Credits Text
+    const uniCreditsText = new GUI.TextBlock();
+    uniCreditsText.width = "130px";
+    uniCreditsText.height = "40px";
+    uniCreditsText.text = uniCredits + "uC";
+    uniCreditsText.color = "white";
+    uniCreditsText.fontSize = 25;
+    uniCreditsText.fontFamily = "GemunuLibre-Medium";
+    uniCreditsText.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    uniCreditsText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    uniCreditsText.top = "-20px";
+    uniCreditsText.left = "-150px";
+    uniCreditsText.name = "uniCreditsText";
+    container.addControl(uniCreditsText);
+
+    // Create Credits Icon
+    const creditsIcon = new GUI.Image("creditsIcon", getImage("credIcon.png"));
+    creditsIcon.width = "103px";
+    creditsIcon.height = "69px";
+    creditsIcon.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    creditsIcon.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    creditsIcon.top = "-5px";
+    creditsIcon.left = "-240px";
+    creditsIcon.scaleX = 0.6;
+    creditsIcon.scaleY = 0.6;
+    container.addControl(creditsIcon);
+
+    // Create Username Text
+    const usernameText = new GUI.TextBlock();
+    const profile = JSON.parse(localStorage.getItem("profile"));
+    usernameText.width = "160px";
+    usernameText.height = "40px";
+    usernameText.text = profile.username.charAt(0).toUpperCase() + profile.username.slice(1);
+    usernameText.color = "white";
+    usernameText.fontSize = 25;
+    usernameText.fontFamily = "GemunuLibre-Medium";
+    usernameText.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    usernameText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    usernameText.top = "-20px";
+    usernameText.left = "-505px";
+    usernameText.zIndex = 30;
+    container.addControl(usernameText);
+    
+    if(privs === "admin"){
+        const adminPanel = createAdminPanel();
+        adminPanel.zIndex = 100;
+    }
+
+    GUITexture.addControl(container);
 }
 
 function createRefreshButton(container) {
@@ -92,7 +194,7 @@ function createRefreshButton(container) {
     loadingIcon.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     loadingIcon.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     loadingIcon.top = "10px";
-    loadingIcon.left = "320px";
+    loadingIcon.left = "150px";
     loadingIcon.scaleX = 0.5;
     loadingIcon.scaleY = 0.5;
     loadingIcon.isHitTestVisible = false;
@@ -135,7 +237,7 @@ function createRefreshButton(container) {
     refreshButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     refreshButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     refreshButton.top = "-20px";
-    refreshButton.left = "150px";
+    refreshButton.left = "10px";
     return refreshButton;
 }
 
@@ -356,32 +458,35 @@ function createMiniDeck(deck){
     miniDeckText.zIndex = 3;
 
     // Create Remove Button
-    const removeButton = new GUI.Image("removeButton", getImage("binIcon.png"));
-    removeButton.width = "14px";
-    removeButton.height = "16px";
-    removeButton.left = "60px";
-    removeButton.top = "-2px";
-    removeButton.zIndex = 4;
-    makeAnimatedClickable(removeButton, () => {
-        socket.emit("deleteDeck", deck);
-        const loadingScreen = createLoadingIconScreen("Deleting Deck...");
-        loadingScreen.zIndex = 10;
-        GUITexture.addControl(loadingScreen);
-        socket.once("deleteDeckResponse", (response) => {
-            createAlertMessage(response, null, 30, true);
-            loadingScreen.dispose();
-            if(response === "Deck deleted"){
-                const decks = JSON.parse(localStorage.getItem("decks"));
-                decks.splice(decks.indexOf(deck), 1);
-                localStorage.setItem("decks", JSON.stringify(decks));
-                container.dispose();
-                miniCardContainer.miniDecks.splice(miniCardContainer.miniDecks.indexOf(container), 1);
-                updateMiniDeckPositions();
-            }
+    if(deck !== "Default Deck"){
+        const removeButton = new GUI.Image("removeButton", getImage("binIcon.png"));
+        removeButton.width = "14px";
+        removeButton.height = "16px";
+        removeButton.left = "60px";
+        removeButton.top = "-2px";
+        removeButton.zIndex = 4;
+        makeAnimatedClickable(removeButton, () => {
+            socket.emit("deleteDeck", deck);
+            const loadingScreen = createLoadingIconScreen("Deleting Deck...");
+            loadingScreen.zIndex = 10;
+            GUITexture.addControl(loadingScreen);
+            socket.once("deleteDeckResponse", (response) => {
+                createAlertMessage(response, null, 30, true);
+                loadingScreen.dispose();
+                if(response === "Deck deleted"){
+                    const decks = JSON.parse(localStorage.getItem("decks"));
+                    decks.splice(decks.indexOf(deck), 1);
+                    localStorage.setItem("decks", JSON.stringify(decks));
+                    container.dispose();
+                    miniCardContainer.miniDecks.splice(miniCardContainer.miniDecks.indexOf(container), 1);
+                    updateMiniDeckPositions();
+                }
+            });
         });
-    });
+        container.addControl(removeButton);
+    }
 
-    container.addControl(removeButton);
+
     container.addControl(miniDeckBacking);
     container.addControl(miniDeckText);
 

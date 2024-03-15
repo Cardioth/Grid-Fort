@@ -5,6 +5,7 @@ import { fadeToBlack } from "../ui/generalGUI";
 import { connectToServer } from "./connect";
 import { createLoginInterface } from "../ui/uiElements/loginInterface";
 import { serverUrl } from "./serverURL";
+import { goToCollection } from "../ui/menuGUI";
 
 export function checkAuth(){
     fetch(serverUrl + "/auth/checkAuth", {
@@ -18,7 +19,7 @@ export function checkAuth(){
         connectToServer(()=>{
           fadeToBlack(()=>{
             setUniCredits(data.uniCredits);
-            setCurrentScene("menu");
+            goToCollection();
           });
         });
       } else {

@@ -9,6 +9,7 @@ import { createCustomButton } from "./uiElements/createCustomButton.js";
 import { connectWallet } from "../network/solana/connectWallet.js";
 import { socket } from "../network/connect.js";
 import { getImage } from "../graphics/loadImages.js";
+import { goToCollection } from "./menuGUI.js";
 
 export function createProfileInterface(){
     const profile = JSON.parse(localStorage.getItem("profile"));
@@ -77,7 +78,7 @@ export function createProfileInterface(){
     // Return to Menu Button
     const returnButton = createCustomButton("Return", () => {
         fadeToBlack(() => {
-            setCurrentScene("menu");
+            goToCollection();
         });
     });
 

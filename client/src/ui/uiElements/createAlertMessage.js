@@ -21,8 +21,8 @@ export function createAlertMessage(messageText, endOfMessageFunction = null, dis
 
     if(backing){
         const backingBox = new GUI.Rectangle();
-        backingBox.width = "650px";
-        backingBox.height = "90px";
+        backingBox.width = "300px";
+        backingBox.height = "50px";
         backingBox.thickness = 0;
         backingBox.background = "black";
         backingBox.alpha = 0.9;
@@ -31,7 +31,7 @@ export function createAlertMessage(messageText, endOfMessageFunction = null, dis
     }
 
     const message = new GUI.TextBlock();
-    message.width = "600px";
+    message.width = "300px";
     message.height = "40px";
     message.text = messageText;
     message.color = "white";
@@ -62,7 +62,5 @@ export function createAlertMessage(messageText, endOfMessageFunction = null, dis
             endOfMessageFunction();
         }
     });
-
-    console.log(container);
     GUITexture.addControl(container);
 }

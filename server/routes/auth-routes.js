@@ -54,6 +54,8 @@ router.post('/register', registerLimiter, async (req, res) => {
     // Add user to the set of all users
     await redisClient.sAdd('users', username);
 
+    await redisClient.hSet(`decks:${username}`, "Default Deck", JSON.stringify(["d5","d4","d3","d2","d1"]));
+
     // Log the user in
     req.login(newUser, (err) => {
       if (err) {

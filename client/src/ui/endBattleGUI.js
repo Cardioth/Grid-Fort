@@ -130,8 +130,6 @@ export function createEndBattleScreen(victory){
                 createEndGameScreen();
                 socket.emit("endGame");                
                 socket.once("endGameResponse", (rewards) => {
-                    socket.emit("getCollection");
-                    setFetchingCollection(true);
                     GUIscene.rewardsReady = true;
                     if(GUIscene.lootBoxReady && !GUIscene.rewardsDisplayed){
                         createLootBoxes(GUI3Dscene, rewards);

@@ -59,6 +59,7 @@ export function makeAnimatedClickable(clickableObject, clickFunction, scaleUp = 
     });
 
     clickableObject.onPointerClickObservable.add(() => {
+        document.body.style.cursor = 'default';
         clickFunction();
     });
 }

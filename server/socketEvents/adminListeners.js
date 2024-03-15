@@ -42,13 +42,13 @@ function adminListeners(socket, username) {
           for (const user of users) {
             await redisClient.del(`user:${user}:cards`);
           }
-          console.log('All card links deleted');
+          console.log('All user to card linkages deleted');
 
           await redisClient.del('cardID');
-          console.log('Card ID deleted');
+          console.log('Card ID incrament deleted');
 
-          deleteAllCards();
-          console.log('All cards deleted');
+          await deleteAllCards();
+          console.log('All cards deleted from the database');
           
         } catch (error) {
           console.error('Error removing all cards:', error);
@@ -126,7 +126,7 @@ function adminListeners(socket, username) {
           for(const user of users){
             for(let i = 0; i < commandCount; i++){
               const randomMedals = Math.floor(Math.random() * 30);
-              calculateRewards(randomMedals, user);
+              calculateRewards(randomMedals, user, true);
             }
           }
         } catch (error) {
@@ -202,6 +202,19 @@ function adminListeners(socket, username) {
           console.error('Error deleting user:', error);
         }
       }
+
+      // /createdefaultdecks
+      if(command === '/createdefaultdecks'){
+        try {
+          const users = await redisClient.sMembers('users');
+          for (const user of users) {
+            await redisClient.hSet(`decks:${user}`, "Default Deck", JSON.stringify(["d5","d4","d3","d2","d1"]));
+          }
+          console.log('Default decks created for all users');
+        } catch (error) {
+          console.error('Error creating default decks:', error);
+        }
+      }
     } else {
       //Database commands
       try {
@@ -235,15 +248,11 @@ async function addAllUsernamesToSet() {
 
 async function deleteAllCards() {
   try {
-    // Get all keys that match the card pattern
     const keys = await redisClient.keys('card:*');
-
-    // Delete each key found
-    for (const key of keys) {
-      redisClient.del(key);
+    
+    if (keys.length > 0) {
+      await redisClient.unlink(...keys);
     }
-
-    console.log('All card keys deleted.');
   } catch (error) {
     console.error('Error deleting card keys:', error);
   }

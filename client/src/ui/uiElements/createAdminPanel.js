@@ -7,7 +7,7 @@ export function createAdminPanel() {
     const container = new GUI.Rectangle();
     container.width = "600px";
     container.height = "40px";
-    container.top = "200px";
+    container.top = "-400px";
     container.thickness = 0;
 
     // Create Console Input
@@ -46,4 +46,6 @@ export function createAdminPanel() {
     container.addControl(consoleSubmit);
 
     GUITexture.addControl(container);
+
+    return container;
 }
