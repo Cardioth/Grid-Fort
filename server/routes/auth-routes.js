@@ -70,7 +70,7 @@ router.post('/register', registerLimiter, async (req, res) => {
           return res.status(500).json({ message: "Failed to save session", error: err.message });
         }
 
-        res.status(201).json({ message: "User registered and logged in successfully", uniCredits: newUser.uniCredits });
+        res.status(201).json({ message: "User registered and logged in successfully", uniCredits: newUser.uniCredits, wallet: newUser.wallet, username: newUser.username});
       });
     });
   } catch (error) {
@@ -78,6 +78,16 @@ router.post('/register', registerLimiter, async (req, res) => {
     res.status(400).json({ message: "Failed to register user", error: error.message });
   }
 });
+
+/*export function setProfileData(data){
+    const profile = {
+        username: data.username,
+        wallet: data.wallet,
+        uniCredits: data.uniCredits,
+    };
+    localStorage.setItem("profile", JSON.stringify(profile));
+}
+*/
 
 
 // Login route
@@ -96,7 +106,7 @@ router.post('/login', loginLimiter, (req, res, next) => {
         if (err) {
           return next(err);
         }
-        return res.json({ message: "Login successful", uniCredits: user.uniCredits });
+        return res.json({ message: "Login successful", uniCredits: user.uniCredits, wallet: user.wallet, username: user.username});
       });
     });
   })(req, res, next);
@@ -123,7 +133,7 @@ router.get('/logout', (req, res) => {
 // Check Auth
 router.get('/checkAuth', (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({ auth: true, username: req.user.username, uniCredits: req.user.uniCredits});
+    res.json({ auth: true, username: req.user.username, uniCredits: req.user.uniCredits, wallet: req.user.wallet});
   } else {
     res.json({ auth: false });
   }

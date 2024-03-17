@@ -12,7 +12,6 @@ function getCollectionListener(socket, username) {
 
         if (lastRequestTime && currentTime - lastRequestTime < rateLimitDuration) {
             console.log('Rate limit exceeded for ', username, ' - getCollectionListener');
-            socket.emit('getCollectionResponse', 'Too many requests. Please try again later.');
             return;
         }
 

@@ -48,7 +48,6 @@ function adminListeners(socket, username) {
           console.log('Card ID incrament deleted');
 
           await deleteAllCards();
-          console.log('All cards deleted from the database');
           
         } catch (error) {
           console.error('Error removing all cards:', error);
@@ -125,7 +124,7 @@ function adminListeners(socket, username) {
           const users = await redisClient.sMembers('users');
           for(const user of users){
             for(let i = 0; i < commandCount; i++){
-              const randomMedals = Math.floor(Math.random() * 30);
+              const randomMedals = 40;
               calculateRewards(randomMedals, user, true);
             }
           }
@@ -215,6 +214,17 @@ function adminListeners(socket, username) {
           console.error('Error creating default decks:', error);
         }
       }
+
+      // /listusers
+      if(command === '/listusers'){
+        try {
+          const users = await redisClient.sMembers('users');
+          console.log('Users:', users);
+          socket.emit('consoleResponse', response);
+        } catch (error) {
+          console.error('Error listing users:', error);
+        }
+      }
     } else {
       //Database commands
       try {
@@ -248,13 +258,25 @@ async function addAllUsernamesToSet() {
 
 async function deleteAllCards() {
   try {
-    const keys = await redisClient.keys('card:*');
-    
-    if (keys.length > 0) {
-      await redisClient.unlink(...keys);
-    }
+    let cursor = '0';
+    const batchSize = 100; // You can adjust this size based on your server's capacity
+
+    do {
+      // Directly using sendCommand to correctly handle the cursor as a string
+      const reply = await redisClient.sendCommand(['SCAN', cursor, 'MATCH', 'card:*', 'COUNT', batchSize.toString()]);
+      cursor = reply[0];
+      const keys = reply[1].filter(key => key.startsWith('card:'));
+
+      if (keys.length > 0) {
+        // Deleting the batch of keys
+        const result = await redisClient.unlink(keys);
+        console.log(`Deleted ${keys.length} card keys`);
+      }
+    } while (cursor !== '0');
+
+    console.log('All card keys have been deleted.');
   } catch (error) {
-    console.error('Error deleting card keys:', error);
+    console.error('Error when trying to delete card keys:', error);
   }
 }
 

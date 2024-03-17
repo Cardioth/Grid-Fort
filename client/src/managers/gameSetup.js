@@ -1,5 +1,5 @@
 import { gridHeight, gridWidth, startingCardCount, startingCredits } from "../../../common/data/config.js";
-import { buildRandomDeck, drawCardFromDeckToHand } from "../components/deck.js";
+import { buildDeck, drawCardFromDeckToHand } from "../components/deck.js";
 import { createGridWithStructuredNeighbors } from "../components/grids.js";
 import { circularizeGrids } from "../components/grids.js";
 import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
@@ -46,9 +46,9 @@ export let medals = 0;
 export let allBoards = [];
 
 export function gameSetup(){
-    buildRandomDeck();
+    buildDeck();
 
-    strikes = 6;
+    strikes = 0;
     medals = 0;
 
     setAvailableCredits(startingCredits);

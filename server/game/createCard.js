@@ -72,26 +72,26 @@ exports.convertLevelToBonusStats = convertLevelToBonusStats;
 function statBanned(stat) {
   const bannedStats = [
     'windUpTime',
+    'ammoDraw',
+    'fireRate',
+    'powerDraw',
   ];
   return bannedStats.includes(stat);
 }
 
 function mapBonus(value) {
   const bonusMap = {
-    'health': 'h10',
+    'health': 'h20',
     'kineticFirepower': 'kf1',
     'energyFirepower': 'ef1',
-    'critChance': 'cc5',
-    'critDamageBonus': 'cd10',
+    'critChance': 'cc10',
+    'critDamageBonus': 'cd20',
     'blastRadius': 'br1',
-    'ammoDraw': 'ad1',
-    'fireRate': 'fr1',
     'energyStorage': 'es100',
-    'energyResistance': 'er1',
-    'armor': 'a1',
+    'energyResistance': 'er2',
+    'armor': 'a2',
     'ammoStorage': 'as50',
     'powerStorage': 'ps100',
-    'powerDraw': 'pd1',
     'radarRange': 'rr1',
   };
   return bonusMap[value] || value;

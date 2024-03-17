@@ -15,13 +15,14 @@ import { setFetchingCollection, socket, privs } from "../network/connect.js";
 import { createAlertMessage } from "./uiElements/createAlertMessage.js";
 import { deckSize, uniCredits } from "../../../common/data/config.js";
 import { createLoadingIconScreen } from "./uiElements/createLoadingIconScreen.js";
-import { createInputDialogue } from "./createInputDialogue.js";
+import { createInputDialogue } from "./uiElements/createInputDialogue.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 import { createBuildingShapeGraphic } from "./uiElements/createBuildingShapeGraphic.js";
 import { createStartGameDialogue } from "./uiElements/createStartGameDialogue.js";
 import { signOutUser } from "../network/signOutUser.js";
 import { createAdminPanel } from "./uiElements/createAdminPanel.js";
 import { setProfileData } from "./menuGUI.js";
+import { createConfirmDialogue } from "./uiElements/createConfirmDialogue.js";
 
 let filteredCollection = [];
 let newTempCollection = [];
@@ -34,6 +35,7 @@ let miniCardContainer;
 let nextPageButton;
 let previousPageButton;
 let buildDeckButton;
+export let selectedDeck;
 
 export function createCollectionInterface(){
     newTempCollection = [...collection];
@@ -101,7 +103,7 @@ export function createCollectionInterface(){
 
     // Create Play Button
     const playButton = createCustomButton("Play", () => {
-        createStartGameDialogue();
+        createStartGameDialogue(selectedDeck);
     });
     playButton.top = "340px";
     playButton.left = "500px";
@@ -122,7 +124,7 @@ export function createCollectionInterface(){
     profileButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     profileButton.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     profileButton.top = "-20px";
-    profileButton.left = "-350px";
+    profileButton.left = "-160px";
     profileButton.name = "profileButton";
     container.addControl(profileButton);
 
@@ -141,14 +143,14 @@ export function createCollectionInterface(){
     const uniCreditsText = new GUI.TextBlock();
     uniCreditsText.width = "130px";
     uniCreditsText.height = "40px";
-    uniCreditsText.text = uniCredits + "uC";
+    uniCreditsText.text = uniCredits;
     uniCreditsText.color = "white";
     uniCreditsText.fontSize = 25;
     uniCreditsText.fontFamily = "GemunuLibre-Medium";
     uniCreditsText.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     uniCreditsText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     uniCreditsText.top = "-20px";
-    uniCreditsText.left = "-150px";
+    uniCreditsText.left = "-550px";
     uniCreditsText.name = "uniCreditsText";
     container.addControl(uniCreditsText);
 
@@ -159,7 +161,7 @@ export function createCollectionInterface(){
     creditsIcon.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     creditsIcon.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     creditsIcon.top = "-5px";
-    creditsIcon.left = "-240px";
+    creditsIcon.left = "-640px";
     creditsIcon.scaleX = 0.6;
     creditsIcon.scaleY = 0.6;
     container.addControl(creditsIcon);
@@ -167,7 +169,7 @@ export function createCollectionInterface(){
     // Create Username Text
     const usernameText = new GUI.TextBlock();
     const profile = JSON.parse(localStorage.getItem("profile"));
-    usernameText.width = "160px";
+    usernameText.width = "150px";
     usernameText.height = "40px";
     usernameText.text = profile.username.charAt(0).toUpperCase() + profile.username.slice(1);
     usernameText.color = "white";
@@ -176,7 +178,7 @@ export function createCollectionInterface(){
     usernameText.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     usernameText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     usernameText.top = "-20px";
-    usernameText.left = "-505px";
+    usernameText.left = "-300px";
     usernameText.zIndex = 30;
     container.addControl(usernameText);
     
@@ -418,8 +420,8 @@ function addDecksToMiniCardContainer(){
         const miniDeck = createMiniDeck(deck);
         miniCardContainer.addControl(miniDeck);
         miniCardContainer.miniDecks.push(miniDeck);
-
-        miniDeck.top = (decks.indexOf(deck) * 50)-((decks.length-1) * 50/2) + "px";
+        const deckIndex = decks.findIndex(d => d.deckName === deck.deckName);
+        miniDeck.top = (deckIndex * 50)-((decks.length-1) * 50/2) + "px";
         miniCardContainer.height = (decks.length * 50) + "px";
         miniCardContainer.top = (decks.length * 50) / 2 + "px";
     });
@@ -440,12 +442,42 @@ function createMiniDeck(deck){
     container.isHitTestVisible = false;
     container.left = "3px";
 
-    const miniDeckBacking = new GUI.Image("miniDeckBacking", getImage("miniDeckBacking.png"));
+    const miniDeckBacking = new GUI.Image("miniDeckBacking", getImage("miniDeckBackingOff.png"));
     miniDeckBacking.width = "320px";
     miniDeckBacking.height = "42px";
+    miniDeckBacking.name = "miniDeckBacking";
+
+    container.selected = false;
+    if (localStorage.getItem("selectedDeck") === deck.deckName){
+        container.selected = true;
+        selectedDeck = deck;
+        miniDeckBacking.source = getImage("miniDeckBackingOn.png");
+    }
+    if (localStorage.getItem("selectedDeck") === null && deck.deckName === "Default Deck"){
+        container.selected = true;
+        selectedDeck = deck;
+        miniDeckBacking.source = getImage("miniDeckBackingOn.png");
+    }
+
+    makeAnimatedClickable(container, () => {
+        miniCardContainer.miniDecks.forEach(deckMiniCard => {
+            deckMiniCard.selected = false;
+            deckMiniCard.children[0].source = getImage("miniDeckBackingOff.png");
+        });
+        if(container.selected){
+            container.selected = false;
+            miniDeckBacking.source = getImage("miniDeckBackingOff.png");
+        }
+        else{
+            container.selected = true;
+            selectedDeck = deck;
+            miniDeckBacking.source = getImage("miniDeckBackingOn.png");
+            localStorage.setItem("selectedDeck", deck.deckName);
+        }
+    },1.01);
     
     const miniDeckText = new GUI.TextBlock();
-    miniDeckText.text = deck;
+    miniDeckText.text = deck.deckName;
     miniDeckText.color = "white";
     miniDeckText.fontSize = 20;
     miniDeckText.fontFamily = "GemunuLibre-Medium";
@@ -458,7 +490,7 @@ function createMiniDeck(deck){
     miniDeckText.zIndex = 3;
 
     // Create Remove Button
-    if(deck !== "Default Deck"){
+    if(deck.deckName !== "Default Deck"){
         const removeButton = new GUI.Image("removeButton", getImage("binIcon.png"));
         removeButton.width = "14px";
         removeButton.height = "16px";
@@ -466,22 +498,27 @@ function createMiniDeck(deck){
         removeButton.top = "-2px";
         removeButton.zIndex = 4;
         makeAnimatedClickable(removeButton, () => {
-            socket.emit("deleteDeck", deck);
-            const loadingScreen = createLoadingIconScreen("Deleting Deck...");
-            loadingScreen.zIndex = 10;
-            GUITexture.addControl(loadingScreen);
-            socket.once("deleteDeckResponse", (response) => {
-                createAlertMessage(response, null, 30, true);
-                loadingScreen.dispose();
-                if(response === "Deck deleted"){
-                    const decks = JSON.parse(localStorage.getItem("decks"));
-                    decks.splice(decks.indexOf(deck), 1);
-                    localStorage.setItem("decks", JSON.stringify(decks));
-                    container.dispose();
-                    miniCardContainer.miniDecks.splice(miniCardContainer.miniDecks.indexOf(container), 1);
-                    updateMiniDeckPositions();
-                }
-            });
+            createConfirmDialogue(() => {
+                socket.emit("deleteDeck", deck.deckName);
+                const loadingScreen = createLoadingIconScreen("Deleting Deck...");
+                loadingScreen.zIndex = 10;
+                GUITexture.addControl(loadingScreen);
+                socket.once("deleteDeckResponse", (response) => {
+                    createAlertMessage(response, null, 30, true);
+                    loadingScreen.dispose();
+                    if(response === "Deck deleted"){
+                        const decks = JSON.parse(localStorage.getItem("decks"));
+                        const deckIndex = decks.findIndex(d => d.deckName === deck.deckName);
+                        if (deckIndex !== -1) {
+                          decks.splice(deckIndex, 1);
+                          localStorage.setItem("decks", JSON.stringify(decks));
+                        }
+                        container.dispose();
+                        miniCardContainer.miniDecks.splice(miniCardContainer.miniDecks.indexOf(container), 1);
+                        updateMiniDeckPositions();
+                    }
+                });
+            }, "delete this deck");
         });
         container.addControl(removeButton);
     }
@@ -598,7 +635,7 @@ function createSaveDeckButton() {
                 });
 
                 const decks = JSON.parse(localStorage.getItem("decks"));
-                decks.push(GUIscene.newDeck.name);
+                decks.push({deckName:GUIscene.newDeck.name, deckCards:deckCardList});
                 localStorage.setItem("decks", JSON.stringify(decks));
                 
                 GUIscene.newDeck.cards = [];

@@ -14,7 +14,7 @@ const boardWidth = exports.boardWidth = 2.875;
 const startingCredits = exports.startingCredits = 2;
 const startingCardCount = exports.startingCardCount = 2;
 const battleLoopTimeLength = exports.battleLoopTimeLength = 20;
-const deckSize = exports.deckSize = 5;
+const deckSize = exports.deckSize = 10;
 const maxDecks = exports.maxDecks = 10;
 let uniCredits = exports.uniCredits = 0;
 function updateUniCredits(amount) {

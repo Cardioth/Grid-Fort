@@ -18,7 +18,7 @@ async function calculateRewards(medals, username, cardsOnly = false){
     const createCardPromises = [];
     
     for(let i = 0; i < lootBoxesCount; i++){
-        const rewardType = Math.floor(Math.random() * 2) === 0 ? "cards" : "credits";
+        let rewardType = Math.floor(Math.random() * 2) === 0 ? "cards" : "credits";
         if(cardsOnly){
             rewardType = "cards";
         }
@@ -39,7 +39,7 @@ async function calculateRewards(medals, username, cardsOnly = false){
         if(rewardType === "cards"){
             const levelReducer = Math.random() > 0.5 ? 1 : 0; // 50% chance of reducing lootLevel by 1
             const randomBUID = Math.floor(Math.random() * 4) + 1;
-            const cardDetails = { BUID: randomBUID, level: Math.max(lootLevel-levelReducer,1), bStats: convertLevelToBonusStats(lootLevel-levelReducer, randomBUID) }
+            const cardDetails = { BUID: randomBUID, level: Math.min(Math.max(lootLevel-levelReducer,1),4), bStats: convertLevelToBonusStats(lootLevel-levelReducer, randomBUID) }
             const reward = {
                 type: "card",
                 card: cardDetails,

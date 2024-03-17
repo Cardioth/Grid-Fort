@@ -1,8 +1,8 @@
 import * as GUI from "@babylonjs/gui";
 import * as BABYLON from "@babylonjs/core";
-import { GUITexture, GUIscene } from '../graphics/sceneInitialization.js';
-import { createCustomButton } from "./uiElements/createCustomButton.js";
-import { getImage } from "../graphics/loadImages.js";
+import { GUITexture, GUIscene } from '../../graphics/sceneInitialization.js';
+import { createCustomButton } from "./createCustomButton.js";
+import { getImage } from "../../graphics/loadImages.js";
 
 export function createInputDialogue(functionToCall, defaultText = "") {
     // Create container
@@ -15,11 +15,11 @@ export function createInputDialogue(functionToCall, defaultText = "") {
     darkScreen.height = "100%";
     darkScreen.thickness = 0;
     darkScreen.background = "black";
-    darkScreen.alpha = 0.5;
+    darkScreen.alpha = 0.8;
     container.addControl(darkScreen);
 
     // Create Game Dialogue Backing
-    const dialogueBacking = new GUI.Image("gameDialogueBacking", getImage("gameDialogueBacking.png"));
+    const dialogueBacking = new GUI.Image("gameDialogueBacking", getImage("inputDialogueBox.png"));
     dialogueBacking.width = "516px";
     dialogueBacking.height = "136px";
     container.addControl(dialogueBacking);

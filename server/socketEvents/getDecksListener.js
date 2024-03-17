@@ -5,7 +5,15 @@ function getDecksListener(socket, username) {
     socket.on('getDecks', async () => {
         try {            
             const existingDecks = await redisClient.hKeys(`decks:${username}`);
-            socket.emit('getDecksResponse', existingDecks);
+            const deckObjects = [];
+            
+            for(const deck of existingDecks){
+                //get card info for each deck
+                const deckData = await redisClient.hGet(`decks:${username}`, deck);
+                deckObjects.push({deckName:deck, deckCards: deckData});
+            }
+
+            socket.emit('getDecksResponse', deckObjects);
         } catch (error) {
             console.error('Error fetching decks:', error);
             socket.emit('getDecksResponse', 'Unable to fetch decks');

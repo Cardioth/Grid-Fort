@@ -4,7 +4,7 @@ import { setCurrentScene } from "../managers/sceneManager.js";
 import { fadeToBlack } from "./generalGUI.js";
 import { uniCredits } from "../../../common/data/config.js";
 import { signOutUser } from "../network/signOutUser.js";
-import { fetchingCollection, privs, socket } from "../network/connect.js";
+import { fetchingCollection, privs, setFetchingCollection, socket } from "../network/connect.js";
 import { getImage } from "../graphics/loadImages.js";
 import { createAdminPanel } from "./uiElements/createAdminPanel.js";
 import { createCustomButton } from "./uiElements/createCustomButton.js";
@@ -121,9 +121,8 @@ export function createMenuScreen(){
 export function goToCollection() {
     document.body.style.cursor = 'pointer';
     if (fetchingCollection) {
-        console.log("Already fetching collection");
         const loadingScreen = createLoadingIconScreen("Loading Collection...");
-       GUITexture.addControl(loadingScreen);
+        GUITexture.addControl(loadingScreen);
         socket.once("getCollectionResponse", () => {
             getDecks();
             loadingScreen.dispose();
@@ -136,6 +135,9 @@ export function goToCollection() {
         GUITexture.addControl(loadingScreen);
         socket.emit("getDecks");
         socket.once("getDecksResponse", (response) => {
+            response.forEach((deck) => {
+                deck.deckCards = JSON.parse(deck.deckCards);
+            });
             localStorage.setItem("decks", JSON.stringify(response));
             fadeToBlack(() => {
                 loadingScreen.dispose();

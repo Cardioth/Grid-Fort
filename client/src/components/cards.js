@@ -100,7 +100,7 @@ export function getHoveredCard(mouseX, mouseY) {
 
 export function createCardGraphicsForHand(){
     hand.forEach(card => {
-        if(card.container === undefined){
+        if(card.container === undefined || card.container === null){
             const cardGraphic = createCardGraphic(card);
             GUITexture.addControl(cardGraphic);
         }

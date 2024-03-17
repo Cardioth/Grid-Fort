@@ -31,7 +31,7 @@
     "node-fetch": "^2.7.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "redis": "^4.6.12",
+    "redis": "^4.6.13",
     "socket.io": "^4.7.3",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1"

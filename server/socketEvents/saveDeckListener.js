@@ -1,6 +1,6 @@
 const redisClient = require('../db/redis');
-const { fetchNFTCards } = require('../solana/fetchNFTCards.js');
 const configData = require('../common/data/config.js');
+const { validateDeck } = require('./validateDeck.js');
 
 function saveDeckListener(socket, username) {
     socket.on('saveDeck', async (deckInfo) => {
@@ -29,43 +29,20 @@ function saveDeckListener(socket, username) {
                 return;
             }
 
+            // Check if the deck has the correct number of cards
+            if (deck.length < configData.deckSize) {
+                socket.emit('saveDeckResponse', `Deck must have at least ${configData.deckSize} cards`);
+                return;
+            }
+
             // Check if deck with that name already exists for that user
             if (existingDecks.includes(deckName)) {
                 socket.emit('saveDeckResponse', 'Deck with that name already exists');
                 return;
             }
 
-            // Check if the deck has a valid number of cards
-            if (deck.length !== configData.deckSize) {
-                socket.emit('saveDeckResponse', 'Deck must have '+configData.deckSize+' cards');
-                return;
-            }
-
-            // Check if the user has all the cards in the deck
-            const userCards = await redisClient.sMembers(`user:${username}:cards`);
-            const NFTCards = [];
-            for (const card of deck) {
-                if(card.length > 35){ //NFT Card
-                    NFTCards.push(card);
-                    continue;
-                }
-                if (!userCards.includes(card) && !card.startsWith('d')) {
-                    socket.emit('saveDeckResponse', 'You do not have all the cards in the deck');
-                    return;
-                }
-            }
-            if(NFTCards.length > 0){
-                // Check if the user has all the NFT cards in the deck
-                const user = await redisClient.hGetAll(`user:${username}`);
-                const userNFTCards = await fetchNFTCards(user);
-                const UIDArray = userNFTCards.map(obj => obj.UID);
-                for (const card of NFTCards) {
-                    if (!UIDArray.includes(card)) {
-                        socket.emit('saveDeckResponse', 'You do not have all the NFT cards in the deck');
-                        return;
-                    }
-                }
-            }
+            const validDeck = await validateDeck(deck, username, socket);
+            if(!validDeck) return;
 
             // Save the deck
             await redisClient.hSet(`decks:${username}`, deckName, JSON.stringify(deck));

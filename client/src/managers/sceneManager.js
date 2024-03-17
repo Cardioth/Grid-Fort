@@ -38,7 +38,7 @@ export function setCurrentScene(setScene) {
         createProfileInterface();
     }
 
-    if(setScene === "build"){
+    if(setScene === "build" && currentScene === "collection"){
         initGUIScene();
         initGameScene();
         //createBloomAdjuster(bloomPipeline);

@@ -40,7 +40,6 @@ export function loadImages(scene) {
         "strikeIcon.png",
         "credIcon.png",
         "startButton.png",
-        "startGameBacking.png",
         "cancelButton.png",
         "credIconNoShine.png",
         "strikeDialogue.png",
@@ -85,8 +84,12 @@ export function loadImages(scene) {
         'scrollBarHandle.png',
         'loadIcon1.png',
         'loadIcon2.png',
-        'miniDeckBacking.png',
+        'miniDeckBackingOn.png',
+        'miniDeckBackingOff.png',
         'binIcon.png',
+        'gameDialogueBacking.png',
+        'gameDialogueBacking2.png',
+        'inputDialogueBox.png',
     ];
     
     paths.forEach(path => {

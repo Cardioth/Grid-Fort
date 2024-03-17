@@ -132,6 +132,7 @@ export const initMenuScene = () => {
 };
 
 export const initGameScene = () => {
+    //Remove scrolling grid background
     for(let i = 0; i < menuBackgrounds.length; i++){
         menuBackgrounds[i].dispose();
     }
@@ -142,8 +143,7 @@ export const initGameScene = () => {
 
     //initShadows(lights);
 
-    addReflectionsToBase(scene, allMeshes);    
-
+    addReflectionsToBase(scene, allMeshes);
     gridPlane = createGridGraphic(); //Grid graphic
 
     collisionPlane = createCollisionPlane(); // For raycasting

@@ -5,7 +5,7 @@ import { createAlertMessage } from "../ui/uiElements/createAlertMessage";
 import { unhideLoginButtons } from "../ui/uiElements/loginInterface";
 import { serverUrl } from "./serverURL";
 import { setUniCredits } from "../../../common/data/config";
-import { goToCollection } from "../ui/menuGUI";
+import { goToCollection, setProfileData } from "../ui/menuGUI";
 
 export function loginUser(username, password) {
   fetch(serverUrl+"/auth/login", {
@@ -32,8 +32,9 @@ export function loginUser(username, password) {
 }
 
 export function loginProceed(username, data) {
-  localStorage.setItem('loggedIn', true); // Store a flag in local storage
-  localStorage.setItem('username', username); // Optionally store the username
+  localStorage.setItem('loggedIn', true);
+  localStorage.setItem('username', username);
+  setProfileData(data);
   connectToServer(() => {
     fadeToBlack(() => {
       setUniCredits(data.uniCredits);
