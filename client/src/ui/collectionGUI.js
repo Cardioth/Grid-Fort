@@ -35,6 +35,7 @@ let miniCardContainer;
 let nextPageButton;
 let previousPageButton;
 let buildDeckButton;
+let defaultDeckMiniDeck;
 export let selectedDeck;
 
 export function createCollectionInterface(){
@@ -458,6 +459,9 @@ function createMiniDeck(deck){
         selectedDeck = deck;
         miniDeckBacking.source = getImage("miniDeckBackingOn.png");
     }
+    if(deck.deckName === "Default Deck"){
+        defaultDeckMiniDeck = container;
+    }
 
     makeAnimatedClickable(container, () => {
         miniCardContainer.miniDecks.forEach(deckMiniCard => {
@@ -503,6 +507,12 @@ function createMiniDeck(deck){
                 const loadingScreen = createLoadingIconScreen("Deleting Deck...");
                 loadingScreen.zIndex = 10;
                 GUITexture.addControl(loadingScreen);
+                if(container.selected){
+                    selectedDeck = "Default Deck";
+                    localStorage.setItem("selectedDeck", "Default Deck");
+                    defaultDeckMiniDeck.selected = true;
+                    defaultDeckMiniDeck.children[0].source = getImage("miniDeckBackingOn.png");
+                }
                 socket.once("deleteDeckResponse", (response) => {
                     createAlertMessage(response, null, 30, true);
                     loadingScreen.dispose();
