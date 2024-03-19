@@ -17,6 +17,7 @@ export function connectToServer(functionOnPrivs){
   socket.on('connect', () => {
     console.log('Connected to the server: ' + serverUrl);
     if(localStorage.getItem('collection') === null || localStorage.getItem('collectionDate') === null || Date.now() - localStorage.getItem('collectionDate') > 86400000){
+      setFetchingCollection(true);
       socket.emit("getCollection");
     } else {
       setCollection(JSON.parse(localStorage.getItem('collection')), false);
@@ -35,6 +36,9 @@ export function connectToServer(functionOnPrivs){
 
   socket.on("getCollectionResponse", (response) => {
     fetchingCollection = false
+    if(response === 'Rate limit exceeded'){
+      return;
+    }
     console.log("collection", response);
       setCollection(response, true);
       localStorage.setItem('collectionDate', Date.now());

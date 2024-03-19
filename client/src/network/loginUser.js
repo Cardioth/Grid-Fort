@@ -36,8 +36,6 @@ export function loginProceed(username, data) {
   localStorage.setItem('username', username);
   setProfileData(data);
   connectToServer(() => {
-    setFetchingCollection(true);
-    socket.emit("getCollection");
     fadeToBlack(() => {
       setUniCredits(data.uniCredits);
       goToCollection();
