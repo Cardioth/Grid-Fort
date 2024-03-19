@@ -36,10 +36,10 @@ export function loginProceed(username, data) {
   localStorage.setItem('username', username);
   setProfileData(data);
   connectToServer(() => {
+    setFetchingCollection(true);
+    socket.emit("getCollection");
     fadeToBlack(() => {
       setUniCredits(data.uniCredits);
-      setFetchingCollection(true);
-      socket.emit("getCollection");
       goToCollection();
     });
   });
