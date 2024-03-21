@@ -750,35 +750,7 @@ function createCardContainer(currentPage, newCollection, totalPages) {
     }
 
     // Create Dots Container
-    const dotsContainer = new GUI.Rectangle();
-    dotsContainer.width = "100px";
-    dotsContainer.height = "100px";
-    dotsContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-    dotsContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    dotsContainer.top = "-268px";
-    dotsContainer.left = "0px";
-    dotsContainer.thickness = 0;
-    cardContainer.addControl(dotsContainer);
-
-    // Create Dots
-    for(let i = 0; i < totalPages; i++){
-        const dot = new GUI.Image("emptyDot", getImage("emptyDot.png"));
-        dot.width = "20px";
-        dot.height = "20px";
-        dot.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        dot.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        dot.left = (i * 20 - (totalPages - 1) * 10) + "px";
-        dotsContainer.addControl(dot);
-    }
-
-    // Create Filled Dot
-    const filledDot = new GUI.Image("filledDot", getImage("filledDot.png"));
-    filledDot.width = "20px";
-    filledDot.height = "20px";
-    filledDot.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-    filledDot.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    filledDot.left = (currentPage * 20 - (totalPages - 1) * 10) + "px";
-    dotsContainer.addControl(filledDot);
+    createPageIndicator(cardContainer, totalPages, currentPage);
 
     cardImages.forEach(card => {
         cardContainer.addControl(card);
@@ -786,6 +758,38 @@ function createCardContainer(currentPage, newCollection, totalPages) {
 
     return cardContainer;
 }
+
+function createPageIndicator(cardContainer, totalPages, currentPage) {
+    const containerWidth = 880;
+    const gap = 10;
+    const totalGapWidth = (totalPages - 1) * gap;
+    const availableWidthForRectangles = containerWidth - totalGapWidth;
+    const rectangleWidth = availableWidthForRectangles / totalPages;
+
+    const rectanglesContainer = new GUI.Rectangle();
+    rectanglesContainer.width = containerWidth + "px";
+    rectanglesContainer.height = "5px";
+    rectanglesContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    rectanglesContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    rectanglesContainer.top = "257px";
+    rectanglesContainer.left = "0px";
+    rectanglesContainer.thickness = 0;
+    cardContainer.addControl(rectanglesContainer);
+
+    // Create rectangles for each page
+    for (let i = 0; i < totalPages; i++) {
+        const rectangle = new GUI.Rectangle();
+        rectangle.width = rectangleWidth + "px";
+        rectangle.height = "5px";
+        rectangle.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        rectangle.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        rectangle.left = (i * (rectangleWidth + gap)) + "px";
+        rectangle.thickness = 0;
+        rectangle.background = i === currentPage ? "#50D7F4" : "#030A13";
+        rectanglesContainer.addControl(rectangle);
+    }
+}
+
 
 function addCardToDeck(card, cardGraphic) {
     if (GUIscene.buildMode && GUIscene.newDeck.cards.length < deckSize) {
