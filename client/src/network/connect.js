@@ -39,9 +39,8 @@ export function connectToServer(functionOnPrivs){
     if(response === 'Rate limit exceeded'){
       return;
     }
-    console.log("collection", response);
-      setCollection(response, true);
-      localStorage.setItem('collectionDate', Date.now());
+    setCollection(response, true);
+    localStorage.setItem('collectionDate', Date.now());
   });
 
   updateUniCreditsListener();

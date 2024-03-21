@@ -23,9 +23,10 @@ import { signOutUser } from "../network/signOutUser.js";
 import { createAdminPanel } from "./uiElements/createAdminPanel.js";
 import { setProfileData } from "./menuGUI.js";
 import { createConfirmDialogue } from "./uiElements/createConfirmDialogue.js";
+import { createPlayButton } from "./uiElements/createPlayButton.js";
 
 let filteredCollection = [];
-let newTempCollection = [];
+let newTempCollection = []; //This layer of separation between collection and filtered collection is no longer needed as the cards are no longer removed when added to the deck in deck builder mode, but I'm too lazy to change it
 let totalPages;
 let cardContainer;
 let deckBuilderContainer;
@@ -49,8 +50,19 @@ export function createCollectionInterface(){
     blackScreen.height = "100%";
     blackScreen.thickness = 0;
     blackScreen.background = "black";
-    blackScreen.alpha = 0.5;
+    blackScreen.alpha = 0.4;
     container.addControl(blackScreen);
+
+    // Black backing
+    const blackBacking = new GUI.Rectangle();
+    blackBacking.width = "100%";
+    blackBacking.height = "80px";
+    blackBacking.thickness = 1;
+    blackBacking.background = "black";
+    blackBacking.color = "black";
+    blackBacking.alpha = 0.4;
+    blackBacking.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    container.addControl(blackBacking);
 
     // Create Title Text
     const titleText = new GUI.TextBlock();
@@ -103,11 +115,12 @@ export function createCollectionInterface(){
     container.addControl(refreshButton);
 
     // Create Play Button
-    const playButton = createCustomButton("Play", () => {
+    
+    const playButton = createPlayButton(() => {
         createStartGameDialogue(selectedDeck);
     });
-    playButton.top = "340px";
-    playButton.left = "500px";
+    playButton.top = "345px";
+    playButton.left = "520px";
     playButton.name = "playButton";
     container.addControl(playButton);
 

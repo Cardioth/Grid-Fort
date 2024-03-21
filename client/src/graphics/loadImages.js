@@ -90,6 +90,9 @@ export function loadImages(scene) {
         'gameDialogueBacking.png',
         'gameDialogueBacking2.png',
         'inputDialogueBox.png',
+        'playButtonBack.png',
+        'playButtonMiddle.png',
+        'playButtonFront.png',
     ];
     
     paths.forEach(path => {
