@@ -36,7 +36,7 @@ let nextPageButton;
 let previousPageButton;
 let buildDeckButton;
 let defaultDeckMiniDeck;
-export let selectedDeck;
+export let selectedDeck = "Default Deck";
 
 export function createCollectionInterface(){
     newTempCollection = [...collection];
@@ -781,11 +781,15 @@ function addCardToDeck(card, cardGraphic) {
         card.miniCard = miniCard;
         miniCardContainer.addControl(miniCard);
         updateMiniCardPositions();
-        //remove from collection
-        newTempCollection.splice(newTempCollection.indexOf(card), 1);
-        filteredCollection.splice(filteredCollection.indexOf(card), 1);
-        totalPages = Math.ceil(filteredCollection.length / 10);
-        cardGraphic.dispose();
+
+        // Fade out the card graphic and disable clickability
+        cardGraphic.alpha = 0.2;
+        cardGraphic.isEnabled = false;
+        cardGraphic.isHitTestVisible = false;
+
+        // Store the original position and zIndex of the card graphic
+        card.originalPosition = { ...card.currentPosition };
+        card.originalZIndex = card.zIndex;
     }
 }
 
@@ -853,10 +857,14 @@ function createMiniCard(card) {
         GUIscene.newDeck.cards.splice(GUIscene.newDeck.cards.indexOf(card), 1);
         container.dispose();
         updateMiniCardPositions();
-        filteredCollection.push(card);
-        newTempCollection.push(card);
-        resetCardContainer();
-        updateNextPreviousButtonVisibility(GUIscene.currentPage);
+
+        // Restore the card graphic's visibility and clickability
+        const cardGraphic = cardContainer.children.find(child => child.card === card);
+        if (cardGraphic) {
+            cardGraphic.alpha = 1;
+            cardGraphic.isEnabled = true;
+            cardGraphic.isHitTestVisible = true;
+        }
     });
     container.addControl(removeButton);
 
@@ -882,6 +890,20 @@ function resetCardContainer() {
     cardContainer = createCardContainer(GUIscene.currentPage, filteredCollection, totalPages);
     cardContainer.zIndex = 5;
     cardSelectionContainer.addControl(cardContainer);
+
+    // Restore the original position and zIndex of the cards in the new deck
+    if(GUIscene.newDeck){
+        GUIscene.newDeck.cards.forEach(card => {
+            const cardGraphic = cardContainer.children.find(child => child.card === card);
+            if (cardGraphic) {
+                cardGraphic.alpha = 0.2;
+                cardGraphic.isEnabled = false;
+                cardGraphic.isHitTestVisible = false;
+                cardGraphic.currentPosition = { ...card.originalPosition };
+                cardGraphic.zIndex = card.originalZIndex;
+            }
+        });
+    }
 }
 
 function displayCard(card) {

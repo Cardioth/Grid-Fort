@@ -82,10 +82,10 @@ function statBanned(stat) {
 function mapBonus(value) {
   const bonusMap = {
     'health': 'h20',
-    'kineticFirepower': 'kf1',
-    'energyFirepower': 'ef1',
+    'kineticFirepower': 'kf2',
+    'energyFirepower': 'ef2',
     'critChance': 'cc10',
-    'critDamageBonus': 'cd20',
+    'critDamageBonus': 'cd30',
     'blastRadius': 'br1',
     'energyStorage': 'es100',
     'energyResistance': 'er2',

@@ -4,6 +4,7 @@ import * as BABYLON from "@babylonjs/core";
 export function makeAnimatedClickable(clickableObject, clickFunction, scaleUp = 1.1) {
     clickableObject.originalScaleX = clickableObject.scaleX;
     clickableObject.originalScaleY = clickableObject.scaleY;
+    clickableObject.isEnabled = true;
 
     // Animate Button Highlight Scale
     const clickableObjectScaleXUP = new BABYLON.Animation("buttonHighlightAnimationXUP", "scaleX", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -40,7 +41,7 @@ export function makeAnimatedClickable(clickableObject, clickFunction, scaleUp = 
 
     // Create Card Mouse Events
     clickableObject.onPointerEnterObservable.add(() => {
-        if (clickableObject.isAnimating) return;
+        if (clickableObject.isAnimating || !clickableObject.isEnabled) return;
         clickableObject.isAnimating = true;
         clickableObject.scaleX = clickableObject.originalScaleX * 1.1;
         clickableObject.scaleY = clickableObject.originalScaleY * 1.1;
@@ -50,6 +51,7 @@ export function makeAnimatedClickable(clickableObject, clickFunction, scaleUp = 
     });
 
     clickableObject.onPointerOutObservable.add(() => {
+        if (!clickableObject.isEnabled) return;
         clickableObject.isAnimating = false;
         clickableObject.scaleX = clickableObject.originalScaleX;
         clickableObject.scaleY = clickableObject.originalScaleY;
@@ -59,6 +61,7 @@ export function makeAnimatedClickable(clickableObject, clickFunction, scaleUp = 
     });
 
     clickableObject.onPointerClickObservable.add(() => {
+        if (!clickableObject.isEnabled) return;
         document.body.style.cursor = 'default';
         clickFunction();
     });

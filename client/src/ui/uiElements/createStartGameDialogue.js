@@ -37,12 +37,12 @@ export function createStartGameDialogue(deck) {
         confirmButton.alpha = 0.5;
         socket.emit("startGame", { deckName: deck.deckName });
         socket.once("startGameResponse", (response) => {
-            if (response) {
+            if (response === "success") {
                 fadeToBlack(() => {
                     setCurrentScene("build");
                 });
             } else {
-                createAlertMessage("Not enough credits", null, 30, true);
+                createAlertMessage(response, null, 30, true);
                 startingGame = false;
             }
         });

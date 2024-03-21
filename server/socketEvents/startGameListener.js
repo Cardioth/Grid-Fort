@@ -8,26 +8,29 @@ function startGameListener(socket, username) {
       const userData = await redisClient.hGetAll(`user:${username}`);
       const uniCredits = userData.uniCredits;
 
-      const deck = JSON.parse(await redisClient.hGet(`decks:${username}`, deckInfo.deckName));
-      const validDeck = await validateDeck(deck, username, socket);
-      if(!validDeck){
-        socket.emit('startGameResponse', false);
+      // Check if user has enough credits to start game
+      if(uniCredits < gameConfig.startGameCost){
+        socket.emit('startGameResponse', "Insufficient credits to start game");
         return;
       }
 
-      // Check if user has enough credits to start game
-      if(uniCredits < gameConfig.startGameCost){
-        socket.emit('startGameResponse', false);
+      // Check if user has a deck with the given name
+      const deck = JSON.parse(await redisClient.hGet(`decks:${username}`, deckInfo.deckName));
+      const validDeck = await validateDeck(deck, username, socket);
+      if(!validDeck){
+        socket.emit('startGameResponse', "Invalid deck selected");
         return;
-      } else {
-        if(username !== 'admin') {
-          await redisClient.hSet(`user:${username}`, { uniCredits: uniCredits - gameConfig.startGameCost });
-        }
-        await redisClient.hSet(`game:${username}`, { strikes: 0, medals: 15, deck: JSON.stringify(deck)});
-        
-        socket.emit('uniCreditsUpdate', uniCredits - gameConfig.startGameCost);
-        socket.emit('startGameResponse', true);
       }
+
+      // Deduct credits from user
+      if(username !== 'admin') {
+        await redisClient.hSet(`user:${username}`, { uniCredits: uniCredits - gameConfig.startGameCost });
+      }
+
+      await redisClient.hSet(`game:${username}`, { strikes: 0, medals: 0, deck: JSON.stringify(deck)});
+      
+      socket.emit('uniCreditsUpdate', uniCredits - gameConfig.startGameCost);
+      socket.emit('startGameResponse', "success");
     } catch (error) {
       console.error('Error fetching credits:', error);
       socket.emit('error', 'Unable to start game');
