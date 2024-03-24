@@ -46,7 +46,7 @@ export function createPlayButton(clickFunction) {
     container.addControl(buttonGraphicFront);
 
     //Animation
-
+    
     // Animate Button Middle Alpha
     const buttonAnimationAlphaUP = new BABYLON.Animation("buttonHighlightAnimationAlphaUP", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     const buttonAnimationAlphaDOWN = new BABYLON.Animation("buttonHighlightAnimationAlphaDOWN", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -68,8 +68,8 @@ export function createPlayButton(clickFunction) {
     // Animate Button Middle Left cycle on Mouse over
     const buttonAnimationMiddleScrolling = new BABYLON.Animation("buttonHighlightAnimationMiddleScroll", "left", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
     buttonAnimationMiddleScrolling.setKeys([
-        { frame: 0, value: 151 },
-        { frame: 60, value: -151 }
+        { frame: 0, value: 166.5 },
+        { frame: 60, value: -166.5 }
     ]);
     buttonGraphicMiddle.animations.push(buttonAnimationMiddleScrolling);
 

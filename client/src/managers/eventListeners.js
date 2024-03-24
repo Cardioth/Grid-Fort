@@ -14,6 +14,7 @@ import { displayBuildingInfo } from "../ui/gameGUI";
 import { createLootBoxImplosionParticleSystem } from "../graphics/particleEffects/createLootBoxImplosion";
 import { createLootReward } from "../graphics/lootRewardGraphic";
 import { fadeInContinueButton } from "../ui/endGameGUI";
+import { createAlertMessage } from "../ui/uiElements/createAlertMessage";
 
 export let selectedPlacedBuilding = null;
 export let hoveredBuilding = null;
@@ -121,7 +122,7 @@ export function initializeGameControls(canvas) {
                     setCardPositions();
                     setAnchorRotationAdjustment(selectedBuilding);
                 } else if (hoveredCard !== null && hoveredCard.cost > availableCredits) {
-                    //TODO: Display message that you don't have enough credits
+                    createAlertMessage("Not enough credits", null, 30, true);
                 }
             }
             startDrag = true;

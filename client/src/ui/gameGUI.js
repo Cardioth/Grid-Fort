@@ -9,6 +9,8 @@ import { currentScene } from "../managers/sceneManager.js";
 import { getImage } from "../graphics/loadImages.js";
 import { strikes } from "../managers/gameSetup.js";
 
+let endTurnButtonBack;
+
 function createSelectionLine(startPoint,mesh) {
     const line = new GUI.MultiLine();
     line.add({ x: startPoint.x, y: startPoint.y }, mesh);
@@ -296,18 +298,52 @@ export function displayBottomUI(){
     bottomPanel.left = 0;
     bottomPanelContainer.addControl(bottomPanel);
 
+    //End Turn Button Backing Container
+    const endTurnButtonBackContainer = new GUI.Rectangle("endTurnButtonBackContainer");
+    endTurnButtonBackContainer.width = "154px";
+    endTurnButtonBackContainer.height = "61px";
+    endTurnButtonBackContainer.top = 21;
+    endTurnButtonBackContainer.left = 162;
+    endTurnButtonBackContainer.thickness = 0;
+    bottomPanelContainer.addControl(endTurnButtonBackContainer);
+
     //End Turn Button Backing
-    const endTurnButtonBack = new GUI.Image("endTurnButton", getImage("endTurnButtonBack.png"));
-    endTurnButtonBack.width = "186px";
+    endTurnButtonBack = new GUI.Image("endTurnButton", getImage("playButtonMiddle.png"));
+    endTurnButtonBack.width = "372px";
     endTurnButtonBack.height = "89px";
-    endTurnButtonBack.top = 17;
-    endTurnButtonBack.left = 157;
-    bottomPanelContainer.addControl(endTurnButtonBack);
+    endTurnButtonBackContainer.addControl(endTurnButtonBack);
+
+    //End Turn Button Backing Animation
+    const buttonAnimationScrolling = new BABYLON.Animation("buttonHighlightAnimationMiddleScroll", "left", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    buttonAnimationScrolling.setKeys([
+        { frame: 0, value: 93 },
+        { frame: 60, value: -93 }
+    ]);
+    endTurnButtonBack.animations = [];
+    endTurnButtonBack.animations.push(buttonAnimationScrolling);
+    GUIscene.beginDirectAnimation(endTurnButtonBack, [endTurnButtonBack.animations[0]], 0, 60, true, 1);
+
+    endTurnButtonBack.alpha = 0.0;
+    //End Turn Button Backing Animation Fade In
+    const buttonAnimationAlphaUP = new BABYLON.Animation("buttonHighlightAnimationAlphaUP", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    buttonAnimationAlphaUP.setKeys([
+        { frame: 0, value: 0.0 },
+        { frame: 10, value: 1 }
+    ]);
+    endTurnButtonBack.animations.push(buttonAnimationAlphaUP);
+
+    //End Turn Button Backing Animation Fade Out
+    const buttonAnimationAlphaDOWN = new BABYLON.Animation("buttonHighlightAnimationAlphaDOWN", "alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    buttonAnimationAlphaDOWN.setKeys([
+        { frame: 0, value: 1 },
+        { frame: 10, value: 0.0 }
+    ]);
+    endTurnButtonBack.animations.push(buttonAnimationAlphaDOWN);
 
     //End Turn Button
     const endTurnButton = new GUI.Image("endTurnButton", getImage("endTurnButton.png"));
-    endTurnButton.width = "186px";
-    endTurnButton.height = "89px";
+    endTurnButton.width = "187px";
+    endTurnButton.height = "90px";
     endTurnButton.top = 17;
     endTurnButton.left = 157;
     bottomPanelContainer.addControl(endTurnButton);
@@ -457,4 +493,12 @@ export function updateStrikeDialoguePanelStrikes(){
             GUITexture.strikeDialoguePanel.strikes.push(strikeDialogueIcon);
         }
     }
+}
+
+export function highlightEndTurnButton(){
+    GUIscene.beginDirectAnimation(endTurnButtonBack, [endTurnButtonBack.animations[1]], 0, 10, false, 1);
+}
+
+export function hideEndTurnButton(){
+    GUIscene.beginDirectAnimation(endTurnButtonBack, [endTurnButtonBack.animations[2]], 0, 10, false, 1);
 }

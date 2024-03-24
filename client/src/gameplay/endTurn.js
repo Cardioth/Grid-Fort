@@ -9,7 +9,7 @@ import { circularizeGrids } from "../components/grids.js";
 import { boardWidth } from "../../../common/data/config.js";
 import { setZoomTarget } from "../graphics/renderLoop.js";
 import { startBattleLoop } from "./battle.js";
-import { removeExistingCreditIcons } from "../ui/gameGUI.js";
+import { hideEndTurnButton, removeExistingCreditIcons } from "../ui/gameGUI.js";
 import { fadeInMeshAnimation } from "../graphics/animations/meshFadeAnimations.js";
 import { AIforts } from "../components/AIforts.js";
 import { placeAIFort } from "./buildingPlacement.js";
@@ -27,7 +27,8 @@ export function endTurn() {
             
             if(serverUrl === "https://localhost:3000"){
                 exportBoard(playerBoard);
-            }            
+            }  
+            hideEndTurnButton();          
 
             //Random Left or Right position of Enemy Board //TODO: merge into one function
             const randomLeftOrRight = Math.floor(Math.random() * 2);

@@ -1,5 +1,5 @@
 import { getPointerGridLocation, getPointerScreenLocation, getPointerScreenLocationSnappedToGrid, updateBoardStats, setMaterialToDefault, setMaterialToBlocked } from "../utilities/utils";
-import { updateAvailableCredits } from "./credits";
+import { availableCredits, updateAvailableCredits } from "./credits";
 import { currentMouseX, currentMouseY, selectedBuilding, selectedCard, setSelectedCard, selectedPlacedBuilding } from "../managers/eventListeners";
 import { gridHeight, gridWidth, shapeKeyLegend} from "../../../common/data/config";
 import { playerBoard, enemyBoard } from "../managers/gameSetup";
@@ -8,7 +8,7 @@ import { circularizeGrids } from "../components/grids";
 import { buildingAssets, baseMesh, shadowGenerator, canvas, weaponAssets, GUITexture } from '../graphics/sceneInitialization';
 import { hand, setCardPositions } from "../components/cards";
 import { drawGridTexture } from "../shaders/gridMaterial";
-import { displayBuildingInfo, updateBuildingStatsText } from "../ui/gameGUI";
+import { displayBuildingInfo, hideEndTurnButton, highlightEndTurnButton, updateBuildingStatsText } from "../ui/gameGUI";
 import * as BABYLON from '@babylonjs/core';
 import { weaponIdleAnimation } from "../graphics/animations/weaponAnimations";
 import { boosterRisingAnimation, createBoosterCellGraphic, removeBoosterCellGraphicsByCell } from "../graphics/boosterCellGraphics";
@@ -48,6 +48,9 @@ export function placeBuilding(building, gridX, gridY, board) {
 
         if (selectedCard !== null) {
             updateAvailableCredits(-newBuilding.cost);
+            if(availableCredits === 0){
+                highlightEndTurnButton();
+            }
         }
 
         //Update grid
@@ -503,9 +506,13 @@ export function returnSelectedBuildingToDeck() {
         selectedCard.currentPosition.y = currentMouseY - canvas.height / 2;
     
         if (selectedBuilding.placed === true) {
+            const creditsAboveZero = availableCredits > 0;
             updateAvailableCredits(selectedCard.cost);
             circularizeGrids();
             selectedBuilding.placed = false;
+            if(availableCredits > 0 && !creditsAboveZero){
+                hideEndTurnButton();
+            }
         }
     }
 

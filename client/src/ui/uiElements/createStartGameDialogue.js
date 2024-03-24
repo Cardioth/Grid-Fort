@@ -29,6 +29,7 @@ export function createStartGameDialogue(deck) {
     gameDialogueBacking.top = "65px";
     container.addControl(gameDialogueBacking);
 
+    
     // Create Confirm Button
     let startingGame = false;
     const confirmButton = createCustomButton("Confirm", () => {
