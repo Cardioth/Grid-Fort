@@ -37,6 +37,7 @@ let nextPageButton;
 let previousPageButton;
 let buildDeckButton;
 let defaultDeckMiniDeck;
+let playButton;
 export let selectedDeck = "Default Deck";
 
 export function createCollectionInterface(){
@@ -116,7 +117,7 @@ export function createCollectionInterface(){
 
     // Create Play Button
     
-    const playButton = createPlayButton(() => {
+    playButton = createPlayButton(() => {
         createStartGameDialogue(selectedDeck);
     });
     playButton.top = "345px";
@@ -558,6 +559,7 @@ function enterBuildMode(input) {
         socket.emit("createDeck", input);
         socket.once("createDeckResponse", (response) => {
             if(response === "Deck created"){
+                playButton.isVisible = false;
                 clearMiniCardContainer();
                 buildDeckButton.isVisible = false;
                 GUIscene.buildMode = true;
@@ -653,6 +655,7 @@ function createSaveDeckButton() {
             createAlertMessage(response, null, 30, true);
             if(response === "Deck saved successfully"){
                 GUIscene.buildMode = false;
+                playButton.isVisible = true;
                 GUIscene.newDeck.cards.forEach(card => {
                     card.miniCardContainer.dispose();
                 });

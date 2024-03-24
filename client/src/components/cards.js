@@ -32,8 +32,8 @@ export function updateCardAnimation() {
                 card.zIndex = card.originalZIndex;
             }
             // Animate position
-            card.currentPosition.x += (card.targetPosition.x - card.currentPosition.x) * 0.08;
-            card.currentPosition.y += (card.targetPosition.y - card.currentPosition.y) * 0.08;
+            card.currentPosition.x += (card.targetPosition.x - card.currentPosition.x) * 0.05;
+            card.currentPosition.y += (card.targetPosition.y - card.currentPosition.y) * 0.05;
 
             // If the current position is close to the target position, snap to it
             if (Math.abs(card.targetPosition.x - card.currentPosition.x) < 1) {
@@ -65,7 +65,7 @@ export function setCardPositions() {
         const yPosition = yCardOffset - Math.pow(distanceFromCenter, 2) * arcStrength;
         buildingCard.originalPosition = { x: xPosition, y: yPosition };
         if (buildingCard.initialized === undefined) {
-            buildingCard.currentPosition = { ...buildingCard.originalPosition };
+            buildingCard.currentPosition = {x:0, y:0};//{ ...buildingCard.originalPosition };
             buildingCard.initialized = true;
         }
         buildingCard.targetSize = { ...buildingCard.currentSize };
