@@ -16,38 +16,31 @@ export function buildRandomDeck() {
 
 export function buildDeck(){
     const newDeck = collection.filter(obj => selectedDeck.deckCards.includes(obj.UID))
-    for(let i = 0; i < 2; i++){
-        newDeck.forEach(card => {
-            card.container = null;
-            card.miniCard = undefined;
-            card.miniCardContainer = undefined;
-            deck.push({...card});
-        });
-    }
-    //shuffle
-    for(let i = deck.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * i);
-        const temp = deck[i];
-        deck[i] = deck[j];
-        deck[j] = temp;
-    }
+    newDeck.forEach(card => {
+        card.container = null;
+        card.miniCard = undefined;
+        card.miniCardContainer = undefined;
+        deck.push({...card});
+    });
 }
 
 export function drawCardFromDeckToHand(){
     if(deck.length > 0){
         hand.push(deck.pop());
     }
-    
     setCardPositions();
     createCardGraphicsForHand();
 }
 
-export function pickFromCards(){
-    //Choose three random cards from deck to display to play
-    const cards = [];
-    for(let i = 0; i < 3; i++){
-        const randomNumber = Math.floor(Math.random() * deck.length);
-        cards.push(deck[randomNumber]);
+export function drawSpecificCardFromDeckToHand(cardUID, moveToCentre = false){
+    const card = deck.find(obj => obj.UID === cardUID);
+    if(card){
+        hand.push(card);
+        deck.splice(deck.indexOf(card), 1);
     }
-    return cards;
+    setCardPositions();
+    if(moveToCentre){
+        hand[hand.length-1].targetPosition = {x:0, y:0};
+    }
+    createCardGraphicsForHand();
 }

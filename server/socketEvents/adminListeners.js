@@ -73,7 +73,7 @@ function adminListeners(socket, username) {
       }
 
       // /addFieldToAllUsers field value
-      if(command.startsWith('/addFieldToAllUsers')){
+      if(command.startsWith('/addFieldToAllUsers') || command.startsWith('/faau')){
         const field = command.split(' ')[1];
         const value = command.split(' ')[2];
         try {
@@ -88,7 +88,7 @@ function adminListeners(socket, username) {
       }
 
       // /givecredits credits username
-      if(command.startsWith('/givecredits')){
+      if(command.startsWith('/givecredits') || command.startsWith('/gc')){
         const commandCredits = command.split(' ')[1];
         const commandUser = command.split(' ')[2];
         if(commandUser !== undefined){
@@ -103,7 +103,7 @@ function adminListeners(socket, username) {
       }
 
       // /givecreditsallusers credits
-      if (command.startsWith('/givecreditsallusers')) {
+      if (command.startsWith('/givecreditsallusers') || command.startsWith('/gcau')) {
         const commandCredits = parseInt(command.split(' ')[1]);
         try {
           const users = await redisClient.sMembers('users'); // Retrieve all user IDs
@@ -116,16 +116,26 @@ function adminListeners(socket, username) {
           console.error('Error giving credits to all users:', error);
         }
       }
-      
-      // /createcardallusers count
-      if(command.startsWith('/createcardallusers')){
+
+      // /createcard username count medalcount
+      if(command.startsWith('/createcard') || command.startsWith('/cc')) {
+        const commandUser = command.split(' ')[1];
+        const commandCount = command.split(' ')[2];
+        const medalCount = command.split(' ')[3];
+        for(let i = 0; i < commandCount; i++){
+          calculateRewards(medalCount, commandUser, true);
+        }
+      }
+            
+      // /createcardallusers count medalcount
+      if(command.startsWith('/createcardallusers') || command.startsWith('/ccau')){
         const commandCount = command.split(' ')[1];
+        const medalCount = command.split(' ')[2];
         try{
           const users = await redisClient.sMembers('users');
           for(const user of users){
             for(let i = 0; i < commandCount; i++){
-              const randomMedals = 40;
-              calculateRewards(randomMedals, user, true);
+              calculateRewards(medalCount, user, true);
             }
           }
         } catch (error) {

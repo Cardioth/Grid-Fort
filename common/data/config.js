@@ -10,6 +10,8 @@ export const battleLoopTimeLength = 20;
 export const deckSize = 10;
 export const maxDecks = 10;
 
+export const draftSize = 5;
+
 export let uniCredits = 0;
 
 export function updateUniCredits(amount){

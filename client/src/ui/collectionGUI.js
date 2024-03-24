@@ -26,7 +26,7 @@ import { createConfirmDialogue } from "./uiElements/createConfirmDialogue.js";
 import { createPlayButton } from "./uiElements/createPlayButton.js";
 
 let filteredCollection = [];
-let newTempCollection = []; //This layer of separation between collection and filtered collection is no longer needed as the cards are no longer removed when added to the deck in deck builder mode, but I'm too lazy to change it
+let newTempCollection = [];
 let totalPages;
 let cardContainer;
 let deckBuilderContainer;

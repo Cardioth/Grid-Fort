@@ -35,6 +35,7 @@ function mapKey(key) {
     };
     return keyMap[key] || key;
 }
+
 function addBonusesToCard(bStats, card) {
     bStats.forEach(bonus => {
         const [keyPart, valuePart] = bonus.match(/[a-zA-Z]+|\d+/g);

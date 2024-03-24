@@ -93,6 +93,7 @@ export function loadImages(scene) {
         'playButtonBack.png',
         'playButtonMiddle.png',
         'playButtonFront.png',
+        'cardSolanaIcon.png',
     ];
     
     paths.forEach(path => {

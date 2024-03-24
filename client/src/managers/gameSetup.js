@@ -6,6 +6,9 @@ import { placeBuildingToBoard } from "../gameplay/buildingPlacement.js";
 import allBuildings from "../../../common/buildings.js";
 import { boardWidth } from "../../../common/data/config.js";
 import { availableCredits, setAvailableCredits, setTotalCredits, totalCredits } from "../gameplay/credits.js";
+import { socket } from "../network/connect.js";
+import { createDraftScreen } from "../ui/uiElements/createDraftScreen.js";
+import { collection } from "./collectionManager.js";
 
 export const fortStats = {
     kineticFirepower: {name:"Kinetic Firepower", stat: 0},
@@ -56,13 +59,26 @@ export function gameSetup(){
 
     allBoards = [playerBoard];
 
-    for(let i = 0; i < startingCardCount; i++){
-        drawCardFromDeckToHand();
-    }
-
+    createDraft();
+    
     circularizeGrids();
 
     placeBuildingToBoard(allBuildings.core, playerBoard, -1, -1);
+}
+
+function createDraft() {
+    socket.emit("getDraft");
+    socket.once("getDraftResponse", (draft) => {
+        const draftCards = collection.filter(obj => draft.includes(obj.UID));
+        const newDraftCards = [];
+        draftCards.forEach(card => {
+            card.container = null;
+            card.miniCardContainer = undefined;
+            card.miniCard = undefined;
+            newDraftCards.push({ ...card });
+        });
+        createDraftScreen(newDraftCards);
+    });
 }
 
 export function updateMedals(value){

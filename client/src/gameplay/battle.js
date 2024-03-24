@@ -151,7 +151,7 @@ function fireKineticTurret(building, board, target, enemy) {
                                 cell.building.stats.health = Math.floor(cell.building.stats.health*10)/10;
 
                                 if(cell.building.destroyed === false){ //In cases where it is hit after death it needs to remain moveable
-                                    cell.building.moveable = false;
+                                    //cell.building.moveable = false;
                                 }
 
                                 createExplosion(targetPosition, "kineticExplosion");
@@ -200,7 +200,7 @@ function fireEnergyTurret(building, board, target, enemy) {
             target.building.stats.health = Math.floor(target.building.stats.health*10)/10;
 
             if(target.building.destroyed === false){ //In cases where it is hit after death it needs to remain moveable
-                target.building.moveable = false;
+                //target.building.moveable = false;
             }
 
             setTimeout(function () {

@@ -1,6 +1,7 @@
 const redisClient = require('../db/redis');
 const gameConfig = require('../data/config');
 const { validateDeck } = require('./validateDeck');
+const configData = require('../common/data/config.js');
 
 function startGameListener(socket, username) {
   socket.on('startGame', async (deckInfo) => {
@@ -22,15 +23,24 @@ function startGameListener(socket, username) {
         return;
       }
 
+      // Shuffle deck
+      deck.sort(() => Math.random() - 0.5); 
+
       // Deduct credits from user
       if(username !== 'admin') {
         await redisClient.hSet(`user:${username}`, { uniCredits: uniCredits - gameConfig.startGameCost });
       }
 
-      await redisClient.hSet(`game:${username}`, { strikes: 0, medals: 0, deck: JSON.stringify(deck)});
+      // Set game data for user
+      await redisClient.hSet(`game:${username}`, { strikes: 0, medals: 0, deck: JSON.stringify(deck), state: 'startup'});
       
       socket.emit('uniCreditsUpdate', uniCredits - gameConfig.startGameCost);
       socket.emit('startGameResponse', "success");
+
+      socket.once('getDraft', () => {
+        socket.emit('getDraftResponse', deck.slice(0, configData.draftSize));
+      });
+
     } catch (error) {
       console.error('Error fetching credits:', error);
       socket.emit('error', 'Unable to start game');

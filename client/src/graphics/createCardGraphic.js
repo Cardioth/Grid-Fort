@@ -4,7 +4,7 @@ import { currentScene } from "../managers/sceneManager.js";
 import { getImage } from "./loadImages.js";
 import { camelCaseToTitleCase } from "../utilities/utils.js";
 
-export function createCardGraphic(card) {
+export function createCardGraphic(card, includeContainer = true) {
     var container = new GUI.Rectangle();
     container.width = "620px";
     container.height = "950px";
@@ -30,6 +30,12 @@ export function createCardGraphic(card) {
     nameText.text = card.name;
     if(card.tradable){
         nameText.color = "#f0ec84";
+        var tradableImage = new GUI.Image("but", getImage("cardSolanaIcon.png"));
+        tradableImage.width = "90px";
+        tradableImage.height = "90px";
+        tradableImage.top = "100px";
+        tradableImage.left = "230px";
+        container.addControl(tradableImage);
     } else {
         nameText.color = "white";
     }
@@ -127,10 +133,12 @@ export function createCardGraphic(card) {
     container.left = card.currentPosition.x;
     container.rotation = card.rotation;
     container.zIndex = card.zIndex;
-    container.ignoreAdaptiveScaling = true;
     container.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 
-    card.container = container;
+    if(includeContainer){
+        card.container = container;
+    }
+    
 
     container.onPointerEnterObservable.add(function () {
         if(card.cost <= availableCredits && currentScene === "build"){

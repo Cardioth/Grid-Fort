@@ -40,9 +40,6 @@ export function returnToBuildScene() {
     if(hand.length <= 7){
         drawCardFromDeckToHand();
     }
-    if(hand.length <= 7){
-        drawCardFromDeckToHand();
-    }
 
     //Remove enemy board
     fadeOutMeshAnimation(enemyBoard.baseMesh, 60);
